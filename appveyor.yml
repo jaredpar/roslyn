@@ -1,0 +1,28 @@
+version: 1.0.{build}
+
+branches:
+	except:
+		- gh-pages
+
+skip_tags: true
+
+os: Windows Server 2012
+
+shallow_clone: true
+
+platform:
+	- x68
+
+configuration: 
+	-	 Debug
+
+build:
+	parallel: true
+	project: src\Roslyn.sln
+
+before_build:
+	- ps: . src\.nuget\NuGetRestore.ps1
+
+test:
+	assemblies:
+		- Binaries\Debug\Roslyn.Compilers.CSharp.CommandLine.UnitTests.dll
