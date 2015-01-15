@@ -11,7 +11,7 @@ os: Windows Server 2012
 shallow_clone: true
 
 platform:
-  - x68
+  - x86
 
 configuration: 
   -  Debug
