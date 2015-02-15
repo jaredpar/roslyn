@@ -24,8 +24,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
 
         ' These names are arbitrary, so we'll just use the same names as
         ' the C# expression compiler.
-        Private Const TypeName = "<>x"
-        Private Const MethodName = "<>m0"
+        Private Const s_typeName = "<>x"
+        Private Const s_methodName = "<>m0"
         Friend Const IsLocalScopeEndInclusive = True
 
         Friend ReadOnly MetadataBlocks As ImmutableArray(Of MetadataBlock)
@@ -342,7 +342,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
 
                 Dim context = Me.CreateCompilationContext(DirectCast(syntax, ExecutableStatementSyntax))
                 Dim properties As ResultProperties = Nothing
-                Dim moduleBuilder = context.Compile(inspectionContext, TypeName, MethodName, testData, diagnostics, properties)
+                Dim moduleBuilder = context.Compile(inspectionContext, s_typeName, s_methodName, testData, diagnostics, properties)
                 If moduleBuilder Is Nothing Then
                     errorMessage = GetErrorMessageAndMissingAssemblyIdentities(diagnostics, formatter, preferredUICulture, missingAssemblyIdentities)
                     Return Nothing
@@ -368,8 +368,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
                     missingAssemblyIdentities = ImmutableArray(Of AssemblyIdentity).Empty
                     Return New CompileResult(
                         stream.ToArray(),
-                        TypeName,
-                        MethodName,
+                        s_typeName,
+                        s_methodName,
                         formatSpecifiers)
                 End Using
             Finally
@@ -399,7 +399,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
 
                 Dim context = Me.CreateCompilationContext(assignment)
                 Dim properties As ResultProperties = Nothing
-                Dim modulebuilder = context.Compile(inspectionContext, TypeName, MethodName, testData, diagnostics, properties)
+                Dim modulebuilder = context.Compile(inspectionContext, s_typeName, s_methodName, testData, diagnostics, properties)
                 If modulebuilder Is Nothing Then
                     errorMessage = GetErrorMessageAndMissingAssemblyIdentities(diagnostics, formatter, preferredUICulture, missingAssemblyIdentities)
                     Return Nothing
@@ -430,8 +430,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
                     missingAssemblyIdentities = ImmutableArray(Of AssemblyIdentity).Empty
                     Return New CompileResult(
                         stream.ToArray(),
-                        TypeName,
-                        MethodName,
+                        s_typeName,
+                        s_methodName,
                         formatSpecifiers:=Nothing)
                 End Using
             Finally
@@ -439,7 +439,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
             End Try
         End Function
 
-        Private Shared ReadOnly EmptyBytes As New ReadOnlyCollection(Of Byte)(New Byte() {})
+        Private Shared ReadOnly s_emptyBytes As New ReadOnlyCollection(Of Byte)(New Byte() {})
 
         Friend Overrides Function CompileGetLocals(
             locals As ArrayBuilder(Of LocalAndMethod),
@@ -449,7 +449,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
 
             Dim diagnostics = DiagnosticBag.GetInstance()
             Dim context = Me.CreateCompilationContext(Nothing)
-            Dim modulebuilder = context.CompileGetLocals(EvaluationContext.TypeName, locals, argumentsOnly, testData, diagnostics)
+            Dim modulebuilder = context.CompileGetLocals(EvaluationContext.s_typeName, locals, argumentsOnly, testData, diagnostics)
             Dim assembly As ReadOnlyCollection(Of Byte) = Nothing
 
             If modulebuilder IsNot Nothing AndAlso locals.Count > 0 Then
@@ -473,10 +473,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
 
             If assembly Is Nothing Then
                 locals.Clear()
-                assembly = EmptyBytes
+                assembly = s_emptyBytes
             End If
 
-            typeName = EvaluationContext.TypeName
+            typeName = EvaluationContext.s_typeName
             Return assembly
         End Function
 
@@ -583,23 +583,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
         ''' Friend for testing.
         ''' </remarks>
         Friend Shared Function GetMissingAssemblyIdentitiesHelper(code As ERRID, arguments As IReadOnlyList(Of Object)) As ImmutableArray(Of AssemblyIdentity)
-			Select Case code
-				Case ERRID.ERR_UnreferencedAssemblyEvent3, ERRID.ERR_UnreferencedAssembly3
-					For Each argument As Object In arguments
-						Dim identity = If(TryCast(argument, AssemblyIdentity), TryCast(argument, AssemblySymbol)?.Identity)
-						If identity IsNot Nothing Then
-							Return ImmutableArray.Create(identity)
-						End If
-					Next
-				Case ERRID.ERR_ForwardedTypeUnavailable3
-					If arguments.Count = 3 Then
-						Return ImmutableArray.Create(TryCast(arguments(2), AssemblySymbol)?.Identity)
-					End If
-				Case ERRID.ERR_XmlFeaturesNotAvailable
-					Return ImmutableArray.Create(SystemIdentity, SystemCoreIdentity, SystemXmlIdentity, SystemXmlLinqIdentity)
-			End Select
+            Select Case code
+                Case ERRID.ERR_UnreferencedAssemblyEvent3, ERRID.ERR_UnreferencedAssembly3
+                    For Each argument As Object In arguments
+                        Dim identity = If(TryCast(argument, AssemblyIdentity), TryCast(argument, AssemblySymbol)?.Identity)
+                        If identity IsNot Nothing Then
+                            Return ImmutableArray.Create(identity)
+                        End If
+                    Next
+                Case ERRID.ERR_ForwardedTypeUnavailable3
+                    If arguments.Count = 3 Then
+                        Return ImmutableArray.Create(TryCast(arguments(2), AssemblySymbol)?.Identity)
+                    End If
+                Case ERRID.ERR_XmlFeaturesNotAvailable
+                    Return ImmutableArray.Create(SystemIdentity, SystemCoreIdentity, SystemXmlIdentity, SystemXmlLinqIdentity)
+            End Select
 
-			Return Nothing
+            Return Nothing
         End Function
 
     End Class
