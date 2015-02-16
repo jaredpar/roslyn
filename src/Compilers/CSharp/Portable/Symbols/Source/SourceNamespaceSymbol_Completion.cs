@@ -44,6 +44,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                             bool allCompleted = true;
 
+#if MONO
+                            foreach (var member in members)
+                            {
+                                ForceCompleteMemberByLocation(locationOpt, member, cancellationToken);
+                                allCompleted = allCompleted && member.HasComplete(CompletionPart.All);
+                            }
+#else
+
                             if (this.DeclaringCompilation.Options.ConcurrentBuild)
                             {
                                 var po = cancellationToken.CanBeCanceled
@@ -73,6 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     allCompleted = allCompleted && member.HasComplete(CompletionPart.All);
                                 }
                             }
+#endif
 
                             if (allCompleted)
                             {

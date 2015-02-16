@@ -1952,6 +1952,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (stage == CompilationStage.Parse || (stage > CompilationStage.Parse && includeEarlierStages))
                 {
+#if MONO
+                    foreach (var syntaxTree in this.SyntaxTrees)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        builder.AddRange(syntaxTree.GetDiagnostics(cancellationToken));
+                    }
+
+#else
                     if (this.Options.ConcurrentBuild)
                     {
                         var parallelOptions = cancellationToken.CanBeCanceled
@@ -1969,6 +1977,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             builder.AddRange(syntaxTree.GetDiagnostics(cancellationToken));
                         }
                     }
+#endif
                 }
 
                 if (stage == CompilationStage.Declare || stage > CompilationStage.Declare && includeEarlierStages)

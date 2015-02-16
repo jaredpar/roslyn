@@ -613,6 +613,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             Assert.False(SyntaxFacts.ContainsDroppedIdentifierCharacters(tok.ValueText));
         }
 
+#if !MONO
         [WorkItem(959148, "DevDiv")]
         [Fact]
         public void TestSoftHyphen()
@@ -628,6 +629,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             Assert.True(SyntaxFacts.ContainsDroppedIdentifierCharacters(text));
             Assert.False(SyntaxFacts.ContainsDroppedIdentifierCharacters(tok.ValueText));
         }
+#endif
 
         [WorkItem(545778, "DevDiv")]
         [Fact]

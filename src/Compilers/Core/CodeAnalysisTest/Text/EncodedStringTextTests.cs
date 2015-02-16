@@ -193,6 +193,8 @@ namespace Microsoft.CodeAnalysis.UnitTests
             var encoding = new UTF8Encoding(false);
             string path = Temp.CreateFile().WriteAllBytes(encoding.GetBytes(expectedText)).Path;
 
+#if MONO
+#else
             var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 };
             Parallel.For(0, 500, parallelOptions, i =>
             {
@@ -202,6 +204,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
                     Assert.Equal(expectedText, sourceText.ToString());
                 }
             });
+#endif
         }
 
         [Fact]

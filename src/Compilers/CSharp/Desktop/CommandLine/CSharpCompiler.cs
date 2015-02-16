@@ -58,6 +58,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             var trees = new SyntaxTree[sourceFiles.Length];
             var normalizedFilePaths = new String[sourceFiles.Length];
 
+#if MONO
+            for (int i = 0; i < sourceFiles.Length; i++)
+            {
+                //NOTE: order of trees is important!!
+                trees[i] = ParseFile(consoleOutput, parseOptions, scriptParseOptions, ref hadErrors, sourceFiles[i], out normalizedFilePaths[i]);
+            }
+#else
             if (Arguments.CompilationOptions.ConcurrentBuild)
             {
                 Parallel.For(0, sourceFiles.Length, UICultureUtilities.WithCurrentUICulture<int>(i =>
@@ -74,6 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     trees[i] = ParseFile(consoleOutput, parseOptions, scriptParseOptions, ref hadErrors, sourceFiles[i], out normalizedFilePaths[i]);
                 }
             }
+#endif
 
             // If errors had been reported in ParseFile, while trying to read files, then we should simply exit.
             if (hadErrors)

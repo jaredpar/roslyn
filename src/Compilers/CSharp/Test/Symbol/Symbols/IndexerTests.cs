@@ -2143,12 +2143,16 @@ class B
 ";
             var compilation = CreateCompilationWithMscorlib(source);
 
+#if MONO
+            // TODO: implement
+#else
             var loopResult = Parallel.ForEach(compilation.GlobalNamespace.GetTypeMembers(), type =>
                 type.ForceComplete(null, default(CancellationToken)));
 
             Assert.True(loopResult.IsCompleted);
 
             compilation.VerifyDiagnostics();
+#endif
         }
 
         [WorkItem(545884, "DevDiv")]

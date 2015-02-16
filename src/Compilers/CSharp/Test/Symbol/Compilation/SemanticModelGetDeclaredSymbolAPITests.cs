@@ -4460,6 +4460,9 @@ class C { }
             var model = compilation.GetSemanticModel(tree);
 
             int position = text.IndexOf("Obsolete");
+#if MONO
+            // TODO: enable
+#else
 
             var result = Parallel.For(0, 100, i =>
             {
@@ -4470,6 +4473,7 @@ class C { }
             });
 
             Assert.True(result.IsCompleted);
+#endif
         }
 
         [WorkItem(543415, "DevDiv")]

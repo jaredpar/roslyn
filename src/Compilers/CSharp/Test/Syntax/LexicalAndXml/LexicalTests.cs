@@ -2389,6 +2389,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             Assert.Equal(text.Substring(0, text.Length - 1), token.Value);
         }
 
+#if !MONO
         [Fact]
         public void TestDebuggerObjectAddressIdentifiers()
         {
@@ -2452,6 +2453,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             Assert.Equal("@0xffff0000ffff0000ffff0000", token.Text);
             Assert.Equal("0xffff0000ffff0000ffff0000", token.Value);
         }
+#endif
 
         /// <summary>
         /// Earlier identifier syntax "[0-9]+#" not supported.
@@ -2575,6 +2577,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             Assert.Equal(" \uFEFF", trailing[0].ToString());
         }
 
+#if !MONO
         [Fact]
         public void DecimalLiterals()
         {
@@ -2622,7 +2625,9 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             AssertGoodDecimalLiteral("1e-28M", "000000010000000000000000001c0000");
             AssertGoodDecimalLiteral("1e-29M", "000000000000000000000000001c0000"); //Becomes zero.
         }
+#endif
 
+#if !MONO
         [Fact]
         public void DecimalLiteralsManyDigits()
         {
@@ -2633,7 +2638,9 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             AssertGoodDecimalLiteral("123456789012345678901234567890.123456789012345678901234567890e-1m", "6e39811546bec9b127e41b3200000000");
             AssertBadDecimalLiteral("123456789012345678901234567890.123456789012345678901234567890e-0m");
         }
+#endif
 
+#if !MONO
         [Fact]
         public void MoreDecimalLiterals()
         {
@@ -2645,6 +2652,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             AssertGoodDecimalLiteral("792281625142643375935439503354E-1M", "ffffffffffffffffffffffff00000000");
             AssertGoodDecimalLiteral("7922816251426433759354395033549999E-5M", "ffffffffffffffffffffffff00000000");
         }
+#endif
 
         [Fact]
         public void TestMaxKeywordLength()

@@ -157,7 +157,7 @@
       <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <DefineConstants>DEBUG;TRACE;MONO</DefineConstants>
         <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
       </PropertyGroup>
       <PropertyGroup Condition="'$(Configuration)' == 'Release'">

@@ -158,6 +158,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 CheckMemberDistinctness(symbol);
             }
 
+#if MONO
+            foreach (var m in symbol.GetMembersUnordered())
+            {
+                Visit(m);
+            }
+#else
+
             if (_compilation.Options.ConcurrentBuild)
             {
                 var options = _cancellationToken.CanBeCanceled
@@ -172,6 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Visit(m);
                 }
             }
+#endif
         }
 
         public override void VisitNamedType(NamedTypeSymbol symbol)

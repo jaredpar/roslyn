@@ -114,6 +114,9 @@ class A {
                 }
             };
 
+#if MONO
+            // TODO: implement
+#else
             Action writers = () =>
             {
                 Parallel.For(0, Math.Max(1, Environment.ProcessorCount - 1), t =>
@@ -131,6 +134,7 @@ class A {
             {
                 Parallel.Invoke(reader, writers);
             }
+#endif
         }
 
         /// <summary>
