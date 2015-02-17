@@ -4713,6 +4713,7 @@ class C
                 );
         }
 
+#if !MONO
         [Fact]
         public void TooDeepObjectInitializer()
         {
@@ -4790,6 +4791,7 @@ class Program
             Assert.Equal(1, actualErrors.Length);
             Assert.Equal((int)ErrorCode.ERR_InsufficientStack, actualErrors[0].Code);
         }
+#endif
 
         [Fact]
         [WorkItem(1085618, "DevDiv")]

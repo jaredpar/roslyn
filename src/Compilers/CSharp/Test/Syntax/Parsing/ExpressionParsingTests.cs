@@ -2156,6 +2156,7 @@ class C
             }
         }
 
+#if !MONO 
         [WorkItem(1091974, "DevDiv")]
         [Fact]
         public void ParseBigExpression()
@@ -2183,5 +2184,6 @@ namespace WB.Core.SharedKernels.DataCollection.Generated
             Assert.NotNull(root);
             Assert.Equal(SyntaxKind.CompilationUnit, root.Kind());
         }
+#endif
     }
 }
