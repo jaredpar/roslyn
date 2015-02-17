@@ -295,6 +295,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
             Assert.NotNull(rightNode.GetAnnotations().Single());
         }
 
+#if !MONO
         [Fact]
         public void TestCSharpAllInOne()
         {
@@ -326,6 +327,8 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 
             TestTriviaAnnotation(tree);
         }
+
+#endif
 
         [Fact]
         public void TestCopyAnnotations1()

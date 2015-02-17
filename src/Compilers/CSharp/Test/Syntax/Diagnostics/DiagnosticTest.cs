@@ -330,6 +330,7 @@ public class C
             CreateCompilationWithMscorlib(text, options: option).VerifyDiagnostics();
         }
 
+#if !MONO
         [Fact]
         public void PragmaWarning_NoErrorCodes1()
         {
@@ -1576,27 +1577,27 @@ public class C
             // keyword tokens instead of identifier tokens for these.
             // Lexing / parsing of identifiers inside #pragma is identical to that inside #define for the below cases.
             // The #define cases below also produce identical errors in previous versions of the compiler.
-            var text = @"
-#define true
-#define default
-#define hidden
-#define disable
-#define checksum
-#define restore
-#define false
+            var text = string.Format(@"
+{0}define true
+{0}define default
+{0}define hidden
+{0}define disable
+{0}define checksum
+{0}define restore
+{0}define false
 public class C
 {
     public static void Main()
     {
-#pragma warning disable true
-#pragma warning disable default
-#pragma warning disable hidden
-#pragma warning disable disable
-#pragma warning restore checksum
-#pragma warning restore restore
-#pragma warning restore false
+{0}pragma warning disable true
+{0}pragma warning disable default
+{0}pragma warning disable hidden
+{0}pragma warning disable disable
+{0}pragma warning restore checksum
+{0}pragma warning restore restore
+{0}pragma warning restore false
     }
-}";
+}", "#");
             CSharpCompilationOptions commonoption = TestOptions.ReleaseExe;
             CreateCompilationWithMscorlib(text, options: commonoption).VerifyDiagnostics(
                 // (2,9): error CS1001: Identifier expected
@@ -1683,17 +1684,17 @@ public class C
         [Fact]
         public void PragmaWarning_EscapedKeywordsAreNotAllowedAsErrorCodes()
         {
-            var text = @"
-#define @true
-#define @class
+            var text = string.Format(@"
+{0}define @true
+{0}define @class
 public class C
 {
     public static void Main()
     {
-#pragma warning disable @true
-#pragma warning restore @class
+{0}pragma warning disable @true
+{0}pragma warning restore @class
     }
-}";
+}", "#");
             CSharpCompilationOptions commonoption = TestOptions.ReleaseExe;
             CreateCompilationWithMscorlib(text, options: commonoption).VerifyDiagnostics(
                 // (2,9): error CS1001: Identifier expected
@@ -1974,20 +1975,20 @@ public class C
         [Fact]
         public void PragmaWarningDirectiveMapWithIfDirective()
         {
-            var text = @"
+            var text = string.Format(@"
 using System;
 class Program
 {
     static void Main(string[] args)
     {
-#pragma warning disable
+{0}pragma warning disable
         var x = 10;
-#if false
-#pragma warning restore
-#endif
+{0}if false
+{0}pragma warning restore
+{0}endif
         var y = 10;
     }
-}";
+}", "#");
             SyntaxTree syntaxTree = SyntaxFactory.ParseSyntaxTree(text, path: "foo.cs");
             Assert.Equal(ReportDiagnostic.Default, syntaxTree.GetPragmaDirectiveWarningState(MessageProvider.Instance.GetIdForErrorCode(168), GetSpanIn(syntaxTree, "static void").Start));
             Assert.Equal(ReportDiagnostic.Suppress, syntaxTree.GetPragmaDirectiveWarningState(MessageProvider.Instance.GetIdForErrorCode(168), GetSpanIn(syntaxTree, "var x").Start));
@@ -2009,6 +2010,7 @@ class Program
             SyntaxTree syntaxTree = SyntaxFactory.ParseSyntaxTree(text, path: "foo.cs");
             Assert.Equal(ReportDiagnostic.Suppress, syntaxTree.GetPragmaDirectiveWarningState(MessageProvider.Instance.GetIdForErrorCode(168), GetSpanIn(syntaxTree, "static void").Start));
         }
+#endif
 
         private TextSpan GetSpanIn(SyntaxTree syntaxTree, string textToFind)
         {

@@ -11,6 +11,8 @@ using Xunit;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
+#if !MONO
+
     public class SerializationTests
     {
         [Fact]
@@ -321,4 +323,5 @@ class C { }");
         }
 #endif
     }
+#endif
 }

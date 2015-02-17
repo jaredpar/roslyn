@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+#if !MONO
 using System.Diagnostics.Tracing;
+#endif
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,6 +15,62 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Instrumentation
 {
+#if MONO
+
+    internal sealed class RoslynCompilerEventSource 
+    {
+        // We might not be "enabled" but we always have this singleton alive.
+        public static readonly RoslynCompilerEventSource Instance = new RoslynCompilerEventSource();
+
+        public bool IsEnabled(object p1 = null, object p2 = null)
+        {
+            return false;
+        }
+
+        // Do not change the parameter order for the below methods.
+        // The parameter order for each method below must match the parameter order
+        // for the WriteEvent() overload that's being invoked inside the method.
+        // This is necessary because the ETW schema generation process will reflect
+        // over this to determine how to pack event data. If the orders are different,
+        // the generated schema will be wrong, and any perf tools will deserialize
+        // event data fields in the wrong order.
+        //
+        // The WriteEvent() overloads are optimized for either:
+        //     Up to 3 integer parameters
+        //     1 string and up to 2 integer parameters
+        // There's also a params object[] overload that is much slower and should be avoided.
+        public void LogString(string message, FunctionId functionId)
+        {
+
+        }
+
+        public void BlockStart(string message, FunctionId functionId, int blockId)
+        {
+
+        }
+
+        public void BlockStop(FunctionId functionId, int number, int blockId)
+        {
+
+        }
+
+        public void BlockCanceled(FunctionId functionId, int number, int blockId)
+        {
+
+        }
+
+        public void SendFunctionDefinitions(string definitions)
+        {
+
+        }
+
+        public static string GenerateFunctionDefinitions()
+        {
+            return "";
+        }
+    }
+
+#else
     /// <summary>
     /// This EventSource exposes our events to ETW.
     /// RoslynCompilerEventSource GUID is {9f93daf9-7fee-5301-ebea-643b538889b4}.
@@ -141,4 +199,5 @@ namespace Microsoft.CodeAnalysis.Instrumentation
             return output.ToString();
         }
     }
+#endif
 }

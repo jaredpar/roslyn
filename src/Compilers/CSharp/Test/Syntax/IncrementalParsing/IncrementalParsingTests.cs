@@ -2245,6 +2245,7 @@ namespace N");
             CompareIncToFullParseErrors(incrementalTree, parsedTree);
         }
 
+#if !MONO
         [WorkItem(537125, "DevDiv")]
         [Fact]
         public void CmntAnonTypeInQueryExpr()
@@ -2272,6 +2273,7 @@ namespace N");
             // Verify that the errors from the fully parsed tree with the change and the incrementally parsed tree are the same
             CompareIncToFullParseErrors(incrementalTree, parsedTree);
         }
+#endif
 
         [WorkItem(537180, "DevDiv")]
         [Fact]
