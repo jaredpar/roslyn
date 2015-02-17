@@ -16,21 +16,20 @@ namespace Microsoft.CodeAnalysis.UnitTests
         /// really behind on processing tasks. This code blocks up the thread pool with pointless work to 
         /// ensure nothing ever runs.
         /// </summary>
-        private class StopTheThreadPoolContext : IDisposable
+        private sealed class StopTheThreadPoolContext : IDisposable
         {
-            private readonly int _originalWorkerThreads;
-            private readonly int _originalIOThreads;
+            private static readonly Mutex s_guard = new Mutex(initiallyOwned: false);
             private readonly ManualResetEventSlim _testComplete = new ManualResetEventSlim();
 
             public StopTheThreadPoolContext()
             {
-                int numProcs = Environment.ProcessorCount;
-                var barrier = new Barrier(numProcs + 1);
+                s_guard.WaitOne();
 
-                ThreadPool.GetMaxThreads(out _originalWorkerThreads, out _originalIOThreads);
-                ThreadPool.SetMaxThreads(numProcs, _originalIOThreads);
-
-                for (int i = 0; i < numProcs; i++)
+                int workerThreads;
+                int ioThreads;
+                ThreadPool.GetMaxThreads(out workerThreads, out ioThreads);
+                var barrier = new Barrier(workerThreads + 1);
+                for (int i = 0; i < workerThreads; i++)
                 {
                     ThreadPool.QueueUserWorkItem(
                         delegate
@@ -46,7 +45,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
             public void Dispose()
             {
                 _testComplete.Set();
-                ThreadPool.SetMaxThreads(_originalWorkerThreads, _originalIOThreads);
+                s_guard.ReleaseMutex();
             }
         }
     }

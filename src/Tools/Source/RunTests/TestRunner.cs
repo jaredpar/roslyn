@@ -32,11 +32,13 @@ namespace RunTests
 
         private readonly string _xunitConsolePath;
         private readonly bool _useHtml;
+        private readonly bool _useParallel;
 
-        internal TestRunner(string xunitConsolePath, bool useHtml)
+        internal TestRunner(string xunitConsolePath, bool useHtml, bool useParallel)
         {
             _xunitConsolePath = xunitConsolePath;
             _useHtml = useHtml;
+            _useParallel = useParallel;
         }
 
         internal async Task<bool> RunAllAsync(IEnumerable<string> assemblyList, CancellationToken cancellationToken)
@@ -117,6 +119,10 @@ namespace RunTests
             builder.AppendFormat(@"""{0}""", assemblyPath);
             builder.AppendFormat(@" -{0} ""{1}""", _useHtml ? "html" : "xml", resultsPath);
             builder.Append(" -noshadow");
+            if (_useParallel)
+            {
+                builder.Append(" -parallel all");
+            }
 
             var errorOutput = string.Empty;
             var start = DateTime.UtcNow;

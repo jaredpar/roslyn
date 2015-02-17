@@ -23,8 +23,10 @@ namespace RunTests
             var xunitPath = args[0];
             var index = 1;
             var test64 = false;
-            var useHtml = false;
-            ParseArgs(args, ref index, ref test64, ref useHtml);
+            var testParallel = false;
+            var useHtml = true;
+            ParseArgs(args, ref index, ref test64, ref testParallel, ref useHtml);
+            Console.WriteLine("{0} {1} {2} {3}", index, test64, testParallel, useHtml);
 
             var list = new List<string>(args.Skip(index));
             if (list.Count == 0)
@@ -44,7 +46,7 @@ namespace RunTests
                 cts.Cancel();
             };
 
-            var testRunner = new TestRunner(xunit, useHtml);
+            var testRunner = new TestRunner(xunit, useHtml, testParallel);
             var start = DateTime.Now;
             Console.WriteLine("Running {0} tests", list.Count);
             var result = testRunner.RunAllAsync(list, cts.Token).Result;
@@ -64,15 +66,21 @@ namespace RunTests
             Console.WriteLine("runtests [xunit-console-runner] [assembly1] [assembly2] [...]");
         }
 
-        private static void ParseArgs(string[] args, ref int index, ref bool test64, ref bool useHtml)
+        private static void ParseArgs(string[] args, ref int index, ref bool test64, ref bool testParallel, ref bool useHtml)
         {
             var comp = StringComparer.OrdinalIgnoreCase;
             while (index < args.Length)
             {
                 var current = args[index];
+                Console.WriteLine("considering '{0}'", current);
                 if (comp.Equals(current, "-test64"))
                 {
                     test64 = true;
+                    index++;
+                }
+                else if (comp.Equals(current, "-testparallel"))
+                {
+                    testParallel = true;
                     index++;
                 }
                 else if (comp.Equals(current, "-xml"))
