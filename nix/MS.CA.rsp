@@ -1,0 +1,656 @@
+/unsafe+ 
+/checked+ 
+/nowarn:1591,1701,1702 
+/errorreport:prompt 
+/warn:4 
+/define:TRACE;DEBUG;COMPILERCORE 
+#/highentropyva+ 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\mscorlib.dll" 
+#/reference:C:\Users\jaredpar\Documents\Github\roslyn\packages\System.Collections.Immutable.1.1.33-beta\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll 
+#/reference:C:\Users\jaredpar\Documents\Github\roslyn\packages\System.Reflection.Metadata.1.0.18-beta\lib\portable-net45+win8\System.Reflection.Metadata.dll 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\Microsoft.CSharp.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\Microsoft.VisualBasic.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\mscorlib.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Collections.Concurrent.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Collections.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ComponentModel.Annotations.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ComponentModel.DataAnnotations.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ComponentModel.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ComponentModel.EventBasedAsync.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Core.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Diagnostics.Contracts.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Diagnostics.Debug.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Diagnostics.Tools.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Diagnostics.Tracing.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Dynamic.Runtime.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Globalization.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.IO.Compression.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.IO.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Linq.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Linq.Expressions.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Linq.Parallel.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Linq.Queryable.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Net.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Net.Http.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Net.NetworkInformation.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Net.Primitives.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Net.Requests.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Numerics.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ObjectModel.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Reflection.Context.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Reflection.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Reflection.Extensions.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Reflection.Primitives.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Resources.ResourceManager.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.Extensions.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.InteropServices.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.InteropServices.WindowsRuntime.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.Numerics.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.Serialization.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.Serialization.Json.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.Serialization.Primitives.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Runtime.Serialization.Xml.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Security.Principal.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ServiceModel.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ServiceModel.Duplex.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ServiceModel.Http.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ServiceModel.NetTcp.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ServiceModel.Primitives.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ServiceModel.Security.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.ServiceModel.Web.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Text.Encoding.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Text.Encoding.Extensions.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Text.RegularExpressions.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Threading.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Threading.Tasks.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Threading.Tasks.Parallel.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Windows.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Xml.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Xml.Linq.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Xml.ReaderWriter.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Xml.Serialization.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Xml.XDocument.dll" 
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile\Profile7\System.Xml.XmlSerializer.dll" 
+#/debug+ 
+#/debug:full 
+#/delaysign+ 
+#/filealign:512 
+#/keyfile:"C:\Users\jaredpar\Documents\Github\roslyn\src\Tools\Microsoft.CodeAnalysis.Toolset.Open\Strong Name Keys\35MSSharedLib1024.snk"
+/out:/Users/jaredpar/Documents/roslyn/Binaries/Debug/Microsoft.CodeAnalysis.dll
+/resource:/Users/jaredpar/Documents/roslyn/nix/Microsoft.CodeAnalysis.CodeAnalysisResources.resources
+#/resource:Resources\default.win32manifest,Microsoft.CodeAnalysis.Resources.default.win32manifest
+/target:library
+/utf8output 
+/parallel-
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/mscorlib.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/System.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/System.Core.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/System.Xml.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/System.Xml.Linq.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Runtime.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Collections.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Collections.Concurrent.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.IO.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Linq.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Reflection.Primitives.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Text.Encoding.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Threading.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Threading.Tasks.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Threading.Tasks.Parallel.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Xml.ReaderWriter.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Xml.XDocument.dll
+/r:/Users/jaredpar/Documents/roslyn/packages/System.Collections.Immutable.1.1.33-beta/lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.dll
+/r:/Users/jaredpar/Documents/roslyn/packages/System.Reflection.Metadata.1.0.18-beta/lib/portable-net45+win8/System.Reflection.Metadata.dll
+Binding/AbstractLookupSymbolsInfo.cs
+CaseInsensitiveComparison.cs
+CodeAnalysisResources.Designer.cs
+CodeAnalysisResourcesLocalizableErrorArgument.cs
+CodeGen/ArrayMembers.cs
+CodeGen/BasicBlock.cs
+CodeGen/ClosureDebugInfo.cs
+CodeGen/CompilationTestData.cs
+CodeGen/DebugDocumentProvider.cs
+CodeGen/EmitState.cs
+CodeGen/ILBuilder.cs
+CodeGen/ILBuilderConversions.cs
+CodeGen/ILBuilderEmit.cs
+CodeGen/ILOpCode.cs
+CodeGen/ILOpCodeExtensions.cs
+CodeGen/ITokenDeferral.cs
+CodeGen/LabelInfo.cs
+CodeGen/LambdaDebugInfo.cs
+CodeGen/LocalConstantDefinition.cs
+CodeGen/LocalDefinition.cs
+CodeGen/LocalOrParameter.cs
+CodeGen/LocalScopeManager.cs
+CodeGen/LocalSlotDebugInfo.cs
+CodeGen/LocalSlotManager.cs
+CodeGen/MetadataConstant.cs
+CodeGen/MetadataCreateArray.cs
+CodeGen/MetadataNamedArgument.cs
+CodeGen/MetadataTypeOf.cs
+CodeGen/MethodBody.cs
+CodeGen/MethodDebugId.cs
+CodeGen/PermissionSetAttribute.cs
+CodeGen/PrivateImplementationDetails.cs
+CodeGen/RawSequencePoint.cs
+CodeGen/ReferenceDependencyWalker.cs
+CodeGen/ScopeType.cs
+CodeGen/SequencePointList.cs
+CodeGen/StringTokenMap.cs
+CodeGen/SwitchIntegralJumpTableEmitter.cs
+CodeGen/SwitchIntegralJumpTableEmitter.SwitchBucket.cs
+CodeGen/SwitchStringJumpTableEmitter.cs
+CodeGen/SynthesizedLocalOrdinalsDispenser.cs
+CodeGen/TokenMap.cs
+CodeGen/VariableSlotAllocator.cs
+CodeGen/Win32Res.cs
+Collections/ArrayBuilderExtensions.cs
+Collections/ArrayElement.cs
+Collections/BitArray.cs
+Collections/ByteSequenceComparer.cs
+Collections/Boxes.cs
+Collections/CachingDictionary.cs
+Collections/CachingFactory.cs
+Collections/ConcurrentCache.cs
+Collections/ConsListExtensions.cs
+Collections/EnumerableExtensions.cs
+Collections/Grouping.cs
+Collections/HashSetExtensions.cs
+Collections/IdentifierCollection.Collection.cs
+Collections/IdentifierCollection.cs
+Collections/ImmutableArrayExtensions.cs
+Collections/ImmutableMemoryStream.cs
+Collections/OrderedSet.cs
+Collections/StaticCast.cs
+Compilation/SymbolFilter.cs
+DiagnosticAnalyzer/CompilerDiagnosticAnalyzer.CompilationAnalyzer.cs
+DiagnosticAnalyzer/CompilerDiagnosticAnalyzer.cs
+Diagnostic/LocalizableResourceString.cs
+Diagnostic/LocalizableString.cs
+Emit/DebugInformationFormat.cs
+Emit/EditAndContinue/AddedOrChangedMethodInfo.cs
+Emit/EditAndContinue/EncHoistedLocalInfo.cs
+Emit/EditAndContinue/EncHoistedLocalMetadata.cs
+Emit/EmitOptions.cs
+Emit/EditAndContinue/EncVariableSlotAllocator.cs
+InternalImplementationOnlyAttribute.cs
+InternalUtilities/AssemblyLocationLightUp.cs
+Emit/EditAndContinueMethodDebugInformation.cs
+InternalUtilities/DocumentationCommentId.cs
+Emit/EditAndContinue/SymbolMatcher.cs
+InternalUtilities/FailFast.cs
+InternalUtilities/FileStreamLightUp.cs
+InternalUtilities/IReadOnlySet.cs
+Collections/KeyedStack.cs
+Collections/OrderPreservingMultiDictionary.cs
+Collections/PooledStringBuilder.cs
+Collections/SmallConcurrentSetOfInts.cs
+Collections/SmallDictionary.cs
+Collections/UnionCollection.cs
+Compilation/CandidateReason.cs
+Compilation/Compilation.cs
+Compilation/CompilationOptions.cs
+Compilation/CompilationStage.cs
+Compilation/ControlFlowAnalysis.cs
+Compilation/DataFlowAnalysis.cs
+Compilation/EmitResult.cs
+Compilation/Extensions.cs
+Compilation/OptimizationLevel.cs
+Compilation/ParseOptions.cs
+Compilation/Platform.cs
+Compilation/PreprocessingSymbolInfo.cs
+Compilation/SemanticModel.cs
+Compilation/SourceReferenceResolver.cs
+Compilation/SpeculativeBindingOption.cs
+Compilation/SubsystemVersion.cs
+Compilation/SymbolInfo.cs
+Compilation/TypeInfo.cs
+Compilation/XmlReferenceResolver.cs
+ConstantValue.cs
+ConstantValueSpecialized.cs
+CryptographicHashProvider.cs
+CvtRes.cs
+DiagnosticAnalyzer/AdditionalText.cs
+DiagnosticAnalyzer/AnalyzerDriver.cs
+DiagnosticAnalyzer/AnalyzerImageReference.cs
+DiagnosticAnalyzer/AnalyzerOptions.cs
+DiagnosticAnalyzer/AnalyzerReference.cs
+DiagnosticAnalyzer/CompilationCompletedEvent.cs
+DiagnosticAnalyzer/CompilationStartedEvent.cs
+DiagnosticAnalyzer/CompilationUnitCompletedEvent.cs
+DiagnosticAnalyzer/CompilationWithAnalyzers.cs
+DiagnosticAnalyzer/DiagnosticAnalyzerExtensions.cs
+DiagnosticAnalyzer/SymbolDeclaredCompilationEvent.cs
+DiagnosticAnalyzer/UnresolvedAnalyzerReference.cs
+Diagnostic/CommonDiagnosticComparer.cs
+Diagnostic/CommonMessageProvider.cs
+Diagnostic/Diagnostic.cs
+Diagnostic/TriggerDiagnosticDescriptor.cs
+Diagnostic/WellKnownDiagnosticTags.cs
+Diagnostic/Diagnostic_SimpleDiagnostic.cs
+DiagnosticAnalyzer/DiagnosticAnalysisContext.cs
+DiagnosticAnalyzer/DiagnosticAnalyzer.cs
+Diagnostic/DiagnosticBag.cs
+Diagnostic/DiagnosticDescriptor.cs
+Diagnostic/DiagnosticFormatter.cs
+Diagnostic/DiagnosticInfo.cs
+Diagnostic/DiagnosticSeverity.cs
+Diagnostic/DiagnosticWithInfo.cs
+Diagnostic/FileLinePositionSpan.cs
+Diagnostic/ExternalFileLocation.cs
+Diagnostic/IMessageSerializable.cs
+Diagnostic/Location.cs
+Diagnostic/LocationKind.cs
+Diagnostic/MetadataLocation.cs
+Diagnostic/NoLocation.cs
+Diagnostic/ReportDiagnostic.cs
+Diagnostic/SourceLocation.cs
+Diagnostic/XmlLocation.cs
+DiagnosticAnalyzer/CompilationEvent.cs
+DiagnosticAnalyzer/AsyncQueue.cs
+DiagnosticAnalyzer/DiagnosticAnalyzerAttribute.cs
+DiagnosticAnalyzer/SuppressMessageAttributeState.cs
+DiagnosticAnalyzer/SuppressMessageAttributeState.TargetSymbolResolver.cs
+DocumentationComments/DocumentationCommentIncludeCache.cs
+DocumentationComments/DocumentationProvider.cs
+DocumentationComments/DocumentationProvider.NullDocumentationProvider.cs
+DocumentationComments/XmlDocumentationCommentTextReader.cs
+DocumentationComments/XmlDocumentationCommentTextReader.XmlStream.cs
+DocumentationMode.cs
+Emit/AnonymousTypeKey.cs
+Emit/AnonymousTypeValue.cs
+Compilation/CommonModuleCompilationState.cs
+Emit/Context.cs
+Emit/EditAndContinue/DefinitionMap.cs
+Emit/EditAndContinue/DeltaMetadataWriter.cs
+Emit/EditAndContinue/EmitBaseline.cs
+Emit/EditAndContinue/EmitDifferenceResult.cs
+Emit/EditAndContinue/EncLocalInfo.cs
+Emit/EditAndContinue/IPEDeltaAssemblyBuilder.cs
+Emit/EditAndContinue/SymbolChange.cs
+Emit/EditAndContinue/SymbolChanges.cs
+Emit/ErrorType.cs
+Emit/ModulePropertiesForSerialization.cs
+Emit/NoPia/CommonEmbeddedEvent.cs
+Emit/NoPia/CommonEmbeddedField.cs
+Emit/NoPia/CommonEmbeddedMember.cs
+Emit/NoPia/CommonEmbeddedMethod.cs
+Emit/NoPia/CommonEmbeddedParameter.cs
+Emit/NoPia/CommonEmbeddedProperty.cs
+Emit/NoPia/CommonEmbeddedType.cs
+Emit/NoPia/CommonEmbeddedTypeParameter.cs
+Emit/NoPia/EmbeddedTypesManager.cs
+Emit/NoPia/VtblGap.cs
+Emit/CommonPEModuleBuilder.cs
+Emit/SemanticEdit.cs
+Emit/TypeExport.cs
+EnumConstantHelper.cs
+Instrumentation/FunctionId.cs
+Instrumentation/Logger.cs
+Instrumentation/PerformanceGoals.cs
+Instrumentation/RoslynCompilerEventSource.cs
+InternalUtilities/ArrayExtensions.cs
+InternalUtilities/BitArithmeticUtilities.cs
+InternalUtilities/FatalError.cs
+InternalUtilities/ComStreamWrapper.cs
+InternalUtilities/ConcurrentDictionaryExtensions.cs
+InternalUtilities/ConcurrentLruCache.cs
+InternalUtilities/ConcurrentSet.cs
+"InternalUtilities/ConsList`1.cs"
+InternalUtilities/DecimalUtilities.cs
+InternalUtilities/DocumentationCommentXmlNames.cs
+InternalUtilities/EnsureSufficientExecutionStackLightUp.cs
+InternalUtilities/EnumerableExtensions.ComparisonComparer.cs
+InternalUtilities/EnumerableExtensions.cs
+InternalUtilities/EnumField.cs
+InternalUtilities/EnumUtilties.cs
+InternalUtilities/ExceptionUtilities.cs
+InternalUtilities/FileNameUtilities.cs
+InternalUtilities/HashAlgorithms.cs
+InternalUtilities/Hash.cs
+InternalUtilities/ImmutableArrayExtensions.cs
+InternalUtilities/ImmutableListExtensions.cs
+"InternalUtilities/ImmutableSetWithInsertionOrder`1.cs"
+InternalUtilities/ISetExtensions.cs
+InternalUtilities/KeyValuePair.cs
+InternalUtilities/MultiDictionary.cs
+InternalUtilities/OneOrMany.cs
+InternalUtilities/ReaderWriterLockSlimExtensions.cs
+InternalUtilities/ReadOnlyUnmanagedMemoryStream.cs
+InternalUtilities/ReferenceEqualityComparer.cs
+InternalUtilities/SpecializedCollections.cs
+InternalUtilities/SpecializedCollections.Empty.Array.cs
+InternalUtilities/SpecializedCollections.Empty.Collection.cs
+InternalUtilities/SpecializedCollections.Empty.cs
+InternalUtilities/SpecializedCollections.Empty.Dictionary.cs
+InternalUtilities/SpecializedCollections.Empty.Enumerable.cs
+InternalUtilities/SpecializedCollections.Empty.Enumerator.cs
+"InternalUtilities/SpecializedCollections.Empty.Enumerator`1.cs"
+InternalUtilities/SpecializedCollections.Empty.List.cs
+InternalUtilities/SpecializedCollections.Empty.Set.cs
+InternalUtilities/SpecializedCollections.ReadOnly.Collection.cs
+"InternalUtilities/SpecializedCollections.ReadOnly.Enumerable`1.cs"
+"InternalUtilities/SpecializedCollections.ReadOnly.Enumerable`2.cs"
+InternalUtilities/SpecializedCollections.ReadOnly.Set.cs
+"InternalUtilities/SpecializedCollections.Singleton.Collection`1.cs"
+"InternalUtilities/SpecializedCollections.Singleton.Enumerator`1.cs"
+InternalUtilities/StringExtensions.cs
+InternalUtilities/StringTable.cs
+InternalUtilities/SuppressUnmanagedCodeSecurityAttribute.cs
+InternalUtilities/TextChangeRangeExtensions.cs
+InternalUtilities/TextKeyedCache.cs
+InternalUtilities/ThreadSafeFlagOperations.cs
+InternalUtilities/ThreeState.cs
+InternalUtilities/UICultureUtilities.cs
+InternalUtilities/ValueTuple.cs
+"InternalUtilities/ValueTuple`2.cs"
+"InternalUtilities/ValueTuple`3.cs"
+InternalUtilities/WeakList.cs
+InternalUtilities/WeakReferenceExtensions.cs
+InternalUtilities/XmlUtilities.cs
+MemberDescriptor.cs
+MetadataReader/EmbeddedResource.cs
+MetadataReader/LocalSlotConstraints.cs
+MetadataReader/MetadataDecoder.cs
+MetadataReader/MetadataHelpers.cs
+MetadataReader/MetadataImportOptions.cs
+MetadataReader/MetadataReaderExtensions.cs
+MetadataReader/MetadataTypeCodeExtensions.cs
+MetadataReader/MetadataTypeName.cs
+MetadataReader/MetadataTypeName.Key.cs
+MetadataReader/ModuleExtensions.cs
+MetadataReader/PEAssembly.cs
+MetadataReader/PEModule.cs
+MetadataReader/SymbolFactory.cs
+MetadataReader/TypeAttributesExtensions.cs
+MetadataReader/TypeNameDecoder.cs
+MetadataReader/UnsupportedSignatureContent.cs
+MetadataReference/AssemblyIdentity.cs
+MetadataReference/AssemblyIdentity.DisplayName.cs
+MetadataReference/AssemblyIdentityComparer.cs
+MetadataReference/AssemblyIdentityExtensions.cs
+MetadataReference/AssemblyIdentityParts.cs
+MetadataReference/AssemblyMetadata.cs
+MetadataReference/CompilationReference.cs
+MetadataReference/Metadata.cs
+MetadataReference/MetadataFileReferenceProvider.cs
+MetadataReference/MetadataImageKind.cs
+MetadataReference/MetadataImageReference.cs
+MetadataReference/MetadataReference.cs
+MetadataReference/MetadataReferenceProperties.cs
+MetadataReference/MetadataReferenceResolver.cs
+MetadataReference/ModuleMetadata.cs
+MetadataReference/PortableExecutableReference.cs
+MetadataReference/ReferenceDirective.cs
+MetadataReference/UnresolvedMetadataReference.cs
+PEWriter/MetadataHeapsBuilder.cs
+PEWriter/ITypeReferenceExtensions.cs
+PEWriter/TypeNameSerializer.cs
+PEWriter/StateMachineHoistedLocalScope.cs
+PEWriter/MetadataWriter.cs
+SymbolDisplay/ObjectDisplayExtensions.cs
+SymbolDisplay/ObjectDisplayOptions.cs
+Optional.cs
+OutputKind.cs
+PEWriter/BinaryWriter.cs
+PEWriter/ClrHeader.cs
+PEWriter/Constants.cs
+PEWriter/Core.cs
+PEWriter/CustomDebugInfoConstants.cs
+PEWriter/CustomDebugInfoWriter.cs
+PEWriter/DebugSourceDocument.cs
+PEWriter/DirectoryEntry.cs
+PEWriter/ExceptionHandlerRegion.cs
+PEWriter/Expressions.cs
+PEWriter/AssemblyReferenceAlias.cs
+PEWriter/FullMetadataWriter.cs
+PEWriter/ICustomAttribute.cs
+PEWriter/IFileReference.cs
+PEWriter/InheritedTypeParameter.cs
+PEWriter/InstructionOperandTypes.cs
+PEWriter/ISymbolWriter.cs
+PEWriter/ISymUnmanagedAsyncMethodPropertiesWriter.cs
+PEWriter/LocalScope.cs
+PEWriter/ManagedResource.cs
+PEWriter/MemberRefComparer.cs
+PEWriter/Members.cs
+PEWriter/MemoryStream.cs
+PEWriter/MetadataSizes.cs
+PEWriter/MetadataVisitor.cs
+PEWriter/MethodSpecComparer.cs
+PEWriter/Miscellaneous.cs
+PEWriter/ModifiedTypeReference.cs
+PEWriter/IImportScope.cs
+PEWriter/NtHeader.cs
+PEWriter/PdbMetadataWrapper.cs
+PEWriter/PdbWriter.cs
+PEWriter/PeDebugDirectory.cs
+PEWriter/PeWriter.cs
+PEWriter/ReferenceIndexer.cs
+PEWriter/ReturnValueParameter.cs
+PEWriter/RootModuleType.cs
+PEWriter/SectionHeader.cs
+PEWriter/SecurityAction.cs
+PEWriter/SequencePoint.cs
+PEWriter/TypeLibTypeFlags.cs
+PEWriter/Types.cs
+PEWriter/TypeSpecComparer.cs
+PEWriter/Units.cs
+PEWriter/UsedNamespaceOrType.cs
+PrimitiveTypeCodeExtensions.cs
+ReferenceManager/AssemblyData.cs
+ReferenceManager/AssemblyDataForAssemblyBeingBuilt.cs
+ReferenceManager/AssemblyReferenceBinding.cs
+ReferenceManager/AssemblyReferenceCandidate.cs
+ReferenceManager/BoundInputAssembly.cs
+ReferenceManager/CommonReferenceManager.Binding.cs
+ReferenceManager/CommonReferenceManager.Resolution.cs
+ReferenceManager/CommonReferenceManager.State.cs
+ReferenceManager/Compilation_MetadataCache.cs
+ReferenceManager/ModuleReferences.cs
+ReferenceManager/UnifiedAssembly.cs
+ResourceDescription.cs
+ResourceException.cs
+Serialization/ConcurrentRecordingObjectBinder.cs
+Serialization/FixedObjectBinder.cs
+Serialization/IObjectReadable.cs
+Serialization/IObjectWritable.cs
+Serialization/ObjectBinder.cs
+Serialization/ObjectReader.cs
+Serialization/ObjectReaderData.cs
+Serialization/ObjectReaderWriterBase.cs
+Serialization/ObjectWriter.cs
+Serialization/ObjectWriterData.cs
+Serialization/RecordingObjectBinder.cs
+Serialization/SimpleRecordingObjectBinder.cs
+SignatureComparer.cs
+SourceCodeKind.cs
+SpecialMember.cs
+SpecialMembers.cs
+SpecialType.cs
+SpecialTypeExtensions.cs
+SpecialTypes.cs
+StrongNameKeys.cs
+StrongNameProvider.cs
+SwitchConstantValueHelper.cs
+SymbolDisplay/AbstractSymbolDisplayVisitor.cs
+SymbolDisplay/AbstractSymbolDisplayVisitor_Minimal.cs
+SymbolDisplay/FormattedSymbol.cs
+SymbolDisplay/FormattedSymbolList.cs
+SymbolDisplay/SymbolDisplayCompilerInternalOptions.cs
+SymbolDisplay/SymbolDisplayDelegateStyle.cs
+SymbolDisplay/SymbolDisplayExtensionMethodStyle.cs
+SymbolDisplay/SymbolDisplayExtensions.cs
+SymbolDisplay/SymbolDisplayFormat.cs
+SymbolDisplay/SymbolDisplayGenericsOptions.cs
+SymbolDisplay/SymbolDisplayGlobalNamespaceStyle.cs
+SymbolDisplay/SymbolDisplayKindOptions.cs
+SymbolDisplay/SymbolDisplayLocalOptions.cs
+SymbolDisplay/SymbolDisplayMemberOptions.cs
+SymbolDisplay/SymbolDisplayMiscellaneousOptions.cs
+SymbolDisplay/SymbolDisplayParameterOptions.cs
+SymbolDisplay/SymbolDisplayPart.cs
+SymbolDisplay/SymbolDisplayPartKind.cs
+SymbolDisplay/SymbolDisplayPropertyStyle.cs
+SymbolDisplay/SymbolDisplayTypeQualificationStyle.cs
+Symbols/Accessibility.cs
+Symbols/AnonymousTypes/CommonAnonymousTypeManager.cs
+Symbols/Attributes/AttributeDescription.cs
+Symbols/Attributes/AttributeUsageInfo.cs
+Symbols/Attributes/CommonAssemblyWellKnownAttributeData.cs
+Symbols/Attributes/CommonAttributeData.cs
+Symbols/Attributes/CommonAttributeDataComparer.cs
+Symbols/Attributes/CommonEventEarlyWellKnownAttributeData.cs
+Symbols/Attributes/CommonEventWellKnownAttributeData.cs
+Symbols/Attributes/CommonFieldEarlyWellKnownAttributeData.cs
+Symbols/Attributes/CommonFieldWellKnownAttributeData.cs
+Symbols/Attributes/CommonMethodEarlyWellKnownAttributeData.cs
+Symbols/Attributes/CommonMethodWellKnownAttributeData.cs
+Symbols/Attributes/CommonModuleWellKnownAttributeData.cs
+Symbols/Attributes/CommonParameterEarlyWellKnownAttributeData.cs
+Symbols/Attributes/CommonParameterWellKnownAttributeData.cs
+Symbols/Attributes/CommonPropertyEarlyWellKnownAttributeData.cs
+Symbols/Attributes/CommonPropertyWellKnownAttributeData.cs
+Symbols/Attributes/CommonReturnTypeWellKnownAttributeData.cs
+Symbols/Attributes/CommonTypeEarlyWellKnownAttributeData.cs
+Symbols/Attributes/CommonTypeWellKnownAttributeData.cs
+Symbols/Attributes/CustomAttributesBag.cs
+Symbols/Attributes/DecodeWellKnownAttributeArguments.cs
+Symbols/Attributes/EarlyDecodeWellKnownAttributeArguments.cs
+Symbols/Attributes/EarlyWellKnownAttributeData.cs
+Symbols/Attributes/IMarshalAsAttributeTarget.cs
+Symbols/Attributes/ISecurityAttributeTarget.cs
+Symbols/Attributes/MarshalAsAttributeDecoder.cs
+Symbols/Attributes/MarshalPseudoCustomAttributeData.cs
+Symbols/Attributes/ObsoleteAttributeData.cs
+Symbols/Attributes/SecurityWellKnownAttributeData.cs
+Symbols/Attributes/WellKnownAttributeData.cs
+Symbols/CommonAttributeDataExtensions.cs
+Symbols/CustomModifer.cs
+Symbols/IAliasSymbol.cs
+Symbols/IArrayTypeSymbol.cs
+Symbols/IAssemblySymbol.cs
+Symbols/IDynamicTypeSymbol.cs
+Symbols/IErrorTypeSymbol.cs
+Symbols/IEventSymbol.cs
+Symbols/IFieldSymbol.cs
+Symbols/ILabelSymbol.cs
+Symbols/ILocalSymbol.cs
+Symbols/ILocalSymbolInternal.cs
+Symbols/IMethodSymbol.cs
+Symbols/IMethodSymbolInternal.cs
+Symbols/IModuleSymbol.cs
+Symbols/INamedTypeSymbol.cs
+Symbols/INamespaceOrTypeSymbol.cs
+Symbols/INamespaceSymbol.cs
+Symbols/IParameterSymbol.cs
+Symbols/IPointerTypeSymbol.cs
+Symbols/IPreprocessingSymbol.cs
+Symbols/IPropertySymbol.cs
+Symbols/IRangeVariableSymbol.cs
+Symbols/ISymbol.cs
+Symbols/ISymbolExtensions.cs
+Symbols/ISynthesizedMethodBodyImplementationSymbol.cs
+Symbols/ITypeParameterSymbol.cs
+Symbols/ITypeSymbol.cs
+Symbols/LanguageNames.cs
+Symbols/MethodKind.cs
+Symbols/NamespaceKind.cs
+Symbols/PlatformInvokeInformation.cs
+Symbols/RefKind.cs
+CodeGen/SignatureOnlyLocalDefinition.cs
+Symbols/SymbolKind.cs
+Symbols/SymbolKindExtensions.cs
+Symbols/SymbolVisitor.cs
+"Symbols/SymbolVisitor`1.cs"
+SynthesizedLocalKind.cs
+CodeGen/LocalDebugId.cs
+Symbols/TypedConstant.cs
+Symbols/TypedConstantKind.cs
+Symbols/TypedConstantValue.cs
+Symbols/TypeKind.cs
+Symbols/TypeLayout.cs
+Symbols/TypeParameterKind.cs
+Symbols/VarianceKind.cs
+Symbols/WellKnownMemberNames.cs
+Syntax/AbstractSyntaxNavigator.cs
+Syntax/AbstractWarningStateMap.cs
+Syntax/AnnotationExtensions.cs
+Syntax/ChildSyntaxList.cs
+Syntax/ChildSyntaxList.Enumerator.cs
+Syntax/ChildSyntaxList.Reversed.cs
+Syntax/GreenNode.cs
+Syntax/GreenNodeExtensions.cs
+Syntax/IStructuredTriviaSyntax.cs
+Syntax/LineDirectiveMap.cs
+Syntax/LineDirectiveMap.LineMappingEntry.cs
+Syntax/LineVisibility.cs
+Syntax/SeparatedSyntaxList.cs
+Syntax/SeparatedSyntaxList.Enumerator.cs
+Syntax/SyntaxAnnotation.cs
+Syntax/SyntaxDiffer.cs
+"Syntax/SyntaxList`1.cs"
+"Syntax/SyntaxList`1.Enumerator.cs"
+Syntax/SyntaxNode.cs
+Syntax/SyntaxNode.Iterators.cs
+Syntax/SyntaxNodeExtensions.cs
+Syntax/SyntaxNodeExtensions_Tracking.cs
+Syntax/SyntaxNodeLocationComparer.cs
+Syntax/SyntaxNodeOrToken.cs
+Syntax/SyntaxNodeOrTokenList.cs
+Syntax/SyntaxReference.cs
+Syntax/SyntaxRemoveOptions.cs
+Syntax/SyntaxToken.cs
+Syntax/SyntaxTokenList.cs
+Syntax/SyntaxTokenList.Enumerator.cs
+Syntax/SyntaxTokenList.Reversed.cs
+Syntax/SyntaxTree.cs
+Syntax/SyntaxTreeExtensions.cs
+Syntax/SyntaxTrivia.cs
+Syntax/SyntaxTriviaList.cs
+Syntax/SyntaxTriviaList.Enumerator.cs
+Syntax/SyntaxTriviaList.Reversed.cs
+Syntax/SyntaxWalker.cs
+Syntax/SyntaxWalkerDepth.cs
+Syntax/TranslationSyntaxReference.cs
+Text/ChangedText.cs
+Text/CompositeText.cs
+Text/LargeEncodedText.cs
+Text/LinePosition.cs
+Text/LinePositionSpan.cs
+Text/SourceHashAlgorithm.cs
+Text/SourceText.cs
+Text/SourceTextContainer.cs
+Text/SourceTextStream.cs
+Text/StringBuilderText.cs
+Text/StringText.cs
+Text/SubText.cs
+Text/TextChange.cs
+Text/TextChangeEventArgs.cs
+Text/TextChangeRange.cs
+Text/TextLine.cs
+Text/TextLineCollection.cs
+Text/TextSpan.cs
+Text/TextUtilities.cs
+TreeDumper.cs
+VersionHelper.cs
+WellKnownMember.cs
+WellKnownMembers.cs
+WellKnownTypes.cs
+Xml/XmlCharType.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/AnalyzerDriver/AnalyzerManager.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/AnalyzerDriver/AnalyzerExceptionDiagnosticArgs.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/AnalyzerDriver/AnalyzerDriverHelper.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/AnalyzerDriver/DeclarationComputer.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/AnalyzerDriver/DeclarationInfo.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/AnalyzerDriver/DiagnosticAnalysisContextHelpers.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/AnalyzerDriver/DiagnosticAnalyzerAction.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/AnalyzerDriver/DiagnosticStartAnalysisScope.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/SharedCollections/ArrayBuilder.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/SharedCollections/ArrayBuilder.Enumerator.cs
+"/Users/jaredpar/Documents/roslyn/src/Compilers/Core/SharedCollections/ObjectPool`1.cs"
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/SharedCollections/PooledDictionary.cs
+/Users/jaredpar/Documents/roslyn/src/Compilers/Core/SharedCollections/PooledHashSet.cs
