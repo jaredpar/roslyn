@@ -1,0 +1,139 @@
+/unsafe+
+/checked+
+/errorreport:prompt
+/warn:4
+/define:DEBUG;TRACE;COMPILERCORE
+/r:/Users/jaredpar/Documents/roslyn/Binaries/Debug/Microsoft.CodeAnalysis.dll
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\mscorlib.dll"
+#/reference:C:\Users\jaredpar\Documents\Github\roslyn\packages\System.Collections.Immutable.1.1.33-beta\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Core.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll"
+#/reference:C:\Users\jaredpar\Documents\Github\roslyn\packages\System.Reflection.Metadata.1.0.18-beta\lib\portable-net45+win8\System.Reflection.Metadata.dll
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Xml.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Collections.Concurrent.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Collections.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ComponentModel.Annotations.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ComponentModel.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ComponentModel.EventBasedAsync.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Diagnostics.Contracts.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Diagnostics.Debug.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Diagnostics.Tools.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Diagnostics.Tracing.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Dynamic.Runtime.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Globalization.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.IO.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Linq.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Linq.Expressions.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Linq.Parallel.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Linq.Queryable.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Net.NetworkInformation.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Net.Primitives.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Net.Requests.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ObjectModel.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Reflection.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Reflection.Emit.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Reflection.Emit.ILGeneration.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Reflection.Emit.Lightweight.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Reflection.Extensions.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Reflection.Primitives.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Resources.ResourceManager.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.Extensions.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.InteropServices.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.InteropServices.WindowsRuntime.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.Numerics.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.Serialization.Json.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.Serialization.Primitives.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.Serialization.Xml.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Security.Principal.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ServiceModel.Duplex.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ServiceModel.Http.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ServiceModel.NetTcp.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ServiceModel.Primitives.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.ServiceModel.Security.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Text.Encoding.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Text.Encoding.Extensions.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Text.RegularExpressions.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Threading.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Threading.Tasks.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Threading.Tasks.Parallel.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Xml.ReaderWriter.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Xml.XDocument.dll"
+#/reference:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Xml.XmlSerializer.dll"
+/parallel-
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/mscorlib.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/System.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/System.Core.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/System.Xml.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/System.Xml.Linq.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Runtime.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Collections.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Collections.Concurrent.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.IO.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Linq.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Reflection.Primitives.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Text.Encoding.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Threading.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Threading.Tasks.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Threading.Tasks.Parallel.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Xml.ReaderWriter.dll
+/r:/usr/local/Cellar/mono/3.10.0/lib/mono/4.5/Facades/System.Xml.XDocument.dll
+/r:/Users/jaredpar/Documents/roslyn/packages/System.Collections.Immutable.1.1.33-beta/lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.dll
+/r:/Users/jaredpar/Documents/roslyn/packages/System.Reflection.Metadata.1.0.18-beta/lib/portable-net45+win8/System.Reflection.Metadata.dll
+/debug-
+/out:/Users/jaredpar/Documents/roslyn/Binaries/Debug/Microsoft.CodeAnalysis.Desktop.dll
+/subsystemversion:6.00
+/resource:/Users/jaredpar/Documents/roslyn/nix/Microsoft.CodeAnalysis.CodeAnalysisDesktopResources.resources
+/target:library
+/utf8output
+AdditionalTextFile.cs
+AnalyzerLoadFailureEventArgs.cs
+AssemblyReferenceResolver.cs
+CodeAnalysisDesktopResources.Designer.cs
+AssemblyIdentityExtensions.cs
+AssemblyPortabilityPolicy.cs
+AssemblyVersion.cs
+CommandLine/CommandLineReference.cs
+CommandLine/CommandLineSourceFile.cs
+CommandLine/CommonCommandLineArguments.cs
+CommandLine/CommonCommandLineParser.cs
+CommandLine/CommonCompiler.cs
+CommandLine/CommonCompiler.LoggingStrongNameProvider.cs
+CommandLine/CommonCompiler.LoggingSourceFileResolver.cs
+CommandLine/CommonCompiler.LoggingXmlFileResolver.cs
+CommandLine/CommonCompiler.LoggingMetadataFileResolver.cs
+CommandLine/CommonCompiler.ExistingReferencesResolver.cs
+CommandLine/RuleSet/InvalidRuleSetException.cs
+CommandLine/RuleSet/RuleSet.cs
+CommandLine/RuleSet/RuleSetInclude.cs
+CommandLine/RuleSet/RuleSetProcessor.cs
+CommandLine/TouchedFileLogger.cs
+CompilerPathUtilities.cs
+FileSystemExtensions.cs
+DesktopAssemblyIdentityComparer.cs
+DesktopAssemblyIdentityComparer.Fx.cs
+DesktopStrongNameProvider.cs
+CommandLineAnalyzerReference.cs
+EncodedStringText.cs
+FileKey.cs
+FileUtilities.cs
+AnalyzerAssemblyLoadEventArgs.cs
+AnalyzerFileReference.InMemoryAssemblyLoader.cs
+Interop/ClrStrongName.cs
+Interop/IClrMetaHost.cs
+Interop/IClrRuntimeInfo.cs
+Interop/IClrStrongName.cs
+Interop/SuppressUnmanagedCodeSecurityAttribute.cs
+IVsSQM.cs
+MetadataCache.cs
+AnalyzerFileReference.cs
+MetadataFileReference.cs
+MetadataFileReferenceResolver.cs
+PathKind.cs
+PathUtilities.cs
+SerializableCompilationOptions.cs
+SerializableParseOptions.cs
+SerializationInfoExtensions.cs
+SourceFileResolver.cs
+SqmServiceProvider.cs
+XmlFileResolver.cs
