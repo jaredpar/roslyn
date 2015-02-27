@@ -1,7 +1,7 @@
 ' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.EditAndContinue
-    Partial Class StatementSyntaxComparer
+    Friend Partial Class StatementSyntaxComparer
         ''' <summary>
         ''' Compares a body of nodes that have multiple bodies.
         ''' The comparer points to the body to compare.
@@ -9,23 +9,23 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.EditAndContinue
         Friend NotInheritable Class MultiBody
             Inherits StatementSyntaxComparer
 
-            Private ReadOnly oldBody As SyntaxNode
-            Private ReadOnly newBody As SyntaxNode
-            Private ReadOnly oldRoot As SyntaxNode
-            Private ReadOnly newRoot As SyntaxNode
+            Private ReadOnly _oldBody As SyntaxNode
+            Private ReadOnly _newBody As SyntaxNode
+            Private ReadOnly _oldRoot As SyntaxNode
+            Private ReadOnly _newRoot As SyntaxNode
 
             Friend Sub New(oldBody As SyntaxNode, newBody As SyntaxNode)
-                Me.oldBody = oldBody
-                Me.newBody = newBody
-                Me.oldRoot = oldBody.Parent
-                Me.newRoot = newBody.Parent
+                Me._oldBody = oldBody
+                Me._newBody = newBody
+                Me._oldRoot = oldBody.Parent
+                Me._newRoot = newBody.Parent
             End Sub
 
             Protected Overrides Function GetChildren(node As SyntaxNode) As IEnumerable(Of SyntaxNode)
                 Debug.Assert(GetLabel(node) <> IgnoredNode)
 
-                If node Is oldRoot OrElse node Is newRoot Then
-                    Return EnumerateRootChildren(If(node Is oldRoot, oldBody, newBody))
+                If node Is _oldRoot OrElse node Is _newRoot Then
+                    Return EnumerateRootChildren(If(node Is _oldRoot, _oldBody, _newBody))
                 End If
 
                 Return If(NonRootHasChildren(node), EnumerateChildren(node), Nothing)
@@ -44,8 +44,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.EditAndContinue
             End Function
 
             Protected Overrides Iterator Function GetDescendants(node As SyntaxNode) As IEnumerable(Of SyntaxNode)
-                If node Is oldRoot OrElse node Is newRoot Then
-                    Dim descendantNode = If(node Is oldRoot, oldBody, newBody)
+                If node Is _oldRoot OrElse node Is _newRoot Then
+                    Dim descendantNode = If(node Is _oldRoot, _oldBody, _newBody)
                     If GetLabelImpl(descendantNode) <> Label.Ignored Then
                         Yield descendantNode
                     End If

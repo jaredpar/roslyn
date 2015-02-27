@@ -12,7 +12,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
     Friend NotInheritable Class VisualBasicExpressionCompiler
         Inherits ExpressionCompiler
 
-        Private Shared ReadOnly _compilerId As New DkmCompilerId(DkmVendorId.Microsoft, DkmLanguageId.VB)
+        Private Shared ReadOnly s_compilerId As New DkmCompilerId(DkmVendorId.Microsoft, DkmLanguageId.VB)
 
         Friend Overrides ReadOnly Property DiagnosticFormatter As DiagnosticFormatter
             Get
@@ -22,7 +22,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
 
         Friend Overrides ReadOnly Property CompilerId As DkmCompilerId
             Get
-                Return _compilerId
+                Return s_compilerId
             End Get
         End Property
 
@@ -45,7 +45,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
             ' that we evaluated a type-level expression before a method-level.)
             Debug.Assert(previous Is Nothing OrElse context IsNot previous.EvaluationContext)
 
-			Return context
+            Return context
         End Function
 
         Friend Overrides Function CreateMethodContext(
@@ -71,11 +71,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator
                 ilOffset,
                 localSignatureToken)
 
-			If (previous Is Nothing OrElse context IsNot previous.EvaluationContext) Then
-				appDomain.SetDataItem(DkmDataCreationDisposition.CreateAlways, New VisualBasicMetadataContext(context))
-			End If
+            If (previous Is Nothing OrElse context IsNot previous.EvaluationContext) Then
+                appDomain.SetDataItem(DkmDataCreationDisposition.CreateAlways, New VisualBasicMetadataContext(context))
+            End If
 
-			Return context
+            Return context
         End Function
 
         Friend Overrides Function RemoveDataItem(appDomain As DkmClrAppDomain) As Boolean

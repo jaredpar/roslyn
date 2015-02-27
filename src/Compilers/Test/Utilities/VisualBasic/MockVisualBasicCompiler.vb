@@ -6,11 +6,11 @@ Imports Microsoft.VisualStudio.Shell.Interop
 Friend Class MockVisualBasicCompiler
     Inherits VisualBasicCompiler
 
-    Sub New(baseDirectory As String, args As String())
+    Public Sub New(baseDirectory As String, args As String())
         MyClass.New(Nothing, baseDirectory, args)
     End Sub
 
-    Sub New(responseFile As String, baseDirectory As String, args As String())
+    Public Sub New(responseFile As String, baseDirectory As String, args As String())
         MyBase.New(VisualBasicCommandLineParser.Default, responseFile, args, baseDirectory, Environment.GetEnvironmentVariable("LIB"), IO.Path.GetTempPath())
     End Sub
 

@@ -20,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Public Class ExpressionCompilerTests
         Inherits ExpressionCompilerTestBase
 
-        Const SimpleSource = "
+        Private Const s_simpleSource = "
 Class C
     Shared Sub M()
     End Sub
@@ -33,7 +33,7 @@ End Class
         <WorkItem(1029280)>
         <Fact>
         Public Sub UniqueModuleVersionId()
-            Dim comp = CreateCompilationWithMscorlib({SimpleSource}, compOptions:=TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib({s_simpleSource}, compOptions:=TestOptions.DebugDll)
             Dim runtime = CreateRuntimeInstance(comp)
             Dim context = CreateMethodContext(runtime, "C.M")
 
@@ -54,7 +54,7 @@ End Class
 
         <Fact>
         Public Sub ParseError()
-            Dim comp = CreateCompilationWithMscorlib({SimpleSource}, compOptions:=TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib({s_simpleSource}, compOptions:=TestOptions.DebugDll)
             Dim runtime = CreateRuntimeInstance(comp)
             Dim context = CreateMethodContext(runtime, "C.M")
 
@@ -75,7 +75,7 @@ End Class
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR")
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("de-DE")
             Try
-                Dim comp = CreateCompilationWithMscorlib({SimpleSource}, compOptions:=TestOptions.DebugDll)
+                Dim comp = CreateCompilationWithMscorlib({s_simpleSource}, compOptions:=TestOptions.DebugDll)
                 Dim runtime = CreateRuntimeInstance(comp)
                 Dim context = CreateMethodContext(
                     runtime,
@@ -1343,7 +1343,7 @@ End Class
             Dim resultProperties As ResultProperties = Nothing
             Dim errorMessage As String = Nothing
             Dim testData = Evaluate(
-                SimpleSource,
+                s_simpleSource,
                 OutputKind.DynamicallyLinkedLibrary,
                 methodName:="C.M",
                 expr:="Nothing",
@@ -1601,7 +1601,7 @@ End Class
             Dim resultProperties As ResultProperties = Nothing
             Dim errorMessage As String = Nothing
             Dim testData = Evaluate(
-                SimpleSource,
+                s_simpleSource,
                 OutputKind.DynamicallyLinkedLibrary,
                 methodName:="C.M",
                 expr:="C.M()",
@@ -1626,7 +1626,7 @@ End Class
             Dim errorMessage As String = Nothing
 
             Dim testData = Evaluate(
-                SimpleSource,
+                s_simpleSource,
                 OutputKind.DynamicallyLinkedLibrary,
                 methodName:="C.M",
                 expr:="AddressOf C.M",
@@ -1811,7 +1811,7 @@ End Namespace
             Dim resultProperties As ResultProperties = Nothing
             Dim errorMessage As String = Nothing
             Dim testData = Evaluate(
-                SimpleSource,
+                s_simpleSource,
                 OutputKind.DynamicallyLinkedLibrary,
                 methodName:="C.M",
                 expr:="C",
@@ -3804,7 +3804,7 @@ End Sub)",
 
         <WorkItem(1115543)>
         <Fact>
-        Sub MethodTypeParameterInLambda()
+        Public Sub MethodTypeParameterInLambda()
             Const source = "
 Class C(Of T)
     Sub M(Of U)()
@@ -3859,7 +3859,7 @@ End Class"
 
         <WorkItem(1112496)>
         <Fact(Skip:="1112496")>
-        Sub EvaluateLocalInAsyncLambda()
+        Public Sub EvaluateLocalInAsyncLambda()
             Const source = "
 Imports System.Threading.Tasks
 Module Module1

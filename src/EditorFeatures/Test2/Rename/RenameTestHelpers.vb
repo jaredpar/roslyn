@@ -17,7 +17,7 @@ Imports Microsoft.CodeAnalysis.Editor.UnitTests.GoToDefinition
 Imports Microsoft.VisualStudio.Composition
 
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Rename
-    Module RenameTestHelpers
+    Friend Module RenameTestHelpers
 
         <ThreadStatic>
         Friend _exportProvider As ExportProvider = MinimalTestExportProvider.CreateExportProvider(

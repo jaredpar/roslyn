@@ -14,7 +14,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CommandLine
             MyBase.New(VisualBasicCommandLineParser.Default, responseFile, args, baseDirectory, Environment.GetEnvironmentVariable("LIB"), Path.GetTempPath())
         End Sub
 
-        Overloads Shared Function Run(responseFile As String, args As String()) As Integer
+        Public Overloads Shared Function Run(responseFile As String, args As String()) As Integer
 
             Dim compiler = New Vbc(responseFile, Directory.GetCurrentDirectory(), args)
 

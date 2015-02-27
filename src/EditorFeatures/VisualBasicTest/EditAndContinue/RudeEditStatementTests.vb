@@ -635,7 +635,7 @@ Dim q = From c In cars
 
             expected.AssertEqual(actual)
         End Sub
-        Shared Sub Main(args As String())
+        Public Shared Sub Main(args As String())
         End Sub
 
         <Fact>

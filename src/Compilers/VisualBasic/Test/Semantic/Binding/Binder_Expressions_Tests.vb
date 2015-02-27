@@ -2384,7 +2384,7 @@ BC30545: Property access must assign to the property or use its value.
         End Sub
 
         <Fact>
-        Sub ColorColorOverriddenProperty()
+        Public Sub ColorColorOverriddenProperty()
             Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
 <compilation name="Bug12687">
     <file name="a.vb">
@@ -2420,7 +2420,7 @@ End Class
         End Sub
 
         <Fact>
-        Sub ColorColorPropertyWithParam()
+        Public Sub ColorColorPropertyWithParam()
             Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
 <compilation name="Bug12687">
     <file name="a.vb">
@@ -2455,7 +2455,7 @@ BC30455: Argument not specified for parameter 'a' of 'Public Overridable ReadOnl
         End Sub
 
         <Fact>
-        Sub ColorColorPropertyWithOverloading()
+        Public Sub ColorColorPropertyWithOverloading()
             Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
 <compilation name="Bug12687">
     <file name="a.vb">
@@ -2492,7 +2492,7 @@ End Class
         ' Tests IsValidAssignmentTarget for PropertyAccess
         ' and IsLValueFieldAccess for FieldAccess.
         <Fact>
-        Sub IsValidAssignmentTarget()
+        Public Sub IsValidAssignmentTarget()
             Dim compilation = CreateCompilationWithMscorlibAndVBRuntime(
 <compilation>
     <file name="a.vb">
@@ -2694,7 +2694,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlibAndVBRuntimeAndReferences(source, { SystemCoreRef }, options:=TestOptions.ReleaseExe)
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlibAndVBRuntimeAndReferences(source, {SystemCoreRef}, options:=TestOptions.ReleaseExe)
             AssertTheseDiagnostics(compilation, <expected></expected>)
 
             CompileAndVerify(compilation, expectedOutput:="42")
@@ -3012,7 +3012,7 @@ End Class
             Assert.Equal(SymbolKind.NamedType, symbol.Kind)
 
             AssertTheseDiagnostics(compilation, <expected></expected>)
-            
+
             CompileAndVerify(compilation, expectedOutput:="42")
         End Sub
 

@@ -26,12 +26,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.CommandLine.UnitTests
         Inherits BasicTestBase
 
         Private ReadOnly _baseDirectory As String = TempRoot.Root
-        Private Shared ReadOnly BasicCompilerExecutable As String = GetType(Vbc).Assembly.Location
+        Private Shared ReadOnly s_basicCompilerExecutable As String = GetType(Vbc).Assembly.Location
 
         <Fact>
         <WorkItem(946954)>
-        Sub CompilerBinariesAreAnyCPU()
-            Assert.Equal(ProcessorArchitecture.MSIL, AssemblyName.GetAssemblyName(BasicCompilerExecutable).ProcessorArchitecture)
+        Public Sub CompilerBinariesAreAnyCPU()
+            Assert.Equal(ProcessorArchitecture.MSIL, AssemblyName.GetAssemblyName(s_basicCompilerExecutable).ProcessorArchitecture)
         End Sub
 
         <Fact, WorkItem(546322, "DevDiv")>
@@ -155,7 +155,7 @@ End Class
             Dim cmd = New MockVisualBasicCompiler(Nothing, _baseDirectory, {"/preferreduilang:en"})
             cmd.Run(output, Nothing)
 
-            Assert.True(output.ToString().StartsWith(LogoLine1, StringComparison.Ordinal), "vbc should print logo and help if no args specified")
+            Assert.True(output.ToString().StartsWith(s_logoLine1, StringComparison.Ordinal), "vbc should print logo and help if no args specified")
         End Sub
 
         <Fact>
@@ -252,7 +252,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
             Dim tempOut = Temp.CreateFile()
 
-            Dim output = RunAndGetOutput("cmd", "/C """ & BasicCompilerExecutable & """ /nologo /preferreduilang:en /t:library " & src & " > " & tempOut.Path, expectedRetCode:=1)
+            Dim output = RunAndGetOutput("cmd", "/C """ & s_basicCompilerExecutable & """ /nologo /preferreduilang:en /t:library " & src & " > " & tempOut.Path, expectedRetCode:=1)
             Assert.Equal("", output.Trim())
 
             Assert.Equal(<text>
@@ -271,7 +271,7 @@ SRC.VB(1) : error BC30037: Character is not valid.
 
             Dim tempOut = Temp.CreateFile()
 
-            Dim output = RunAndGetOutput("cmd", "/C """ & BasicCompilerExecutable & """ /utf8output /nologo /preferreduilang:en /t:library " & src & " > " & tempOut.Path, expectedRetCode:=1)
+            Dim output = RunAndGetOutput("cmd", "/C """ & s_basicCompilerExecutable & """ /utf8output /nologo /preferreduilang:en /t:library " & src & " > " & tempOut.Path, expectedRetCode:=1)
             Assert.Equal("", output.Trim())
 
             Assert.Equal(<text>
@@ -1394,7 +1394,7 @@ a.vb
             Assert.Equal(False, parsedArgs.CompilationOptions.OptionInfer)
         End Sub
 
-        Const VBC_VER As Double = PredefinedPreprocessorSymbols.CurrentVersionNumber
+        Private Const s_VBC_VER As Double = PredefinedPreprocessorSymbols.CurrentVersionNumber
 
         <Fact>
         Public Sub TestDefine()
@@ -1402,24 +1402,24 @@ a.vb
                         {"a", True},
                         {"b", 1},
                         {"TARGET", "exe"},
-                        {"VBC_VER", VBC_VER})
+                        {"VBC_VER", s_VBC_VER})
 
             TestDefines({"/D:a=True,b=1", "/define:a=""123"",b=False", "a.vb"},
                         {"a", "123"},
                         {"b", False},
                         {"TARGET", "exe"},
-                        {"VBC_VER", VBC_VER})
+                        {"VBC_VER", s_VBC_VER})
 
             TestDefines({"/D:a=""\\\\a"",b=""\\\\\b""", "a.vb"},
                         {"a", "\\\\a"},
                         {"b", "\\\\\b"},
                         {"TARGET", "exe"},
-                        {"VBC_VER", VBC_VER})
+                        {"VBC_VER", s_VBC_VER})
 
             TestDefines({"/define:DEBUG", "a.vb"},
                         {"DEBUG", True},
                         {"TARGET", "exe"},
-                        {"VBC_VER", VBC_VER})
+                        {"VBC_VER", s_VBC_VER})
 
             TestDefines({"/D:TARGET=True,VBC_VER=1", "a.vb"},
                         {"TARGET", True},
@@ -2066,7 +2066,7 @@ a.vb
             Assert.Equal(ERRID.ERR_CantReadRulesetFile, err.Code)
             Assert.Equal(2, err.Arguments.Count)
             Assert.Equal(file.Path, DirectCast(err.Arguments(0), String))
-            Dim currentUICultureName  = Thread.CurrentThread.CurrentUICulture.Name
+            Dim currentUICultureName = Thread.CurrentThread.CurrentUICulture.Name
             If currentUICultureName.Length = 0 OrElse currentUICultureName.StartsWith("en", StringComparison.OrdinalIgnoreCase) Then
                 Assert.Equal(err.Arguments(1), "Root element is missing.")
             End If
@@ -2528,7 +2528,7 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable,
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable,
                                          String.Format("/nologo /doc:{1}\src.xml /t:library {0}",
                                                        src.ToString(),
                                                        dir.ToString()),
@@ -2561,7 +2561,7 @@ End Class
 
             Using xmlFileHandle As FileStream = File.Open(xml.ToString(), FileMode.Open, FileAccess.Read, FileShare.Delete Or FileShare.ReadWrite)
 
-                Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc+ {0}", src.ToString()), startFolder:=dir.ToString(), expectedRetCode:=0)
+                Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc+ {0}", src.ToString()), startFolder:=dir.ToString(), expectedRetCode:=0)
                 AssertOutput(<text></text>, output)
 
                 Assert.True(File.Exists(Path.Combine(dir.ToString(), "a.xml")))
@@ -2611,7 +2611,7 @@ Class E: End Class
             Dim xml = dir.CreateFile("a.xml")
             xml.WriteAllText("EMPTY")
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc+ {0}", src.ToString()), startFolder:=dir.ToString(), expectedRetCode:=0)
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc+ {0}", src.ToString()), startFolder:=dir.ToString(), expectedRetCode:=0)
             AssertOutput(<text></text>, output)
 
             Using reader As New StreamReader(xml.ToString())
@@ -2646,7 +2646,7 @@ a
 Class C: End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc+ {0}", src.ToString()), startFolder:=dir.ToString(), expectedRetCode:=0)
+            output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc+ {0}", src.ToString()), startFolder:=dir.ToString(), expectedRetCode:=0)
             AssertOutput(<text></text>, output)
 
             Using reader As New StreamReader(xml.ToString())
@@ -2687,7 +2687,7 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc:abcdfg.xyz /doc+ {0}", src.ToString()), startFolder:=dir.ToString())
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc:abcdfg.xyz /doc+ {0}", src.ToString()), startFolder:=dir.ToString())
             AssertOutput(<text></text>, output)
 
             Assert.True(File.Exists(Path.Combine(dir.ToString(), "a.xml")))
@@ -2706,7 +2706,7 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc /out:MyXml.dll {0}", src.ToString()), startFolder:=dir.ToString())
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc /out:MyXml.dll {0}", src.ToString()), startFolder:=dir.ToString())
             AssertOutput(<text></text>, output)
 
             Assert.True(File.Exists(Path.Combine(dir.ToString(), "MyXml.xml")))
@@ -2725,7 +2725,7 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc:doc.xml /doc+ {0}", src.ToString()), startFolder:=dir.ToString())
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc:doc.xml /doc+ {0}", src.ToString()), startFolder:=dir.ToString())
             AssertOutput(<text></text>, output)
 
             Assert.True(File.Exists(Path.Combine(dir.ToString(), "a.xml")))
@@ -2744,7 +2744,7 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc:doc.xml /out:out.dll {0}", src.ToString()), startFolder:=dir.ToString())
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc:doc.xml /out:out.dll {0}", src.ToString()), startFolder:=dir.ToString())
             AssertOutput(<text></text>, output)
 
             Assert.True(File.Exists(Path.Combine(dir.ToString(), "doc.xml")))
@@ -2763,7 +2763,7 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc:doc.xml /doc /out:out.dll {0}", src.ToString()), startFolder:=dir.ToString())
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc:doc.xml /doc /out:out.dll {0}", src.ToString()), startFolder:=dir.ToString())
             AssertOutput(<text></text>, output)
 
             Assert.True(File.Exists(Path.Combine(dir.ToString(), "out.xml")))
@@ -2782,7 +2782,7 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /t:library /doc:doc.xml /out:out.dll /doc+ {0}", src.ToString()), startFolder:=dir.ToString())
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /t:library /doc:doc.xml /out:out.dll /doc+ {0}", src.ToString()), startFolder:=dir.ToString())
             AssertOutput(<text></text>, output)
 
             Assert.True(File.Exists(Path.Combine(dir.ToString(), "out.xml")))
@@ -3397,7 +3397,7 @@ Dim b = Loc
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime /t:library " & src.ToString(), expectedRetCode:=1)
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime /t:library " & src.ToString(), expectedRetCode:=1)
             AssertOutput(
     <text>
 src.vb(5) : error BC30455: Argument not specified for parameter 'FileNumber' of 'Public Function Loc(FileNumber As Integer) As Long'.
@@ -3405,7 +3405,7 @@ Dim b = Loc
         ~~~
 </text>, output)
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime+ /t:library " & src.ToString(), expectedRetCode:=1)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime+ /t:library " & src.ToString(), expectedRetCode:=1)
             AssertOutput(
     <text>
 src.vb(5) : error BC30455: Argument not specified for parameter 'FileNumber' of 'Public Function Loc(FileNumber As Integer) As Long'.
@@ -3413,7 +3413,7 @@ Dim b = Loc
         ~~~
 </text>, output)
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime* /t:library /r:System.dll " & src.ToString(), expectedRetCode:=1)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime* /t:library /r:System.dll " & src.ToString(), expectedRetCode:=1)
             AssertOutput(
     <text>
 src.vb(5) : error BC30451: 'Loc' is not declared. It may be inaccessible due to its protection level.
@@ -3421,7 +3421,7 @@ Dim b = Loc
         ~~~
 </text>, output)
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime+ /vbruntime:abc /vbruntime* /t:library /r:System.dll " & src.ToString(), expectedRetCode:=1)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime+ /vbruntime:abc /vbruntime* /t:library /r:System.dll " & src.ToString(), expectedRetCode:=1)
             AssertOutput(
     <text>
 src.vb(5) : error BC30451: 'Loc' is not declared. It may be inaccessible due to its protection level.
@@ -3429,7 +3429,7 @@ Dim b = Loc
         ~~~
 </text>, output)
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime+ /vbruntime:abc /t:library " & src.ToString(), expectedRetCode:=1)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime+ /vbruntime:abc /t:library " & src.ToString(), expectedRetCode:=1)
             AssertOutput(
     <text>
 vbc : error BC2017: could not find library 'abc'
@@ -3438,7 +3438,7 @@ vbc : error BC2017: could not find library 'abc'
             Dim newVbCore = dir.CreateFile("Microsoft.VisualBasic.dll")
             newVbCore.WriteAllBytes(File.ReadAllBytes(Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "Microsoft.VisualBasic.dll")))
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime:" & newVbCore.ToString() & " /t:library " & src.ToString(), expectedRetCode:=1)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /vbruntime:" & newVbCore.ToString() & " /t:library " & src.ToString(), expectedRetCode:=1)
             AssertOutput(
     <text>
 src.vb(5) : error BC30455: Argument not specified for parameter 'FileNumber' of 'Public Function Loc(FileNumber As Integer) As Long'.
@@ -3465,7 +3465,7 @@ Dim b = Loc
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /r:mscorlib.dll /vbruntime- /t:library /d:_MyType=\""Empty\"" " & src.ToString(), expectedRetCode:=1)
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /r:mscorlib.dll /vbruntime- /t:library /d:_MyType=\""Empty\"" " & src.ToString(), expectedRetCode:=1)
             AssertOutput(
     <text>
 src.vb(2) : warning BC40056: Namespace or type specified in the Imports 'Microsoft.VisualBasic' doesn't contain any public member or cannot be found. Make sure the namespace or the type is defined and contains at least one public member. Make sure the imported element name doesn't use any aliases.
@@ -3508,19 +3508,19 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:l:\x /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:l:\x /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
             AssertOutput(
     <text>
         vbc : error BC2017: could not find library 'Microsoft.VisualBasic.dll'
         </text>, output)
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /r:mscorlib.dll /vbruntime- /sdkpath:c:folder /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /r:mscorlib.dll /vbruntime- /sdkpath:c:folder /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
             AssertOutput(
     <text> 
 vbc : error BC2017: could not find library 'mscorlib.dll'
 </text>, output)
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:" & dir.Path & " /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:" & dir.Path & " /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
             AssertOutput(
     <text>
 vbc : error BC2017: could not find library 'Microsoft.VisualBasic.dll'
@@ -3530,7 +3530,7 @@ vbc : error BC2017: could not find library 'Microsoft.VisualBasic.dll'
             Dim sysRuntime = dir.CreateFile("System.Runtime.dll")
             sysRuntime.WriteAllBytes(File.ReadAllBytes(Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "System.Runtime.dll")))
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:" & dir.Path & " /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:" & dir.Path & " /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
             AssertOutput(
     <text>
 vbc : error BC2017: could not find library 'Microsoft.VisualBasic.dll'
@@ -3539,7 +3539,7 @@ vbc : error BC2017: could not find library 'Microsoft.VisualBasic.dll'
             ' trash in 'System.Runtime.dll'
             sysRuntime.WriteAllBytes({0, 1, 2, 3, 4, 5})
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:" & dir.Path & " /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:" & dir.Path & " /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
             AssertOutput(
     <text>
 vbc : error BC2017: could not find library 'Microsoft.VisualBasic.dll'
@@ -3550,13 +3550,13 @@ vbc : error BC2017: could not find library 'Microsoft.VisualBasic.dll'
             msCorLib.WriteAllBytes(File.ReadAllBytes(Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "mscorlib.dll")))
 
             ' NOT: both libraries exist, but 'System.Runtime.dll' is invalid, so we need to pick up 'mscorlib.dll'
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /nostdlib /sdkpath:" & dir.Path & " /t:library /vbruntime* /r:" & Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "System.dll") & " " & src.ToString(), startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /nostdlib /sdkpath:" & dir.Path & " /t:library /vbruntime* /r:" & Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "System.dll") & " " & src.ToString(), startFolder:=dir.Path)
             AssertOutput(<text></text>, output.Replace(dir.Path, "{SDKPATH}")) ' SUCCESSFUL BUILD with 'mscorlib.dll' and embedded VbCore
 
             File.Delete(sysRuntime.Path)
 
             ' NOTE: only 'mscorlib.dll' exists
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /nostdlib /sdkpath:" & dir.Path & " /t:library /vbruntime* /r:" & Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "System.dll") & " " & src.ToString(), startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /nostdlib /sdkpath:" & dir.Path & " /t:library /vbruntime* /r:" & Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "System.dll") & " " & src.ToString(), startFolder:=dir.Path)
             AssertOutput(<text></text>, output.Replace(dir.Path, "{SDKPATH}"))
 
             File.Delete(msCorLib.Path)
@@ -3588,7 +3588,7 @@ End Class
             Dim cmdNoStdLibNoRuntime As String = "/nostdlib /vbruntime* /r:mscorlib.dll /preferreduilang:en" & cmd
 
             ' NOTE: no 'mscorlib.dll' exists
-            output = RunAndGetOutput(BasicCompilerExecutable, cmdNoStdLibNoRuntime, startFolder:=dir.Path, expectedRetCode:=1)
+            output = RunAndGetOutput(s_basicCompilerExecutable, cmdNoStdLibNoRuntime, startFolder:=dir.Path, expectedRetCode:=1)
             AssertOutput(<text>vbc : error BC2017: could not find library 'mscorlib.dll'</text>, output.Replace(dir.Path, "{SDKPATH}"))
 
             ' Create '<dir>\fldr2\mscorlib.dll'
@@ -3596,10 +3596,10 @@ End Class
             msCorLib.WriteAllBytes(File.ReadAllBytes(Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "mscorlib.dll")))
 
             ' NOTE: only 'mscorlib.dll' exists
-            output = RunAndGetOutput(BasicCompilerExecutable, cmdNoStdLibNoRuntime, startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, cmdNoStdLibNoRuntime, startFolder:=dir.Path)
             AssertOutput(<text></text>, output.Replace(dir.Path, "{SDKPATH}"))
 
-            output = RunAndGetOutput(BasicCompilerExecutable, cmd, startFolder:=dir.Path, expectedRetCode:=1)
+            output = RunAndGetOutput(s_basicCompilerExecutable, cmd, startFolder:=dir.Path, expectedRetCode:=1)
             AssertOutput(
     <text>
 vbc : warning BC40049: Could not find standard library 'System.dll'.
@@ -3621,13 +3621,13 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /t:library " & src.ToString(), startFolder:=dir.Path, expectedRetCode:=1)
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /t:library " & src.ToString(), startFolder:=dir.Path, expectedRetCode:=1)
             Assert.Contains("error BC30002: Type 'Global.System.ComponentModel.EditorBrowsable' is not defined.", output)
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /nostdlib /define:_MYTYPE=\""Empty\"" /t:library " & src.ToString(), startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /nostdlib /define:_MYTYPE=\""Empty\"" /t:library " & src.ToString(), startFolder:=dir.Path)
             AssertOutput(<text></text>, output)
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:x:\ /vbruntime- /define:_MYTYPE=\""Empty\"" /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /nostdlib /sdkpath:x:\ /vbruntime- /define:_MYTYPE=\""Empty\"" /t:library " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
             AssertOutput(
     <text>
 src.vb(2) : error BC30002: Type 'System.Void' is not defined.
@@ -4760,10 +4760,10 @@ End Module
             Dim file = dir.CreateFile(fileName)
             file.WriteAllBytes(source)
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /t:library " & file.ToString(), startFolder:=dir.Path)
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /t:library " & file.ToString(), startFolder:=dir.Path)
             Assert.Equal("", output) ' Autodetected UTF8, NO ERROR
 
-            output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /preferreduilang:en /t:library /codepage:20127 " & file.ToString(), expectedRetCode:=1, startFolder:=dir.Path) ' 20127: US-ASCII
+            output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /preferreduilang:en /t:library /codepage:20127 " & file.ToString(), expectedRetCode:=1, startFolder:=dir.Path) ' 20127: US-ASCII
             ' 0xd0, 0x96 ==> 'Ð–' ==> ERROR
             Dim expected = <result>
 a.vb(1) : error BC30203: Identifier expected.
@@ -5178,7 +5178,7 @@ End Module
                 output = RunAndGetOutput("cmd", "/C icacls " & ref & " /deny %USERDOMAIN%\%USERNAME%:(r,WDAC) /Q")
                 Assert.Equal("Successfully processed 1 files; Failed processing 0 files", output.Trim())
 
-                output = RunAndGetOutput("cmd", "/C """ & BasicCompilerExecutable & """ /nologo /preferreduilang:en /r:" & ref & " /t:library " & source, expectedRetCode:=1)
+                output = RunAndGetOutput("cmd", "/C """ & s_basicCompilerExecutable & """ /nologo /preferreduilang:en /r:" & ref & " /t:library " & source, expectedRetCode:=1)
                 Assert.True(output.StartsWith("vbc : error BC31011: Unable to load referenced library '" & ref & "': Access to the path '" & ref & "' is denied.", StringComparison.Ordinal))
 
             Finally
@@ -5823,7 +5823,7 @@ End Module
 ]]>
     </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, "/nologo /t:library /langversion:9 " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, "/nologo /t:library /langversion:9 " & src.ToString(), expectedRetCode:=1, startFolder:=dir.Path)
             AssertOutput(
     <text><![CDATA[
 error BC36716: Visual Basic 9.0 does not support auto-implemented properties.
@@ -6049,8 +6049,8 @@ C:\*.vb(100) : error BC30451: 'Foo' is not declared. It may be inaccessible due 
             actual.Verify(expected)
         End Sub
 
-        Const LogoLine1 As String = "Microsoft (R) Visual Basic Compiler version"
-        Const LogoLine2 As String = "Copyright (C) Microsoft Corporation. All rights reserved."
+        Private Const s_logoLine1 As String = "Microsoft (R) Visual Basic Compiler version"
+        Private Const s_logoLine2 As String = "Copyright (C) Microsoft Corporation. All rights reserved."
 
         Private Shared Function OccurrenceCount(source As String, word As String) As Integer
             Dim n = 0
@@ -6775,7 +6775,7 @@ Class C
 End Class
 </text>.Value.Replace(vbLf, vbCrLf))
 
-            Dim output = RunAndGetOutput(BasicCompilerExecutable, String.Format("/nologo /doc:doc.xml /out:out.exe /resource:doc.xml {0}", src.ToString()), startFolder:=dir.ToString())
+            Dim output = RunAndGetOutput(s_basicCompilerExecutable, String.Format("/nologo /doc:doc.xml /out:out.exe /resource:doc.xml {0}", src.ToString()), startFolder:=dir.ToString())
             AssertOutput(<text></text>, output)
 
             Assert.True(File.Exists(Path.Combine(dir.ToString(), "doc.xml")))
@@ -6812,7 +6812,7 @@ out
     End Class
 
     <DiagnosticAnalyzer(LanguageNames.VisualBasic)>
-    MustInherit Class MockAbstractDiagnosticAnalyzer
+    Friend MustInherit Class MockAbstractDiagnosticAnalyzer
         Inherits DiagnosticAnalyzer
 
         Public Overrides Sub Initialize(context As AnalysisContext)
@@ -6825,7 +6825,7 @@ out
     End Class
 
     <DiagnosticAnalyzer(LanguageNames.VisualBasic)>
-    Class HiddenDiagnosticAnalyzer
+    Friend Class HiddenDiagnosticAnalyzer
         Inherits MockAbstractDiagnosticAnalyzer
 
         Friend Shared ReadOnly Hidden01 As DiagnosticDescriptor = New DiagnosticDescriptor("Hidden01", "", "Throwing a diagnostic for #ExternalSource", "", DiagnosticSeverity.Hidden, isEnabledByDefault:=True)
@@ -6849,7 +6849,7 @@ out
     End Class
 
     <DiagnosticAnalyzer(LanguageNames.VisualBasic)>
-    Class InfoDiagnosticAnalyzer
+    Friend Class InfoDiagnosticAnalyzer
         Inherits MockAbstractDiagnosticAnalyzer
 
         Friend Shared ReadOnly Info01 As DiagnosticDescriptor = New DiagnosticDescriptor("Info01", "", "Throwing a diagnostic for #Enable", "", DiagnosticSeverity.Info, isEnabledByDefault:=True)
@@ -6874,7 +6874,7 @@ out
     End Class
 
     <DiagnosticAnalyzer(LanguageNames.VisualBasic)>
-    Class WarningDiagnosticAnalyzer
+    Friend Class WarningDiagnosticAnalyzer
         Inherits MockAbstractDiagnosticAnalyzer
 
         Friend Shared ReadOnly Warning01 As DiagnosticDescriptor = New DiagnosticDescriptor("Warning01", "", "Throwing a diagnostic for types declared", "", DiagnosticSeverity.Warning, isEnabledByDefault:=True)
@@ -6901,7 +6901,7 @@ out
     End Class
 
     <DiagnosticAnalyzer(LanguageNames.VisualBasic)>
-    Class ErrorDiagnosticAnalyzer
+    Friend Class ErrorDiagnosticAnalyzer
         Inherits MockAbstractDiagnosticAnalyzer
 
         Friend Shared ReadOnly Error01 As DiagnosticDescriptor = New DiagnosticDescriptor("Error01", "", "Throwing a diagnostic for #Disable", "", DiagnosticSeverity.Error, isEnabledByDefault:=True)

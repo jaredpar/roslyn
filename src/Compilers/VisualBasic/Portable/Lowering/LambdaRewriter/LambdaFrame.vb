@@ -14,19 +14,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Inherits SynthesizedContainer
         Implements ISynthesizedMethodBodyImplementationSymbol
 
-        Private ReadOnly m_typeParameters As ImmutableArray(Of TypeParameterSymbol)
-        Private ReadOnly m_topLevelMethod As MethodSymbol
-        Private ReadOnly m_sharedConstructor As MethodSymbol
-        Private ReadOnly m_singletonCache As FieldSymbol
+        Private ReadOnly _typeParameters As ImmutableArray(Of TypeParameterSymbol)
+        Private ReadOnly _topLevelMethod As MethodSymbol
+        Private ReadOnly _sharedConstructor As MethodSymbol
+        Private ReadOnly _singletonCache As FieldSymbol
 
         'NOTE: this does not include captured parent frame references 
         Friend ReadOnly m_captured_locals As New ArrayBuilder(Of LambdaCapturedVariable)
         Friend ReadOnly m_constructor As SynthesizedLambdaConstructor
         Friend ReadOnly TypeMap As TypeSubstitution
 
-        Private ReadOnly m_scopeSyntaxOpt As VisualBasicSyntaxNode
+        Private ReadOnly _scopeSyntaxOpt As VisualBasicSyntaxNode
 
-        Private Shared ReadOnly TypeSubstitutionFactory As Func(Of Symbol, TypeSubstitution) =
+        Private Shared ReadOnly s_typeSubstitutionFactory As Func(Of Symbol, TypeSubstitution) =
             Function(container)
                 Dim f = TryCast(container, LambdaFrame)
                 Return If(f IsNot Nothing, f.TypeMap, DirectCast(container, SynthesizedMethod).TypeMap)
@@ -36,7 +36,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Function(typeParameter, container) New SynthesizedClonedTypeParameterSymbol(typeParameter,
                                                                                         container,
                                                                                         GeneratedNames.MakeDisplayClassGenericParameterName(typeParameter.Ordinal),
-                                                                                        TypeSubstitutionFactory)
+                                                                                        s_typeSubstitutionFactory)
         Friend Sub New(slotAllocatorOpt As VariableSlotAllocator,
                        compilationState As TypeCompilationState,
                        topLevelMethod As MethodSymbol,
@@ -57,19 +57,19 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             ' static lambdas technically have the class scope so the scope syntax is Nothing 
             If isStatic Then
-                Me.m_sharedConstructor = New SynthesizedConstructorSymbol(Nothing, Me, isShared:=True, isDebuggable:=False, binder:=Nothing, diagnostics:=Nothing)
+                Me._sharedConstructor = New SynthesizedConstructorSymbol(Nothing, Me, isShared:=True, isDebuggable:=False, binder:=Nothing, diagnostics:=Nothing)
                 Dim cacheVariableName = GeneratedNames.MakeCachedFrameInstanceName()
-                Me.m_singletonCache = New SynthesizedFieldSymbol(Me, Me, Me, cacheVariableName, Accessibility.Public, isReadOnly:=True, isShared:=True)
-                m_scopeSyntaxOpt = Nothing
+                Me._singletonCache = New SynthesizedFieldSymbol(Me, Me, Me, cacheVariableName, Accessibility.Public, isReadOnly:=True, isShared:=True)
+                _scopeSyntaxOpt = Nothing
             Else
-                m_scopeSyntaxOpt = scopeSyntax
+                _scopeSyntaxOpt = scopeSyntax
             End If
 
-            AssertIsLambdaScopeSyntax(m_scopeSyntaxOpt)
+            AssertIsLambdaScopeSyntax(_scopeSyntaxOpt)
 
-            Me.m_typeParameters = SynthesizedClonedTypeParameterSymbol.MakeTypeParameters(topLevelMethod.TypeParameters, Me, CreateTypeParameter)
+            Me._typeParameters = SynthesizedClonedTypeParameterSymbol.MakeTypeParameters(topLevelMethod.TypeParameters, Me, CreateTypeParameter)
             Me.TypeMap = TypeSubstitution.Create(topLevelMethod, topLevelMethod.TypeParameters, Me.TypeArgumentsNoUseSiteDiagnostics)
-            Me.m_topLevelMethod = topLevelMethod
+            Me._topLevelMethod = topLevelMethod
         End Sub
 
         Private Shared Function MakeName(slotAllocatorOpt As VariableSlotAllocator,
@@ -115,8 +115,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overloads Overrides Function GetMembers() As ImmutableArray(Of Symbol)
             Dim members = StaticCast(Of Symbol).From(m_captured_locals.AsImmutable())
-            If m_sharedConstructor IsNot Nothing Then
-                members = members.AddRange(ImmutableArray.Create(Of Symbol)(m_constructor, m_sharedConstructor, m_singletonCache))
+            If _sharedConstructor IsNot Nothing Then
+                members = members.AddRange(ImmutableArray.Create(Of Symbol)(m_constructor, _sharedConstructor, _singletonCache))
             Else
                 members = members.Add(m_constructor)
             End If
@@ -132,28 +132,28 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Protected Friend ReadOnly Property SharedConstructor As MethodSymbol
             Get
-                Return m_sharedConstructor
+                Return _sharedConstructor
             End Get
         End Property
 
         Friend ReadOnly Property SingletonCache As FieldSymbol
             Get
-                Return m_singletonCache
+                Return _singletonCache
             End Get
         End Property
 
         Friend Overrides ReadOnly Property IsSerializable As Boolean
             Get
-                Return m_singletonCache IsNot Nothing
+                Return _singletonCache IsNot Nothing
             End Get
         End Property
 
 
         Friend Overrides Function GetFieldsToEmit() As IEnumerable(Of FieldSymbol)
-            If m_singletonCache Is Nothing Then
+            If _singletonCache Is Nothing Then
                 Return m_captured_locals
             Else
-                Return DirectCast(m_captured_locals, IEnumerable(Of FieldSymbol)).Concat(Me.m_singletonCache)
+                Return DirectCast(m_captured_locals, IEnumerable(Of FieldSymbol)).Concat(Me._singletonCache)
             End If
         End Function
 
@@ -195,13 +195,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public Overrides ReadOnly Property Arity As Integer
             Get
-                Return Me.m_typeParameters.Length
+                Return Me._typeParameters.Length
             End Get
         End Property
 
         Public Overrides ReadOnly Property TypeParameters As ImmutableArray(Of TypeParameterSymbol)
             Get
-                Return Me.m_typeParameters
+                Return Me._typeParameters
             End Get
         End Property
 
@@ -220,7 +220,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         Public ReadOnly Property Method As IMethodSymbol Implements ISynthesizedMethodBodyImplementationSymbol.Method
             Get
-                Return m_topLevelMethod
+                Return _topLevelMethod
             End Get
         End Property
     End Class

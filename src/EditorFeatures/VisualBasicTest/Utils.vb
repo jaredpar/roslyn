@@ -11,7 +11,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests
-    Module Utils
+    Friend Module Utils
         Friend Function ParseCode(code As String) As SyntaxTree
             Dim text = SourceText.From(code)
             Return SyntaxFactory.ParseSyntaxTree(text)
@@ -111,20 +111,20 @@ Namespace Microsoft.CodeAnalysis.Editor.VisualBasic.UnitTests
             Private ReadOnly _tree As SyntaxTree
             Private ReadOnly _node As T
 
-            Sub New(syntaxTree As SyntaxTree, node As T)
+            Public Sub New(syntaxTree As SyntaxTree, node As T)
                 Contract.ThrowIfNull(syntaxTree)
                 Contract.ThrowIfNull(node)
                 _tree = syntaxTree
                 _node = node
             End Sub
 
-            ReadOnly Property Tree As SyntaxTree
+            Public ReadOnly Property Tree As SyntaxTree
                 Get
                     Return _tree
                 End Get
             End Property
 
-            ReadOnly Property Node As T
+            Public ReadOnly Property Node As T
                 Get
                     Return _node
                 End Get

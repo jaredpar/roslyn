@@ -47,7 +47,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Me._originalMethodDeclaration = method.DeclaringSyntaxReferences(0).GetVisualBasicSyntax
             End Sub
 
-            Sub GenerateMoveNextAndDispose(Body As BoundStatement,
+            Public Sub GenerateMoveNextAndDispose(Body As BoundStatement,
                                            moveNextMethod As SynthesizedStateMachineMethod,
                                            disposeMethod As SynthesizedStateMachineMethod)
 

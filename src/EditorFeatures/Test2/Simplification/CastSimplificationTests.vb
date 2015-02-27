@@ -4125,8 +4125,8 @@ class Program
 </code>
 
             Test(input, expected)
-            End SUb
-            <Fact, Trait(Traits.Feature, Traits.Features.Simplification)>
+        End SUb
+        <Fact, Trait(Traits.Feature, Traits.Features.Simplification)>
         <WorkItem(1067214)>
         Public Sub CSharp_Remove_UnncessaryCastInExpressionBody_Method()
             Dim input =

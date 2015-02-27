@@ -7643,7 +7643,7 @@ End Class
         End Sub
 
         <Fact>
-        Sub SynthesizedVariableForSelectCastValue()
+        Public Sub SynthesizedVariableForSelectCastValue()
             Dim source =
 <compilation>
     <file>
@@ -7699,7 +7699,7 @@ End Class
 
         <WorkItem(1085911)>
         <Fact>
-        Sub AsyncReturnVariable()
+        Public Sub AsyncReturnVariable()
             Dim source =
 <compilation>
     <file>

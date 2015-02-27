@@ -6,9 +6,9 @@ Imports System.Console
 ''' <summary>
 ''' Contains the startup code, command line argument processing, and driving the execution of the tool.
 ''' </summary>
-Module Program
+Friend Module Program
 
-    Function Main(args As String()) As Integer
+    Public Function Main(args As String()) As Integer
 
         Const exitWithErrors = 1,
               exitWithoutErrors = 0
@@ -52,7 +52,7 @@ Module Program
 
     End Function
 
-    Function ReadDefinition(inputFile As String) As ParseTree
+    Public Function ReadDefinition(inputFile As String) As ParseTree
         Dim definition = ReadTheTree(inputFile)
 
         ValidateTree(definition)
@@ -60,7 +60,7 @@ Module Program
         Return definition
     End Function
 
-    Sub WriteOutput(outputFile As String, definition As ParseTree, outputKind As String)
+    Public Sub WriteOutput(outputFile As String, definition As ParseTree, outputKind As String)
 
         Using output As New StreamWriter(outputFile)
             output.WriteLine("' Definition of syntax model.")

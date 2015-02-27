@@ -241,12 +241,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
     Public Module EditAndContinueTestExtensions
         <Extension>
-        Function WithSource(compilation As VisualBasicCompilation, newSource As String) As VisualBasicCompilation
+        Public Function WithSource(compilation As VisualBasicCompilation, newSource As String) As VisualBasicCompilation
             Return compilation.RemoveAllSyntaxTrees().AddSyntaxTrees(VisualBasicSyntaxTree.ParseText(newSource))
         End Function
 
         <Extension>
-        Function WithSource(compilation As VisualBasicCompilation, newSource As XElement) As VisualBasicCompilation
+        Public Function WithSource(compilation As VisualBasicCompilation, newSource As XElement) As VisualBasicCompilation
             Return compilation.RemoveAllSyntaxTrees().AddSyntaxTrees(ToSourceTrees(newSource))
         End Function
     End Module

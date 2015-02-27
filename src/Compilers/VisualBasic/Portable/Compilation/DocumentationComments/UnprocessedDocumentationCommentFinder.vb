@@ -157,7 +157,7 @@ lAgain:
                                      SyntaxKind.EventStatement,
                                      SyntaxKind.FieldDeclaration,
                                      SyntaxKind.EnumMemberDeclaration
-                                    ' Do nothing, the comment is properly located
+                                ' Do nothing, the comment is properly located
 
                                 Case SyntaxKind.AttributeList
                                     parent = parent.Parent

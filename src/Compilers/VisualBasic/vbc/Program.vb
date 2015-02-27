@@ -3,7 +3,7 @@ Imports System.IO
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.CommandLine
     Friend Module Program
-        Function Main(args As String()) As Integer
+        Public Function Main(args As String()) As Integer
             Dim responseFile = CommonCompiler.GetResponseFileFullPath(VisualBasicCompiler.ResponseFileName)
             Return Vbc.Run(responseFile, args)
         End Function
