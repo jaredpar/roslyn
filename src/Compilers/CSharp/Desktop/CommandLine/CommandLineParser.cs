@@ -1479,6 +1479,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                                                 // For example, it is an XML doc file produced by the build.
                                                 var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
+                                                return stream;
+                                                /*
+
                                                 // Lock the entire content to prevent others from modifying it while we are reading.
                                                 try
                                                 {
@@ -1490,6 +1493,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                                     stream.Dispose();
                                                     throw;
                                                 }
+                                                */
                                             };
             return new ResourceDescription(resourceName, fileName, dataProvider, isPublic, embedded, checkArgs: false);
         }
