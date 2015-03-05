@@ -8,10 +8,12 @@ SYS_MD_PATH=~/Documents/roslyn/packages/System.Reflection.Metadata.1.0.18-beta/l
 pushd ~/Documents/roslyn
 
 pushd src/Compilers/Core/Portable
+echo Compiling Core\Portable\CodeAnalysis.csproj
 mono $CSC_TOOL @/Users/jaredpar/Documents/roslyn/nix/MS.CA.rsp
 popd
 
 pushd src/Compilers/Core/Desktop
+echo Compiling Core\Desktop\CodeAnalysis.Desktop.csproj
 mono $CSC_TOOL @/Users/jaredpar/Documents/roslyn/nix/MS.CA.Desktop.rsp
 popd
 
