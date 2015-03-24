@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.VisualStudio.Shell.Interop;
 using Roslyn.Utilities;
+using System.Runtime.Loader;
 
 namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 {
@@ -29,7 +30,9 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 
         public override Assembly LoadAssembly(string fullPath)
         {
-            return Assembly.LoadFrom(fullPath);
+            throw new Exception();
+            // Need to figure this out for CoreCLR
+            // return Assembly.LoadFrom(fullPath);
         }
 
         protected override uint GetSqmAppID()

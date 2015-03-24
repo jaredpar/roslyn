@@ -54,9 +54,10 @@
 
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.VisualBasic.targets" Condition="'$(ProjectLanguage)' == 'VB' And '$(TargetFrameworkIdentifier)' == '.NETPortable'"/>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" Condition="'$(ProjectLanguage)' == 'CSharp' And '$(TargetFrameworkIdentifier)' == '.NETPortable'"/>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" Condition="'$(ProjectLanguage)' == 'VB' And '$(TargetFrameworkIdentifier)' != '.NETPortable'" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="'$(ProjectLanguage)' == 'CSharp' And '$(TargetFrameworkIdentifier)' != '.NETPortable'" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" Condition="'$(ProjectLanguage)' == 'VB' And '$(TargetFrameworkIdentifier)' != '.NETPortable' And '$(TestCoreClr)' != 'True'" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="'$(ProjectLanguage)' == 'CSharp' And '$(TargetFrameworkIdentifier)' != '.NETPortable' And '$(TestCoreClr)' != 'True'" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" Condition="'$(ProjectLanguage)' == 'C++'" />
+  <Import Project="e:\temp\TestNet\TargetingPack\MSBuildTargets\TestNet.CSharp.Targets" Condition="'$(TestCoreClr)' == 'True'" />
 
   <PropertyGroup>
     <BuildDependsOn>
