@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Text;
 using Microsoft.VisualStudio.Shell.Interop;
 using Roslyn.Utilities;
-using System.Runtime.Loader;
 
 namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 {
