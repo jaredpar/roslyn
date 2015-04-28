@@ -33,11 +33,47 @@ namespace Roslyn.Test.Utilities
         public override string SkipReason { get { return "Target platform is not x86"; } }
     }
 
-    public class ClrOnly : ExecutionCondition
+    public enum ClrOnlyReason
     {
-        public override bool ShouldSkip { get { return CLRHelpers.IsRunningOnMono(); } }
+        Default,
 
-        public override string SkipReason { get { return "Test not supported on Mono"; } }
+        // The mono version of ilasm doesn't have all of the features we need to run 
+        // our tests.  In particular it doesn't appear to support the full range of 
+        // modopt operators that our tests invoke.
+        Ilasm,
+
+        // Mono lists certain methods in a different order than the CLR.  For example
+        // Equals, GetHashCode, ToString, etc ... which breaks our tests.
+        MemberOrder, 
+
+        // Can't emit a PDB on Mono 
+        Pdb,
+    }
+
+    public class ClrOnlyFact : FactAttribute
+    {
+        public readonly ClrOnlyReason Reason;
+
+        public ClrOnlyFact(ClrOnlyReason reason = ClrOnlyReason.Default)
+        {
+            Reason = reason;
+
+            if (CLRHelpers.IsRunningOnMono())
+            {
+                Skip = GetSkipReason(Reason);
+            }
+        }
+
+        private static string GetSkipReason(ClrOnlyReason reason)
+        { 
+            switch (reason)
+            {
+                case ClrOnlyReason.Ilasm:
+                    return "Mono ilasm doesn't suupport all of the features we need";
+                default:
+                    return "Test not supported on Mono"; 
+            }
+        }
     }
 
     public class WindowsOnly : ExecutionCondition
