@@ -276,6 +276,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 warningLevel:=1,
                 specificDiagnosticOptions:=specificDiagnosticOptions.ToImmutableDictionaryOrEmpty(CaseInsensitiveComparison.Comparer), ' Diagnostic ids must be processed in case-insensitive fashion.
                 concurrentBuild:=concurrentBuild,
+                deterministic:=False, ' TODO: THIS IMPLEMENTATION IS INCOMPLETE
                 extendedCustomDebugInformation:=extendedCustomDebugInformation,
                 debugPlusMode:=debugPlusMode,
                 xmlReferenceResolver:=xmlReferenceResolver,

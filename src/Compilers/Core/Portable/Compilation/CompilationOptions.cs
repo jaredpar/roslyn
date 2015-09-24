@@ -134,6 +134,11 @@ namespace Microsoft.CodeAnalysis
         public bool ConcurrentBuild { get; protected set; }
 
         /// <summary>
+        /// Specifies whether the compilation should be deterministic.
+        /// </summary>
+        public bool Deterministic { get; protected set; }
+
+        /// <summary>
         /// Emit extended custom debug information to the PDB file.
         /// </summary>
         internal bool ExtendedCustomDebugInformation { get; private set; }
@@ -240,6 +245,7 @@ namespace Microsoft.CodeAnalysis
             int warningLevel,
             ImmutableDictionary<string, ReportDiagnostic> specificDiagnosticOptions,
             bool concurrentBuild,
+            bool deterministic,
             bool extendedCustomDebugInformation,
             bool debugPlusMode,
             XmlReferenceResolver xmlReferenceResolver,
@@ -265,6 +271,7 @@ namespace Microsoft.CodeAnalysis
             this.ReportSuppressedDiagnostics = reportSuppressedDiagnostics;
             this.OptimizationLevel = optimizationLevel;
             this.ConcurrentBuild = concurrentBuild;
+            this.Deterministic = deterministic;
             this.ExtendedCustomDebugInformation = extendedCustomDebugInformation;
             this.DebugPlusMode = debugPlusMode;
             this.XmlReferenceResolver = xmlReferenceResolver;
