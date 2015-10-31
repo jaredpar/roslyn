@@ -62,16 +62,44 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             {
                 Type appDomainProxyType = typeof(RuntimeAssemblyManager);
                 Assembly thisAssembly = appDomainProxyType.Assembly;
+                var thisAssemblyName = thisAssembly.GetName();
+                var appBasePath = Path.GetDirectoryName(thisAssembly.Location);
+                AppDomain.CurrentDomain.AssemblyResolve += OnResolve;
+
+                var currentDomain = AppDomain.CurrentDomain;
+                currentDomain.AssemblyResolve += OnResolve;
+                currentDomain.ReflectionOnlyAssemblyResolve += OnReflectionResolve;
+                currentDomain.AssemblyLoad += OnLoad;
+                Console.WriteLine($"Current Domain {currentDomain.Id} {currentDomain.FriendlyName}");
+                Console.WriteLine($"Current Assembly {thisAssemblyName}");
+                Console.WriteLine("Current Domain Assemblies");
+                foreach (var dll in currentDomain.GetAssemblies().OrderBy(x => x.Location))
+                {
+                    Console.WriteLine($"\t{dll.ReflectionOnly} - {dll.GetName()}");
+                }
 
                 AppDomain appDomain = null;
                 RuntimeAssemblyManager manager;
                 try
                 {
-                    appDomain = AppDomain.CreateDomain("HostedRuntimeEnvironment", null, AppDomain.CurrentDomain.BaseDirectory, null, false);
+                    appDomain = AppDomain.CreateDomain(
+                        "HostedRuntimeEnvironment",
+                        null,
+                        appBasePath: appBasePath,
+                        appRelativeSearchPath: appBasePath,
+                        shadowCopyFiles: false);
+                    Console.WriteLine($"Created AppDomain {appDomain.Id} in {appBasePath}");
+                    appDomain.AssemblyLoad += OnLoad;
+                    appDomain.AssemblyResolve += OnResolve;
+                    appDomain.ReflectionOnlyAssemblyResolve += OnReflectionResolve;
+                    Console.WriteLine("Before load");
+                    appDomain.Load(thisAssemblyName);
+                    Console.WriteLine("After load");
                     manager = (RuntimeAssemblyManager)appDomain.CreateInstanceAndUnwrap(thisAssembly.FullName, appDomainProxyType.FullName);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.WriteLine($"Could not create {nameof(RuntimeAssemblyManager)} {ex.Message}");
                     if (appDomain != null)
                     {
                         AppDomain.Unload(appDomain);
@@ -93,6 +121,36 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             {
                 _assemblyManager.AddMainModuleMvid(mainModule.Mvid);
             }
+        }
+
+        private static Assembly OnResolve(object sender, ResolveEventArgs e)
+        {
+            var appDomain = AppDomain.CurrentDomain;
+            Console.WriteLine($"Resolve request in {appDomain.Id} for {e.Name}");
+            var assemblyName = new AssemblyName(e.Name);
+            var fullPath = Path.Combine(
+                Path.GetDirectoryName(typeof(RuntimeAssemblyManager).Assembly.Location),
+                assemblyName.Name + ".dll");
+            if (File.Exists(fullPath))
+            {
+                Console.WriteLine($"Resolving {fullPath}");
+                return Assembly.LoadFrom(fullPath);
+            }
+
+            return null;
+        }
+
+        private static Assembly OnReflectionResolve(object sender, ResolveEventArgs e)
+        {
+            var appDomain = AppDomain.CurrentDomain;
+            Console.WriteLine($"Reflection resolve request in {appDomain.Id} for {e.Name}");
+            return null;
+        }
+
+        private static void OnLoad(object sender, AssemblyLoadEventArgs e)
+        {
+            var appDomain = AppDomain.CurrentDomain;
+            Console.WriteLine($"Load request in {appDomain.Id} for {e.LoadedAssembly.FullName}");
         }
 
         // Determines if any of the given dependencies has the same name as already loaded assembly with different content.
