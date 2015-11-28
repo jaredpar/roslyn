@@ -237,6 +237,11 @@ namespace Roslyn.Utilities
                 .GetDeclaredMethod(nameof(Exists), new[] { typeof(string) })
                 .CreateDelegate<Func<string, bool>>();
 
+            internal static readonly Func<string, object> CreateDirectory = Type
+                .GetTypeInfo()
+                .GetDeclaredMethod(nameof(CreateDirectory), new[] { typeof(string) })
+                .CreateDelegate<Func<string, object>>();
+
             internal static IEnumerable<string> EnumerateFiles(string path, string searchPattern, object searchOption)
             {
                 return (IEnumerable<string>)s_enumerateFiles.Invoke(null, new object[] { path, searchPattern, searchOption });

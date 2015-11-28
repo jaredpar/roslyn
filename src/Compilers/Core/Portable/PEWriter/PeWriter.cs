@@ -42,6 +42,7 @@ namespace Microsoft.Cci
         private readonly int _timeStamp;
 
         private readonly string _pdbPathOpt;
+        private readonly string _pdbPathNormalized;
         private readonly bool _is32bit;
         private readonly ModulePropertiesForSerialization _properties;
 
@@ -59,6 +60,9 @@ namespace Microsoft.Cci
         {
             _properties = properties;
             _pdbPathOpt = pdbPathOpt;
+            _pdbPathNormalized = string.IsNullOrEmpty(pdbPathOpt)
+                ? ""
+                : Path.GetFileName(pdbPathOpt);
             _deterministic = deterministic;
 
             // The PDB padding workaround is only needed for legacy tools that don't use deterministic build.
@@ -391,7 +395,7 @@ namespace Microsoft.Cci
         /// <param name="peStream">PE stream.</param>
         /// <param name="mvidPosition">Position in the stream of 16 zero bytes to be replaced by a Guid</param>
         /// <param name="ntHeaderTimestampPosition">Position in the stream of four zero bytes to be replaced by a timestamp</param>
-        private static void WriteDeterministicGuidAndTimestamps(
+        private void WriteDeterministicGuidAndTimestamps(
             Stream peStream,
             long mvidPosition,
             long ntHeaderTimestampPosition)
@@ -401,9 +405,28 @@ namespace Microsoft.Cci
 
             var previousPosition = peStream.Position;
 
+            if (!string.IsNullOrEmpty(_pdbPathOpt))
+            {
+                var logFileIdentifier = Path.GetFileNameWithoutExtension(_pdbPathOpt);
+                var fileName = Path.Combine($@"{DebugConstant.LogDirectory}\{logFileIdentifier}.pe.txt");
+                peStream.Position = 0;
+                using (var stream = PortableShim.File.Create(fileName))
+                {
+                    peStream.CopyTo(stream);
+                }
+            }
+
             // Compute and write deterministic guid data over the relevant portion of the stream
             peStream.Position = 0;
             var contentId = ContentId.FromHash(CryptographicHashProvider.ComputeSha1(peStream));
+
+            if (!string.IsNullOrEmpty(_pdbPathOpt))
+            {
+                var logFileIdentifier = Path.GetFileNameWithoutExtension(_pdbPathOpt);
+                var fileName = Path.Combine($@"{DebugConstant.LogDirectory}\{logFileIdentifier}.contentid.txt");
+                var text = $"Guid {contentId.Guid}{Environment.NewLine}Stamp {string.Join("", contentId.Stamp.Select(x => x.ToString()))}";
+                PortableShim.File.WriteAllBytes(fileName, Encoding.UTF8.GetBytes(text));
+            }
 
             // The existing Guid should be zero.
             CheckZeroDataInStream(peStream, mvidPosition, contentId.Guid.Length);
@@ -496,7 +519,7 @@ namespace Microsoft.Cci
                 4 +              // 4B signature "RSDS"
                 16 +             // GUID
                 sizeof(uint) +   // Age
-                Math.Max(BlobUtilities.GetUTF8ByteCount(_pdbPathOpt) + 1, _minPdbPath);
+                Math.Max(BlobUtilities.GetUTF8ByteCount(_pdbPathNormalized) + 1, _minPdbPath);
         }
 
         private int ComputeSizeOfDebugDirectory()
@@ -1457,7 +1480,7 @@ namespace Microsoft.Cci
 
                 // UTF-8 encoded zero-terminated path to PDB
                 int pathStart = writer.Position;
-                writer.WriteUTF8(_pdbPathOpt, allowUnpairedSurrogates: true);
+                writer.WriteUTF8(_pdbPathNormalized, allowUnpairedSurrogates: true);
                 writer.WriteByte(0);
 
                 // padding:

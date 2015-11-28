@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -35,6 +36,17 @@ namespace Microsoft.Cci
         }
     }
 
+    internal sealed class DebugConstant
+    {
+        internal static readonly string LogDirectory;
+
+        static DebugConstant()
+        {
+            LogDirectory = $@"c:\users\jaredpar\temp\determinism\{DateTime.Now.Ticks}";
+            PortableShim.Directory.CreateDirectory(LogDirectory);
+        }
+    }
+
     /// <summary>
     /// A utility to log all operations and arguments to the native PDB writing
     /// library, so that we can hash that log to generate a deterministic GUID and
@@ -51,9 +63,12 @@ namespace Microsoft.Cci
         private readonly BlobBuilder _logData;
         private const int bufferFlushLimit = 64 * 1024;
         private readonly HashAlgorithm _hashAlgorithm;
+        private readonly Stream _stream;
 
-        internal PdbLogger(bool logging)
+        internal PdbLogger(string logFileIdentifier, bool logging)
         {
+            var fileName = Path.Combine($@"{DebugConstant.LogDirectory}\{logFileIdentifier}.call.txt");
+            _stream = PortableShim.File.Create(fileName);
             _logging = logging;
             if (logging)
             {
@@ -109,6 +124,7 @@ namespace Microsoft.Cci
 
             Debug.Assert(remaining == 0);
 
+            _stream.Dispose();
             _logData.Clear();
             return _hashAlgorithm.Hash;
         }
@@ -140,8 +156,29 @@ namespace Microsoft.Cci
             CloseMapTokensToSourceSpans
         }
 
-        public bool LogOperation(PdbWriterOperation op)
+        private string ArrayString<T>(T[] array)
         {
+            var builder = new StringBuilder();
+            builder.Append("[ ");
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (i != 0)
+                    builder.Append(", ");
+                builder.Append(array[i]);
+            }
+            builder.Append(" ]");
+            return builder.ToString();
+        }
+
+        public void DebugLog(string str)
+        {
+            var bytes = Encoding.UTF8.GetBytes(str + Environment.NewLine);
+            _stream.Write(bytes, 0, bytes.Length);
+        }
+
+        public bool LogOperation(PdbWriterOperation op, string extra = null)
+        {
+            DebugLog($"{op} {extra}");
             var logging = _logging;
             if (logging)
             {
@@ -151,8 +188,9 @@ namespace Microsoft.Cci
             return logging;
         }
 
-        public void LogArgument(uint[] data, int cnt)
+        public void LogArgument(uint[] data, int cnt, [CallerMemberName] string name = null)
         {
+            DebugLog($"LogArgument {name} {ArrayString(data)}");
             EnsureSpace((cnt + 1) * 4);
             _logData.WriteInt32(cnt);
             for (int i = 0; i < cnt; i++)
@@ -161,33 +199,38 @@ namespace Microsoft.Cci
             }
         }
 
-        public void LogArgument(string data)
+        public void LogArgument(string data, [CallerMemberName] string name = null)
         {
+            DebugLog($"LogArgument {name} {data}");
             EnsureSpace(data.Length * 2);
             _logData.WriteUTF8(data, allowUnpairedSurrogates: true);
         }
 
-        public void LogArgument(uint data)
+        public void LogArgument(uint data, [CallerMemberName] string name = null)
         {
+            DebugLog($"LogArgument {name} {data}");
             EnsureSpace(4);
             _logData.WriteUInt32(data);
         }
 
-        public void LogArgument(byte data)
+        public void LogArgument(byte data, [CallerMemberName] string name = null)
         {
+            DebugLog($"LogArgument {name} {data}");
             EnsureSpace(1);
             _logData.WriteByte(data);
         }
 
-        public void LogArgument(byte[] data)
+        public void LogArgument(byte[] data, [CallerMemberName] string name = null)
         {
+            DebugLog($"LogArgument {name} {ArrayString(data)}");
             EnsureSpace(data.Length + 4);
             _logData.WriteInt32(data.Length);
             _logData.WriteBytes(data);
         }
 
-        public void LogArgument(int[] data)
+        public void LogArgument(int[] data, [CallerMemberName] string name = null)
         {
+            DebugLog($"LogArgument {name} {ArrayString(data)}");
             EnsureSpace((data.Length + 1) * 4);
             _logData.WriteInt32(data.Length);
             foreach (int d in data)
@@ -196,14 +239,16 @@ namespace Microsoft.Cci
             }
         }
 
-        public void LogArgument(long data)
+        public void LogArgument(long data, [CallerMemberName] string name = null)
         {
+            DebugLog($"LogArgument {name} {data}");
             EnsureSpace(8);
             _logData.WriteInt64(data);
         }
 
-        public void LogArgument(object data)
+        public void LogArgument(object data, [CallerMemberName] string name = null)
         {
+            DebugLog($"LogArgument {name}");
             string str;
             if (data is decimal)
             {
@@ -257,14 +302,18 @@ namespace Microsoft.Cci
         // in support of determinism
         private readonly bool _deterministic;
         private readonly PdbLogger _callLogger;
+        private readonly string _logFileIdentifier;
+
+        internal PdbLogger CallLogger => _callLogger;
 
         public PdbWriter(string fileName, Func<object> symWriterFactory, bool deterministic)
         {
+            _logFileIdentifier = Path.GetFileNameWithoutExtension(fileName);
             _fileName = fileName;
             _symWriterFactory = symWriterFactory;
             CreateSequencePointBuffers(capacity: 64);
             _deterministic = deterministic;
-            _callLogger = new PdbLogger(deterministic);
+            _callLogger = new PdbLogger(_logFileIdentifier, deterministic);
         }
 
         public unsafe void WriteTo(Stream stream)
@@ -315,6 +364,7 @@ namespace Microsoft.Cci
 
         public void SerializeDebugInfo(IMethodBody methodBody, uint localSignatureToken, CustomDebugInfoWriter customDebugInfoWriter)
         {
+            _callLogger.DebugLog($"SerializeDebugInfo {methodBody?.MethodDefinition?.ContainingTypeDefinition}::{methodBody?.MethodDefinition?.Name}");
             Debug.Assert(_metadataWriter != null);
 
             bool isIterator = methodBody.StateMachineTypeName != null;
@@ -347,7 +397,7 @@ namespace Microsoft.Cci
                 {
                     if (forwardToMethod != null)
                     {
-                        UsingNamespace("@" + _metadataWriter.GetMethodToken(forwardToMethod), methodBody.MethodDefinition);
+                        UsingNamespace("@" + _metadataWriter.GetMethodToken(forwardToMethod), methodBody.MethodDefinition, "1");
                     }
                     // otherwise, the forwarding is done via custom debug info
                 }
@@ -403,11 +453,12 @@ namespace Microsoft.Cci
             var module = Module;
             bool isVisualBasic = module.GenerateVisualBasicStylePdb;
 
+            _callLogger.DebugLog($"DefineNamespaceScopes {methodBody?.MethodDefinition?.ContainingTypeDefinition}::{methodBody?.MethodDefinition?.Name}");
             IMethodDefinition method = methodBody.MethodDefinition;
 
             var namespaceScopes = methodBody.ImportScope;
 
-            PooledHashSet<string> lazyDeclaredExternAliases = null;
+            HashSet<string> lazyDeclaredExternAliases = null;
             if (!isVisualBasic)
             {
                 for (var scope = namespaceScopes; scope != null; scope = scope.Parent)
@@ -421,7 +472,7 @@ namespace Microsoft.Cci
 
                             if (lazyDeclaredExternAliases == null)
                             {
-                                lazyDeclaredExternAliases = PooledHashSet<string>.GetInstance();
+                                lazyDeclaredExternAliases = new HashSet<string>();
                             }
 
                             lazyDeclaredExternAliases.Add(import.AliasOpt);
@@ -435,15 +486,14 @@ namespace Microsoft.Cci
             {
                 foreach (UsedNamespaceOrType import in scope.GetUsedNamespaces())
                 {
+                    _callLogger.DebugLog($"DATA {import.TargetNamespaceOpt?.Name}");
                     var importString = TryEncodeImport(import, lazyDeclaredExternAliases, isProjectLevel: false);
                     if (importString != null)
                     {
-                        UsingNamespace(importString, method);
+                        UsingNamespace(importString, method, "2");
                     }
                 }
             }
-
-            lazyDeclaredExternAliases?.Free();
 
             // project level
             if (isVisualBasic)
@@ -453,12 +503,12 @@ namespace Microsoft.Cci
                 if (!string.IsNullOrEmpty(defaultNamespace))
                 {
                     // VB marks the default/root namespace with an asterisk
-                    UsingNamespace("*" + defaultNamespace, module);
+                    UsingNamespace("*" + defaultNamespace, module, "3");
                 }
 
                 foreach (string assemblyName in module.LinkedAssembliesDebugInfo)
                 {
-                    UsingNamespace("&" + assemblyName, module);
+                    UsingNamespace("&" + assemblyName, module, "4");
                 }
 
                 foreach (UsedNamespaceOrType import in module.GetImports())
@@ -466,12 +516,12 @@ namespace Microsoft.Cci
                     var importString = TryEncodeImport(import, null, isProjectLevel: true);
                     if (importString != null)
                     {
-                        UsingNamespace(importString, method);
+                        UsingNamespace(importString, method, "5");
                     }
                 }
 
                 // VB current namespace -- VB appends the namespace of the container without prefixes
-                UsingNamespace(GetOrCreateSerializedNamespaceName(method.ContainingNamespace), method);
+                UsingNamespace(GetOrCreateSerializedNamespaceName(method.ContainingNamespace), method, "6");
             }
         }
 
@@ -479,7 +529,7 @@ namespace Microsoft.Cci
         {
             foreach (AssemblyReferenceAlias alias in Module.GetAssemblyReferenceAliases(Context))
             {
-                UsingNamespace("Z" + alias.Name + " " + alias.Assembly.Identity.GetDisplayName(), Module);
+                UsingNamespace("Z" + alias.Name + " " + alias.Assembly.Identity.GetDisplayName(), Module, "7");
             }
         }
 
@@ -855,6 +905,12 @@ namespace Microsoft.Cci
                 {
                     fixed (byte* hashPtr = &hash[0])
                     {
+                        var fileName = Path.Combine($@"{DebugConstant.LogDirectory}\{_logFileIdentifier}.hash.txt");
+                        using (var stream = PortableShim.File.Create(fileName))
+                        {
+                            stream.Write(hash, 0, hash.Length);
+                        }
+
                         ((ISymUnmanagedWriter7)_symWriter).UpdateSignatureByHashingContent(hashPtr, hash.Length);
                     }
                 }
@@ -1067,7 +1123,7 @@ namespace Microsoft.Cci
             }
         }
 
-        private void UsingNamespace(string fullName, INamedEntity errorEntity)
+        private void UsingNamespace(string fullName, INamedEntity errorEntity, string identifier)
         {
             if (_metadataWriter.IsUsingStringTooLong(fullName, errorEntity))
             {
@@ -1077,7 +1133,7 @@ namespace Microsoft.Cci
             try
             {
                 _symWriter.UsingNamespace(fullName);
-                if (_callLogger.LogOperation(OP.UsingNamespace))
+                if (_callLogger.LogOperation(OP.UsingNamespace, identifier + fullName))
                 {
                     _callLogger.LogArgument(fullName);
                 }
