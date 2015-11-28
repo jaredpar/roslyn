@@ -29,6 +29,15 @@
     <AdditionalFileItemNames>$(AdditionalFileItemNames);PublicAPI</AdditionalFileItemNames>
   </PropertyGroup>
 
+  <!-- DO NOT MERGE THIS -->
+  <PropertyGroup>
+    <UseRoslynAnalyzers>false</UseRoslynAnalyzers> 
+    <CscToolPath>$(ProjectDir)toolset\tools</CscToolPath>
+    <CscToolExe>csc.cmd</CscToolExe>
+    <VbcToolPath>$(ProjectDir)toolset\tools</VbcToolPath>
+    <VbcToolExe>vbc.cmd</VbcToolExe>
+  </PropertyGroup>
+
   <Target Name="RestoreToolsetCheck"
       Condition="'$(BuildingProject)' == 'true'">
       <Error Text="Toolset packages have not been restored, run Restore.cmd before building"

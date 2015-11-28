@@ -6,7 +6,8 @@
   <!-- At the moment Jenkins runs on a machine without any build of Visual Studio 2015.  Hence we must
        use a 2013 compatible solution. -->
   <PropertyGroup>
-    <RoslynSolution Condition="'$(RoslynSolution)' == ''">$(MSBuildThisFileDirectory)Roslyn.sln</RoslynSolution>
+    <!-- DO NOT CHECK THIS IN -->
+    <RoslynSolution Condition="'$(RoslynSolution)' == ''">$(MSBuildThisFileDirectory)Compilers.sln</RoslynSolution>
     <SamplesSolution>$(MSBuildThisFileDirectory)src\Samples\Samples.sln</SamplesSolution>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <RunTestArgs Condition="'$(ManualTest)' == ''">$(RunTestArgs) -xml</RunTestArgs>
@@ -25,7 +26,7 @@
              Properties="RestorePackages=false;TreatWarningsAsErrors=true"
              Targets="Build"/>
     <MSBuild BuildInParallel="true"
-             Condition="'$(ManualTest)' == ''"
+             Condition="'$(ManualTest)' == '' AND '$(TestBuild)' == ''"
              Projects="$(SamplesSolution)"
              Properties="RestorePackages=false;TreatWarningsAsErrors=true"
              Targets="Build"/>
@@ -37,7 +38,7 @@
              Properties="RestorePackages=false"
              Targets="Clean"/>
     <MSBuild BuildInParallel="true"
-             Condition="'$(ManualTest)' == ''"
+             Condition="'$(ManualTest)' == '' AND '$(TestBuild)' == ''"
              Projects="$(SamplesSolution)"
              Properties="RestorePackages=false"
              Targets="Clean"/>
