@@ -43,6 +43,10 @@
     </When>
   </Choose>
 
+  <PropertyGroup Condition="'$(DelaySign)' == 'true' AND '$(ShouldSignBuild)' != 'true'">
+    <PublicSign>true</PublicSign>
+  </PropertyGroup>
+
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.VisualBasic.targets"
           Condition="'$(ProjectLanguage)' == 'VB' And '$(TargetFrameworkIdentifier)' == '.NETPortable'"/>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
@@ -214,7 +218,7 @@
 
   <Target Name="PostCompileBinaryModification"
           AfterTargets="CoreCompile"
-          DependsOnTargets="ApplyOptimizations;FakeSign"
+          DependsOnTargets="ApplyOptimizations"
           Inputs="@(IntermediateAssembly)"
           Outputs="@(IntermediateAssembly);$(PostCompileBinaryModificationSentinelFile)">
 
@@ -261,18 +265,6 @@
     <RunningInMicroBuild Condition="Exists('$(TF_BUILD_BUILDDIRECTORY)\MicroBuild\MicroBuild.Signing.dll')">true</RunningInMicroBuild>
     <ShouldSignBuild Condition="'$(RealSignBuild)' == 'true' OR ('$(RunningInMicroBuild)' == 'true' AND '$(SignType)' == 'real')">true</ShouldSignBuild>
   </PropertyGroup>
-
-  <Target Name="FakeSign"
-          Condition="'$(DelaySign)' == 'true' AND
-                     '$(ShouldSignBuild)' != 'true' AND
-                     ('$(Language)' == 'C#' OR '$(Language)' == 'VB') AND
-                     '$(BuildingProject)' == 'true'"
-          Inputs="@(IntermediateAssembly)"
-          Outputs="@(IntermediateAssembly);$(PostCompileBinaryModificationSentinelFile)">
-
-    <Exec Command="&quot;$(FakeSignToolPath)&quot; &quot;@(IntermediateAssembly)&quot;" />
-
-  </Target>
 
   <!-- ====================================================================================
 
