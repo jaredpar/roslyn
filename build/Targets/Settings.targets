@@ -29,7 +29,12 @@
     <AdditionalFileItemNames>$(AdditionalFileItemNames);PublicAPI</AdditionalFileItemNames>
   </PropertyGroup>
 
+  <UsingTask TaskName="Roslyn.MSBuild.Util.WriteCodeFragmentEx"
+             AssemblyFile="C:\Users\jaredpar\code\roslyn\src\Tools\BuildUtil\BuildUtil\bin\Debug\Roslyn.MSBuild.Util.dll" />
+
   <!-- DO NOT MERGE THIS -->
+
+  <!--
   <PropertyGroup>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers> 
     <CscToolPath>$(ProjectDir)toolset\tools</CscToolPath>
@@ -37,6 +42,7 @@
     <VbcToolPath>$(ProjectDir)toolset\tools</VbcToolPath>
     <VbcToolExe>vbc.cmd</VbcToolExe>
   </PropertyGroup>
+  -->
 
   <Target Name="RestoreToolsetCheck"
       Condition="'$(BuildingProject)' == 'true'">
