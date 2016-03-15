@@ -20,7 +20,8 @@ $script:dataMap = @{}
 function Run-Build()
 {
     param ( [string]$rootDir = $(throw "Need a root directory to build"),
-            [bool]$buildMap = $(throw "Are we building the map"))
+            [bool]$buildMap = $(throw "Are we building the map"),
+            [string]$pathMapBuildOption = "")
             
     $sln = join-path $rootDir "Roslyn.sln"
     $debugDir = join-path $rootDir "Binaries\Debug"
@@ -43,7 +44,7 @@ function Run-Build()
     & msbuild /nologo /v:m /nodeReuse:false /t:clean $sln
 
     write-host "Building the Solution"
-    & msbuild /nologo /v:m /nodeReuse:false /m /p:DebugDeterminism=true /p:BootstrapBuildPath=$script:buildDir /p:Features=debug-determinism /p:UseRoslynAnalyzers=false $sln
+    & msbuild /nologo /v:m /nodeReuse:false /m /p:DebugDeterminism=true /p:BootstrapBuildPath=$script:buildDir /p:Features=debug-determinism /p:UseRoslynAnalyzers=false $pathMapBuildOption $sln
 
     popd
 
@@ -127,10 +128,19 @@ try
         exit 1
     }
 
-    $rootDir = resolve-path (split-path -parent (split-path -parent $PSScriptRoot))
-    Run-Build -rootDir $rootDir -buildMap $true
-    Run-Build -rootDir $rootDir -buildMap $false
-    Run-Build -rootDir $rootDir -buildMap $false
+    $origRootDir = resolve-path (split-path -parent (split-path -parent $PSScriptRoot))
+
+    # Build the map and verify a rebuild will produce identical binaries. 
+    Run-Build -rootDir $origRootDir -buildMap $true
+    Run-Build -rootDir $origRootDir -buildMap $false
+
+    # Now to vet the path option we will copy source to a new directory and 
+    # use pathmap to make the result the same.
+    $origBinDir = join-path $origRootDir "Binaries"
+    $altRootDir = join-path $origBinDir "q"
+    & robocopy $origRootDir $altRootDir /E /XD $origBinDir /XD ".git" /njh /njs /ndl /nc /ns /np /nfl
+    $pathMapBuildOption = "/p:PathMap=`"$altRootDir=$origRootDir`""
+    Run-Build -rootDir $altRootDir -buildMap $false -pathMapBuildOption $pathMapBuildOption
 
     exit 0
 }
