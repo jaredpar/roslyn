@@ -23,7 +23,7 @@ function Run-Build()
             [bool]$buildMap = $(throw "Are we building the map"),
             [string]$pathMapBuildOption = "")
             
-    $sln = join-path $rootDir "Roslyn.sln"
+    $sln = join-path $rootDir "build\Toolset.sln"
     $debugDir = join-path $rootDir "Binaries\Debug"
     $errorDir = join-path $rootDir "Binaries\Determinism"
     $errorList = @()
@@ -53,6 +53,7 @@ function Run-Build()
     write-host "Testing the binaries"
     foreach ($dll in gci -re -in *.dll,*.exe) {
         $dllFullName = $dll.FullName
+        $dllId = $dllFullName.Substring($debugDir.Length)
         $dllName = split-path -leaf $dllFullName
         $dllHash = (get-filehash $dll -algorithm MD5).Hash
         $keyFullName = $dllFullName + ".key"
@@ -72,10 +73,15 @@ function Run-Build()
             $data["Hash"] = $dllHash
             $data["Content"] = [IO.File]::ReadAllBytes($dllFullName)
             $data["Key"] = [IO.File]::ReadAllBytes($dllFullName + ".key")
-            $script:dataMap[$dllFullName] = $data
+            $script:dataMap[$dllId] = $data
+        }
+        elseif (-not $script:dataMap.Contains($dllId)) {
+            write-host "Missing entry in map $dllId->$dllFullName"
+            $allGood = $false
         }
         else {
-            $data = $script:dataMap[$dllFullName]
+            $data = $script:dataMap[$dllId]
+            write-host "here 2"
             $oldHash = $data.Hash
             if ($oldHash -eq $dllHash) {
                 write-host "`tVerified $dllName"
@@ -132,7 +138,7 @@ try
 
     # Build the map and verify a rebuild will produce identical binaries. 
     Run-Build -rootDir $origRootDir -buildMap $true
-    Run-Build -rootDir $origRootDir -buildMap $false
+    # Run-Build -rootDir $origRootDir -buildMap $false
 
     # Now to vet the path option we will copy source to a new directory and 
     # use pathmap to make the result the same.
