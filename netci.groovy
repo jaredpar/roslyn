@@ -8,7 +8,7 @@ def projectName = GithubProject
 // The input branch name (e.g. master)
 def branchName = GithubBranchName
 // Folder that the project jobs reside in (project/branch)
-def projectFoldername = Utilities.getFolderName(project) + '/' + Utilities.getFolderName(branch)
+def projectFoldername = Utilities.getFolderName(projectName) + '/' + Utilities.getFolderName(branchName)
 
 // Email the results of aborted / failed jobs to our infrastructure alias
 static void addEmailPublisher(def myJob) {
