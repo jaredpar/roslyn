@@ -3,7 +3,12 @@
 
 import jobs.generation.Utilities;
 
-def project = GithubProject
+// The input project name (e.g. dotnet/corefx)
+def projectName = GithubProject
+// The input branch name (e.g. master)
+def branchName = GithubBranchName
+// Folder that the project jobs reside in (project/branch)
+def projectFoldername = Utilities.getFolderName(project) + '/' + Utilities.getFolderName(branch)
 
 // Email the results of aborted / failed jobs to our infrastructure alias
 static void addEmailPublisher(def myJob) {
@@ -59,93 +64,120 @@ static void addRoslynJob(def myJob, String jobName, String branchName, String tr
   addBuildEventWebHook(myJob)
 }
 
-def branchNames = []
-['master', 'future', 'stabilization', 'future-stabilization', 'hotfixes', 'prtest', 'microupdate'].each { branchName ->
-  def shortBranchName = branchName.substring(0, 6)
-  def jobBranchName = shortBranchName in branchNames ? branchName : shortBranchName
-  branchNames << jobBranchName
+// True when this is a PR job, false for commit
+def commitPullList;
+commitPullList = [false, true]
 
-  // folder("${jobBranchName}")
-  ['win', 'linux', 'mac'].each { opsys ->
-    // folder("${jobBranchName}/${opsys.substring(0, 3)}")
-    ['dbg', 'rel'].each { configuration ->
-      if ((configuration == 'dbg') || ((branchName != 'prtest') && (opsys == 'win'))) {
-        // folder("${jobBranchName}/${opsys.substring(0, 3)}/${configuration}")
-        ['unit32', 'unit64'].each { buildTarget ->
-          if ((opsys == 'win') || (buildTarget == 'unit32')) {
-            def jobName = "roslyn_${jobBranchName}_${opsys.substring(0, 3)}_${configuration}_${buildTarget}"
-            def myJob = job(jobName) {
-              description('')
-            }
-
-            // Generate the PR trigger phrase for this job.
-            String triggerKeyword = '';
-            switch (buildTarget) {
-              case 'unit32':
-                triggerKeyword =  '(unit|unit32|unit\\W+32)';
-                break;
-              case 'unit64':
-                triggerKeyword = '(unit|unit64|unit\\W+64)';
-                break;
-            }
-            String triggerPhrase = generateTriggerPhrase(jobName, opsys, triggerKeyword);
-            Boolean triggerPhraseOnly = false;
-
-            switch (opsys) {
-              case 'win':
-                myJob.with {
-                  steps {
-                    batchFile("""set TEMP=%WORKSPACE%\\Binaries\\Temp
+commitPullList.each { isPr -> 
+  ['dbg', 'rel'].each { configuration ->
+    ['unit32', 'unit64'].each { buildTarget ->
+      def jobName = "win_${configuration}_{$buildTarget}"
+      def myJob = job(jobName) {
+        description("Windows ${configuration} tests on ${buildTarget}")
+        steps {
+          batchFile("""set TEMP=%WORKSPACE%\\Binaries\\Temp
 mkdir %TEMP%
 set TMP=%TEMP%
 .\\cibuild.cmd ${(configuration == 'dbg') ? '/debug' : '/release'} ${(buildTarget == 'unit32') ? '/test32' : '/test64'}""")
-                  }
-                }
-                Utilities.setMachineAffinity(myJob, 'Windows_NT', 'latest-or-auto')
-                break;
-              case 'linux':
-                myJob.with {
-                  steps {
-                    shell("./cibuild.sh --nocache --debug")
-                  }
-                }
-                Utilities.setMachineAffinity(myJob, 'Ubuntu14.04', 'latest-or-auto')
-                break;
-              case 'mac':
-                myJob.with {
-                  label('mac-roslyn')
-                  steps {
-                    shell("./cibuild.sh --nocache --debug")
-                  }
-                }
-                triggerPhraseOnly = true;
-                break;
-            }
-
-            Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
-            addRoslynJob(myJob, jobName, branchName, triggerPhrase, triggerPhraseOnly)
-          }
         }
       }
+
+      def triggerPhraseOnly = configuration == 'rel'   
+      def triggerPhrase = "DO NOT CHECK IN"
+      Utilities.setMachineAffinity(myJob, 'Windows_NT', 'latest-or-auto')
+      Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
+      addRoslynJob(myJob, jobName, branchName, triggerPhrase, triggerPhraseOnly)
     }
   }
-
-  def determinismJobName = "roslyn_${jobBranchName}_determinism"
-  def determinismJob = job(determinismJobName) {
-    description('')
-  }
-
-  determinismJob.with {
-    label('windows-roslyn')
-    steps {
-      batchFile("""set TEMP=%WORKSPACE%\\Binaries\\Temp
-mkdir %TEMP%
-set TMP=%TEMP%
-.\\cibuild.cmd /testDeterminism""")
-    }
-  }
-
-  Utilities.setMachineAffinity(determinismJob, 'Windows_NT', 'latest-or-auto')
-  addRoslynJob(determinismJob, determinismJobName, branchName,  "(?i).*test\\W+determinism.*", true);
 }
+
+// def branchNames = []
+// ['master', 'future', 'stabilization', 'future-stabilization', 'hotfixes', 'prtest', 'microupdate'].each { branchName ->
+//   def shortBranchName = branchName.substring(0, 6)
+//   def jobBranchName = shortBranchName in branchNames ? branchName : shortBranchName
+//   branchNames << jobBranchName
+// 
+//   // folder("${jobBranchName}")
+//   ['win', 'linux', 'mac'].each { opsys ->
+//     // folder("${jobBranchName}/${opsys.substring(0, 3)}")
+//     ['dbg', 'rel'].each { configuration ->
+//       if ((configuration == 'dbg') || ((branchName != 'prtest') && (opsys == 'win'))) {
+//         // folder("${jobBranchName}/${opsys.substring(0, 3)}/${configuration}")
+//         ['unit32', 'unit64'].each { buildTarget ->
+//           if ((opsys == 'win') || (buildTarget == 'unit32')) {
+//             def jobName = "roslyn_${jobBranchName}_${opsys.substring(0, 3)}_${configuration}_${buildTarget}"
+//             def myJob = job(jobName) {
+//               description('')
+//             }
+// 
+//             // Generate the PR trigger phrase for this job.
+//             String triggerKeyword = '';
+//             switch (buildTarget) {
+//               case 'unit32':
+//                 triggerKeyword =  '(unit|unit32|unit\\W+32)';
+//                 break;
+//               case 'unit64':
+//                 triggerKeyword = '(unit|unit64|unit\\W+64)';
+//                 break;
+//             }
+//             String triggerPhrase = generateTriggerPhrase(jobName, opsys, triggerKeyword);
+//             Boolean triggerPhraseOnly = false;
+// 
+//             switch (opsys) {
+//               case 'win':
+//                 myJob.with {
+//                   steps {
+//                     batchFile("""set TEMP=%WORKSPACE%\\Binaries\\Temp
+// mkdir %TEMP%
+// set TMP=%TEMP%
+// .\\cibuild.cmd ${(configuration == 'dbg') ? '/debug' : '/release'} ${(buildTarget == 'unit32') ? '/test32' : '/test64'}""")
+//                   }
+//                 }
+//                 Utilities.setMachineAffinity(myJob, 'Windows_NT', 'latest-or-auto')
+//                 break;
+//               case 'linux':
+//                 myJob.with {
+//                   steps {
+//                     shell("./cibuild.sh --nocache --debug")
+//                   }
+//                 }
+//                 Utilities.setMachineAffinity(myJob, 'Ubuntu14.04', 'latest-or-auto')
+//                 break;
+//               case 'mac':
+//                 myJob.with {
+//                   label('mac-roslyn')
+//                   steps {
+//                     shell("./cibuild.sh --nocache --debug")
+//                   }
+//                 }
+//                 triggerPhraseOnly = true;
+//                 break;
+//             }
+// 
+//             Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
+//             addRoslynJob(myJob, jobName, branchName, triggerPhrase, triggerPhraseOnly)
+//           }
+//         }
+//       }
+//     }
+//   }
+// 
+//   def determinismJobName = "roslyn_${jobBranchName}_determinism"
+//   def determinismJob = job(determinismJobName) {
+//     description('')
+//   }
+// 
+//   determinismJob.with {
+//     label('windows-roslyn')
+//     steps {
+//       batchFile("""set TEMP=%WORKSPACE%\\Binaries\\Temp
+// mkdir %TEMP%
+// set TMP=%TEMP%
+// .\\cibuild.cmd /testDeterminism""")
+//     }
+//   }
+// 
+//   Utilities.setMachineAffinity(determinismJob, 'Windows_NT', 'latest-or-auto')
+//   addRoslynJob(determinismJob, determinismJobName, branchName,  "(?i).*test\\W+determinism.*", true);
+// }
 
