@@ -4,7 +4,7 @@
 import jobs.generation.Utilities;
 
 // The input project name (e.g. dotnet/corefx)
-static def projectName = GithubProject
+def projectName = GithubProject
 // The input branch name (e.g. master)
 def branchName = GithubBranchName
 // Folder that the project jobs reside in (project/branch)
@@ -47,6 +47,7 @@ static void addRoslynJob(def myJob, String jobName, String branchName, Boolean i
   Utilities.addArchival(myJob, includePattern, excludePattern)
 
   // Create the standard job.  This will setup parameter, SCM, timeout, etc ...
+  def projectName = 'dotnet/roslyn'
   def defaultBranch = "*/${branchName}"
   Utilities.standardJobSetup(myJob, projectName, isPr, defaultBranch)
 
