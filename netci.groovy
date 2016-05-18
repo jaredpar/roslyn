@@ -41,14 +41,12 @@ static String generateTriggerPhrase(String jobName, String opsysName, String tri
     return "(?i).*test\\W+(${jobName.replace('_', '/').substring(7)}|${opsysName}|${triggerKeyword}|${opsysName}\\W+${triggerKeyword}|${triggerKeyword}\\W+${opsysName})\\W+please.*";
 }
 
-static void addRoslynJob(def myJob, String jobName, String branchName, String triggerPhrase, Boolean triggerPhraseOnly = false) {
+static void addRoslynJob(def myJob, String jobName, String branchName, Boolean isPr, String triggerPhrase, Boolean triggerPhraseOnly = false) {
   def includePattern = "Binaries/**/*.pdb,Binaries/**/*.xml,Binaries/**/*.log,Binaries/**/*.dmp,Binaries/**/*.zip,Binaries/**/*.png,Binaries/**/*.xml"
   def excludePattern = "Binaries/Obj/**,Binaries/Bootstrap/**,Binaries/**/nuget*.zip"
   Utilities.addArchival(myJob, includePattern, excludePattern)
 
   // Create the standard job.  This will setup parameter, SCM, timeout, etc ...
-  def projectName = 'dotnet/roslyn'
-  def isPr = branchName == 'prtest'
   def defaultBranch = "*/${branchName}"
   Utilities.standardJobSetup(myJob, projectName, isPr, defaultBranch)
 
@@ -87,7 +85,7 @@ set TMP=%TEMP%
       def triggerPhrase = "DO NOT CHECK IN"
       Utilities.setMachineAffinity(myJob, 'Windows_NT', 'latest-or-auto')
       Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
-      addRoslynJob(myJob, jobName, branchName, triggerPhrase, triggerPhraseOnly)
+      addRoslynJob(myJob, jobName, branchName, isPr, triggerPhrase, triggerPhraseOnly)
     }
   }
 }
@@ -106,7 +104,7 @@ commitPullList.each { isPr ->
   def triggerPhrase = "DO NOT CHECK IN"
   Utilities.setMachineAffinity(myJob, 'Ubuntu14.04', 'latest-or-auto')
   Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
-  addRoslynJob(myJob, jobName, branchName, triggerPhrase, triggerPhraseOnly)
+  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhrase, triggerPhraseOnly)
 }
 
 // Mac
@@ -123,7 +121,7 @@ commitPullList.each { isPr ->
   def triggerPhraseOnly = true
   def triggerPhrase = "DO NOT CHECK IN"
   Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
-  addRoslynJob(myJob, jobName, branchName, triggerPhrase, triggerPhraseOnly)
+  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhrase, triggerPhraseOnly)
 }
 
 // Determinism
@@ -143,5 +141,5 @@ set TMP=%TEMP%
   def triggerPhraseOnly = true
   def triggerPhrase = "DO NOT CHECK IN"
   Utilities.setMachineAffinity(myJob, 'Windows_NT', 'latest-or-auto')
-  addRoslynJob(myJob, jobName, branchName, triggerPhrase, triggerPhraseOnly)
+  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhrase, triggerPhraseOnly)
 }
