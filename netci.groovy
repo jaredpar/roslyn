@@ -63,9 +63,11 @@ static void addRoslynJob(def myJob, String jobName, String branchName, Boolean i
   addBuildEventWebHook(myJob)
 }
 
-// True when this is a PR job, false for commit
-def commitPullList;
-commitPullList = [false, true]
+// True when this is a PR job, false for commit.  On feature branches we do PR jobs only. 
+def commitPullList = [false, true]
+if (branchName.startsWith("features/") {
+  commitPullList = [true]
+} 
 
 // Windows     
 commitPullList.each { isPr -> 
