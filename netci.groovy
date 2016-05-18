@@ -71,7 +71,7 @@ commitPullList = [false, true]
 commitPullList.each { isPr -> 
   ['dbg', 'rel'].each { configuration ->
     ['unit32', 'unit64'].each { buildTarget ->
-      def jobName = "win_${configuration}_{$buildTarget}"
+      def jobName = "win_${configuration}_${buildTarget}"
       def myJob = job(jobName) {
         description("Windows ${configuration} tests on ${buildTarget}")
         steps {
