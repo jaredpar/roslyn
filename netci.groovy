@@ -129,7 +129,7 @@ commitPullList.each { isPr ->
 // Determinism
 commitPullList.each { isPr -> 
   def jobName = Utilities.getFullJobName(projectName, "determinism", isPr)
-  def myJob = job(determinismJobName) {
+  def myJob = job(jobName) {
     description('Determinism tests')
     label('windows-roslyn')
     steps {
