@@ -65,7 +65,7 @@ static void addRoslynJob(def myJob, String jobName, String branchName, Boolean i
 
 // True when this is a PR job, false for commit.  On feature branches we do PR jobs only. 
 def commitPullList = [false, true]
-if (branchName.startsWith("features/") {
+if (branchName.startsWith("features/")) {
   commitPullList = [true]
 } 
 
