@@ -4,7 +4,7 @@
 import jobs.generation.Utilities;
 
 // The input project name (e.g. dotnet/corefx)
-def projectName = GithubProject
+static def projectName = GithubProject
 // The input branch name (e.g. master)
 def branchName = GithubBranchName
 // Folder that the project jobs reside in (project/branch)
