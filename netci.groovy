@@ -54,7 +54,7 @@ static void addRoslynJob(def myJob, String jobName, String branchName, String tr
 
   // Need to setup the triggers for the job
   if (isPr) {
-    def contextName = jobName.replace('_', '/').substring(7)
+    def contextName = jobName.replace('_', '/')
     Utilities.addGithubPRTrigger(myJob, contextName, triggerPhrase, triggerPhraseOnly)
   } else {
     Utilities.addGithubPushTrigger(myJob)
@@ -70,7 +70,7 @@ commitPullList = [false, true]
 
 // Windows     
 commitPullList.each { isPr -> 
-  ['dbg', 'rel'].each { configuration ->
+  ['debug', 'release'].each { configuration ->
     ['unit32', 'unit64'].each { buildTarget ->
       def jobName = Utilities.getFullJobName(projectName, "win_${configuration}_${buildTarget}", isPr)
       def myJob = job(jobName) {
@@ -79,11 +79,11 @@ commitPullList.each { isPr ->
           batchFile("""set TEMP=%WORKSPACE%\\Binaries\\Temp
 mkdir %TEMP%
 set TMP=%TEMP%
-.\\cibuild.cmd ${(configuration == 'dbg') ? '/debug' : '/release'} ${(buildTarget == 'unit32') ? '/test32' : '/test64'}""")
+.\\cibuild.cmd ${(configuration == 'debug') ? '/debug' : '/release'} ${(buildTarget == 'unit32') ? '/test32' : '/test64'}""")
         }
       }
 
-      def triggerPhraseOnly = configuration == 'rel'   
+      def triggerPhraseOnly = configuration == 'release'   
       def triggerPhrase = "DO NOT CHECK IN"
       Utilities.setMachineAffinity(myJob, 'Windows_NT', 'latest-or-auto')
       Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
@@ -94,7 +94,7 @@ set TMP=%TEMP%
 
 // Linux
 commitPullList.each { isPr -> 
-  def jobName = Utilities.getFullJobName(projectName, "lin_dbg", isPr)
+  def jobName = Utilities.getFullJobName(projectName, "linux_debug", isPr)
   def myJob = job(jobName) {
     description("Linux tests")
     steps {
@@ -111,7 +111,7 @@ commitPullList.each { isPr ->
 
 // Mac
 commitPullList.each { isPr -> 
-  def jobName = Utilities.getFullJobName(projectName, "mac_dbg", isPr)
+  def jobName = Utilities.getFullJobName(projectName, "mac_debug", isPr)
   def myJob = job(jobName) {
     description("Mac tests")
     label('mac-roslyn')
@@ -128,7 +128,7 @@ commitPullList.each { isPr ->
 
 // Determinism
 commitPullList.each { isPr -> 
-  def jobName = Utilities.getFullJobName(projectName, "determinism", isPr)
+  def jobName = Utilities.getFullJobName(projectName, "windows_determinism", isPr)
   def myJob = job(jobName) {
     description('Determinism tests')
     label('windows-roslyn')
