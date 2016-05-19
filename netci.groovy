@@ -41,7 +41,7 @@ static String generateTriggerPhrase(String jobName, String opsysName, String tri
     return "(?i).*test\\W+(${jobName.replace('_', '/').substring(7)}|${opsysName}|${triggerKeyword}|${opsysName}\\W+${triggerKeyword}|${triggerKeyword}\\W+${opsysName})\\W+please.*";
 }
 
-static void addRoslynJob(def myJob, String jobName, String branchName, Boolean isPr, String triggerPhrase, Boolean triggerPhraseOnly = false) {
+static void addRoslynJob(def myJob, String jobName, String branchName, Boolean isPr, String triggerPhraseExtra, Boolean triggerPhraseOnly = false) {
   def includePattern = "Binaries/**/*.pdb,Binaries/**/*.xml,Binaries/**/*.log,Binaries/**/*.dmp,Binaries/**/*.zip,Binaries/**/*.png,Binaries/**/*.xml"
   def excludePattern = "Binaries/Obj/**,Binaries/Bootstrap/**,Binaries/**/nuget*.zip"
   Utilities.addArchival(myJob, includePattern, excludePattern)
@@ -53,7 +53,12 @@ static void addRoslynJob(def myJob, String jobName, String branchName, Boolean i
 
   // Need to setup the triggers for the job
   if (isPr) {
-    def contextName = jobName.replace('_', '/')
+    def triggerCore = "open|all|${jobName}"
+    if (triggerPhraseExtra) {
+      triggerCore = "${triggerCore}|${triggerPhraseExtra}"
+    }
+    def triggerPhrase = "(?i).*test\\W+(${triggerCore})\\W+please.*";
+    def contextName = jobName
     Utilities.addGithubPRTriggerForBranch(myJob, branchName, contextName, triggerPhrase, triggerPhraseOnly)
   } else {
     Utilities.addGithubPushTrigger(myJob)
@@ -85,10 +90,10 @@ set TMP=%TEMP%
       }
 
       def triggerPhraseOnly = configuration == 'release'   
-      def triggerPhrase = "DO NOT CHECK IN"
+      def triggerPhraseExtra = ""
       Utilities.setMachineAffinity(myJob, 'Windows_NT', 'latest-or-auto')
       Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
-      addRoslynJob(myJob, jobName, branchName, isPr, triggerPhrase, triggerPhraseOnly)
+      addRoslynJob(myJob, jobName, branchName, isPr, triggerPhraseExtra, triggerPhraseOnly)
     }
   }
 }
@@ -104,10 +109,10 @@ commitPullList.each { isPr ->
   }
 
   def triggerPhraseOnly = false
-  def triggerPhrase = "DO NOT CHECK IN"
+  def triggerPhraseExtra = ""
   Utilities.setMachineAffinity(myJob, 'Ubuntu14.04', 'latest-or-auto')
   Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
-  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhrase, triggerPhraseOnly)
+  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhraseExtra, triggerPhraseOnly)
 }
 
 // Mac
@@ -122,9 +127,9 @@ commitPullList.each { isPr ->
   }
 
   def triggerPhraseOnly = true
-  def triggerPhrase = "DO NOT CHECK IN"
+  def triggerPhraseExtra = ""
   Utilities.addXUnitDotNETResults(myJob, '**/xUnitResults/*.xml')
-  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhrase, triggerPhraseOnly)
+  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhraseExtra, triggerPhraseOnly)
 }
 
 // Determinism
@@ -142,7 +147,7 @@ set TMP=%TEMP%
   }
  
   def triggerPhraseOnly = true
-  def triggerPhrase = "DO NOT CHECK IN"
+  def triggerPhraseExtra = ""
   Utilities.setMachineAffinity(myJob, 'Windows_NT', 'latest-or-auto')
-  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhrase, triggerPhraseOnly)
+  addRoslynJob(myJob, jobName, branchName, isPr, triggerPhraseExtra, triggerPhraseOnly)
 }
