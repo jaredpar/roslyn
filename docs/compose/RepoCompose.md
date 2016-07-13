@@ -87,6 +87,8 @@ TDB
 
 ## Command: publish
 
+TDB
+
 ## Artifact Specification
 
 The json describing artifacts is the same between the `consume`, `produces` and `publish` commands.  These items can be used anywhere artifacts are listed above.
