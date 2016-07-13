@@ -1,9 +1,9 @@
 
 The 
 
-## consumes
+## Command: consumes
 
-The `consumes` command produces json output that describes all of the external artifacts consumed by this repo.  This includes NuGet feeds, packages and arbitrary files from the web or file system.  The format of all these items is describe in the Artifact Specification section below. 
+The `consumes` command returns json output that describes all of the external artifacts consumed by this repo.  This includes NuGet feeds, packages and arbitrary files from the web or file system.  The format of all these items is describe in the Artifact Specification section below. 
 
 The artifacts are grouped into three sections: 
 
@@ -53,10 +53,45 @@ In addition to artifacts the consume feed can also optionally list any machine p
 
 A full sample output for `consumes` is available in the Samples section.
 
-## Artifact Specificatio
-The JSON describing artifacts is the same between the `consume` and `produces` command.  These items can be used anywhere artifacts are listed above.
+## Command: produces
 
-### NuGt packages
+The `produces` command returs json output which describes the artifacts produced by the the repo.  This includes NuGet packages and file artifacts.  
+
+The output format for artifacts is special for `produces` because it lacks any hard location information.  For example: 
+
+- NuGet artifacts lack feeds
+- File artifacts lack a `"kind"` and supporting values
+
+This is because the `produces` command represents "what" a repo produces, not "where" the repo produces it.  The "where" portion is controled by the `publish` command.  External components will take the output of `produces`, add the location information in and feed it back to `publish`.  
+
+Like `consumes` the `produces` output is also grouped by the operating system:
+
+``` json
+{
+    "os-windows": {
+        "nuget": { },
+        "file": { }
+    },
+    "os-linux": {
+        "nuget": { },
+        "file": { }
+    }
+}
+```
+
+A ful sample output for `produces` is available in the Samples section.
+
+## Command: change
+
+TDB
+
+## Command: publish
+
+## Artifact Specification
+
+The json describing artifacts is the same between the `consume`, `produces` and `publish` commands.  These items can be used anywhere artifacts are listed above.
+
+### NuGet packages
 
 The description for NuGet artifacts is it two parts:
 
@@ -74,10 +109,10 @@ Example:
         },
         {
             "name": "dotnet-core",
-            "value="https://dotnet.myget.org/F/dotnet-core/api/v3/index.json"
+            "value": "https://dotnet.myget.org/F/dotnet-core/api/v3/index.json"
         }
     ],
-    "packages" {
+    "packages": {
         "MicroBuild.Core": "0.2.0",
         "Microsoft.NETCore.Platforms": "1.0.1"
     }
@@ -86,38 +121,94 @@ Example:
 
 ### File 
 
-Any file which is not a NuGet package should be listed as a file artifact.  These can be downloaded from the web, copied from local places on the hard drive or obtained from blob storage.  Each type of file entry has a common set of values:
+Any file which is not a NuGet package should be listed as a file artifact.  These can be downloaded from the web or copied from local places on the hard drive.  Each type of file entry will have a name uniquely identifying the artifact and a kind property specifying the remainder of the properties:
+
+    - uri: a property named `"uri"` will contain an absolute Uri for the artifact.
+    - filesystem: a property named `"location"` will contain an OS specific file path for the artifact.
+
+Example: 
 
 ``` json
-"files": {
-    "identifier": {
-        "kind": "uri / filesystem / blobstorage"
+"file": {
+    "nuget.exe":  {
+        "kind": "uri",
+        "uri": "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+    }, 
+    "run.exe": { 
+        "kind": "filesystem",
+        "location": "c:\\tools\\run.exe"
     }
 }
 ```
 
-#### File System
+## Samples
 
-Artifacts expressied via `filesystem` are available as simple file paths on the specified operating system.  No authentication should be necessary to access these values.
+### consumes
 
 ``` json
-"files": {
-
+{
+    "os-all": {
+        "dependencies": {
+            "build": { 
+                "nuget": {
+                    "feeds": [
+                        { 
+                           "name": "core-clr",
+                           "value": "https://dotnet.myget.org/F/dotnet-coreclr/api/v3/index.json" 
+                        },
+                        {
+                            "name": "dotnet-core",
+                            "value": "https://dotnet.myget.org/F/dotnet-core/api/v3/index.json"
+                        }
+                    ],
+                    "packages" {
+                        "MicroBuild.Core": "0.2.0",
+                        "Microsoft.NETCore.Platforms": "1.0.1"
+                    }
+                },
+                "file": {
+                    "nuget.exe":  {
+                        "uri": "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+                    }
+                }
+            },
+            "toolset": { 
+            },
+            "static": { 
+            }
+        },
+        "prereq": { 
+            "Microsoft Visual Studio": "2015",
+            "CMake" : "1.0"
+        } 
+    }
 }
+```
 
+### produces
 
-General purpose files can be downloaded from the web, copied from local storage or downloaded from Azure storage.  Any file which is not a NuGet package should be described this way.  
-
-The contents of the file artifacts will change based on the location they are downloaded from:
-
-``` json 
-
+``` json
+{
+    "os-all": {
+        "nuget": {
+            "packages" {
+                "MicroBuild.Core": "0.2.0",
+                "Microsoft.NETCore.Platforms": "1.0.1"
+            }
+        },
+        "file": {
+            "nuget.exe": { } 
+        }
+    }
+}
 ```
 
 Open Issues
 
-
 - why can't we use project.json + NuGet.config
+- full set of operating system identifiers
+- how can we relate file names between repos.  It's easy for us to understand that Microsoft.CodeAnalysis.nupkg is the same between repos.  How do we know that a repo which produces foo.msi is the input for a repo that consumes foo.msi? 
+
 
 ## Q/A
 
