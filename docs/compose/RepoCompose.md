@@ -1,7 +1,19 @@
 
-The 
+# Composing our repos
 
-## Command: consumes
+In order to have automated builds that compose the output of our ever growing number of repos we need to get more structured data about their relationships.  Today repos provide nothing in the way of programitic access to dependencies.  All of the information is known by the owners and as a result the builds and composition is fully manual. 
+
+Going forward repos will be given contracts, or APIs, that provide structured data about there dependencies and outputs.  This will give us the necessary data to compose our repos in our growing set of scenarios:
+
+- Linux distro builds from source
+- Official Windows signed build
+- Builds to quickly test and deploy new packages across repos
+
+These contracts will be included in the `run` command specification.  This document in particular will be discussing the commands which allow us to compose the outputs of our repos.
+
+## Commands
+
+### consumes
 
 The `consumes` command returns json output that describes all of the external artifacts consumed by this repo.  This includes NuGet feeds, packages and arbitrary files from the web or file system.  The format of all these items is describe in the Artifact Specification section below. 
 
@@ -53,7 +65,7 @@ In addition to artifacts the consume feed can also optionally list any machine p
 
 A full sample output for `consumes` is available in the Samples section.
 
-## Command: produces
+### produces
 
 The `produces` command returns json output which describes the artifacts produced by the the repo.  This includes NuGet packages and file artifacts.  
 
@@ -81,11 +93,11 @@ Like `consumes` the `produces` output is also grouped by the operating system:
 
 A ful sample output for `produces` is available in the Samples section.
 
-## Command: publish
+### publish
 
 The `publish` command takes a json input that describes the locations artifacts should be published to.  The input to this command is the output of `produces` that is augmented with location information.  
 
-## Command: change
+### change
 
 TDB
 
