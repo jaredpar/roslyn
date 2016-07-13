@@ -3,20 +3,60 @@ The
 
 ## consumes
 
-The `consumes` command produces a json file describing all of the artifacts consumed by this repo.  This can include:
+The `consumes` command produces json output that describes all of the external artifacts consumed by this repo.  This includes NuGet feeds, packages and arbitrary files from the web or file system.  The format of all these items is describe in the Artifact Specification section below. 
 
-- NuGet packages
-- NuGet feeds
-- Files from Azure
-- Files from an arbitrary URI
+The artifacts are grouped into three sections: 
 
-This list must be complete and describe all artifacts external to the repo which are downloaded / copied during a build process.  Here is an example file:
+- Build Dependencies: artifacts which are referenced as a part of the build output.  This commonly includes CoreFx, CoreClr, etc ... 
+- Toolset Dependencies: artifacts used in the production of build output.  This commonly includes NuGet.exe, compilers, etc ... 
+- Static Dependenciies: artifacts referenced as a part of the build output but are never intended to change.  This are generally used as SDK components, resources, etc ...  
 
-## Artifact Specification
+These sections are identified respectively by the following JSON sections:
 
+``` json
+"dependencies": {
+    "build": { 
+        // Build artifacts
+    },
+    "toolset": { 
+        // Toolset artifacts
+    },
+    "static": { 
+        // Static artifacts
+    }
+}
+```
+
+The data in the output is further grouped by operating system.  Builds of the same repo on different operating system can reasonably consume a different set of resources.  The output of `consumes` reflect this and allows per operating system dependencies:
+
+``` json
+{
+    "os-windows": {
+        "dependencies": { } 
+    },
+    "os-linux": {
+        "dependencies": { }
+    }
+}
+```
+
+In the case the `consumes` output doesn't want to take advantage of OS specific dependencies it can specify `"os-all"` as a catch all. 
+
+In addition to artifacts the consume feed can also optionally list any machine prerequitsites needed to build or test the repo:
+
+``` json
+"prereq": { 
+    "Microsoft Visual Studio": "2015",
+    "CMake" : "1.0",
+}
+```
+
+A full sample output for `consumes` is available in the Samples section.
+
+## Artifact Specificatio
 The JSON describing artifacts is the same between the `consume` and `produces` command.  These items can be used anywhere artifacts are listed above.
 
-### NuGet packages
+### NuGt packages
 
 The description for NuGet artifacts is it two parts:
 
@@ -72,7 +112,9 @@ The contents of the file artifacts will change based on the location they are do
 
 ``` json 
 
+```
 
+Open Issues
 
 
 - why can't we use project.json + NuGet.config
