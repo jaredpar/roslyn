@@ -55,7 +55,7 @@ A full sample output for `consumes` is available in the Samples section.
 
 ## Command: produces
 
-The `produces` command returs json output which describes the artifacts produced by the the repo.  This includes NuGet packages and file artifacts.  
+The `produces` command returns json output which describes the artifacts produced by the the repo.  This includes NuGet packages and file artifacts.  
 
 The output format for artifacts is special for `produces` because it lacks any hard location information.  For example: 
 
@@ -81,11 +81,11 @@ Like `consumes` the `produces` output is also grouped by the operating system:
 
 A ful sample output for `produces` is available in the Samples section.
 
-## Command: change
-
-TDB
-
 ## Command: publish
+
+The `publish` command takes a json input that describes the locations artifacts should be published to.  The input to this command is the output of `produces` that is augmented with location information.  
+
+## Command: change
 
 TDB
 
@@ -205,19 +205,25 @@ Example:
 }
 ```
 
-Open Issues
+## FAQ
 
-- why can't we use project.json + NuGet.config
-- full set of operating system identifiers
-- how can we relate file names between repos.  It's easy for us to understand that Microsoft.CodeAnalysis.nupkg is the same between repos.  How do we know that a repo which produces foo.msi is the input for a repo that consumes foo.msi? 
+### Why can't we use project.json + NuGet.config
 
+At a glance it appears that much of the information described here is simply the contents of NuGet.config and the project.json in the repo.  That is possibly true for small repos.  For repos of significant size and dependencies more structure is needed to describe the intent of a given project.json in the repo.
 
-## Q/A
+For example at the time of this writing [dotnet/roslyn](https://github.com/dotnet/roslyn) contains 40+ project.json files.  It's not possible to know which of these represent build dependencies, tooling or static dependencies.  The repo has to provide a mechanism to discover this.
 
 ### This looks a lot like a package manager. 
 
-Indeed it does. 
+Indeed it does. If there is an existing package manager specification which meets our needs here I'm happy to see if we can leverage it.  
 
 ### Your samples have comments in JSON.  That's not legal.
 
-Understood.  That's why they are samples.  It's meant to clarify the problem. 
+Yes they do.  It's a sample :smile:
+
+## Open Issues
+
+There are a series of open issues we need to track down here.
+
+- What is the full set of operating system identifiers?  The set I have listed above is just a place holder and was given no real thought.  More information is needed here. 
+- How can we relate file names between repos.  It's easy for us to understand that Microsoft.CodeAnalysis.nupkg is the same between repos.  How do we know that a repo which produces core-setup.msi is the input for a repo that consumes core-setup.msi?  Perhaps we have to say that output file identifiers must be unique across repos?  That seems like the simplest approach.
