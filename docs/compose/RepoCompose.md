@@ -245,7 +245,12 @@ Example:
 
 ## Implementation Stages
 
-TBD describe the implementation stages
+Fully implementing the commands described in this document requires a decent amount of work.  The expectation is that it will be implemented in stages.  Each stage provides benefit to an existing tool or allows us to write a new tool for a major scenario:
+
+- Stage 1: NuGet build information.  NuGet packages are how the majority of repo artifacts are shared today.  Getting the NuGet section of the above commands implemented allows us to automate the majority of our composed builds.  This is really just a formalization of the commands repos already implement as a part of being inside the Maestro tool.  
+- Stage 2: Remainder of artifacts:  Fill out the build and toolset sections with all of the other file / NuGet dependencies.  This output will allow us to fully understand the tools required for composed builds.  
+- Stage 3: Pre-req information.  Having correct prereq information will allow us to understand how to create and provision build machines.
+- Stage 4: Change command for all artifacts.  The ability to change a dependency from downloading nuget.exe from nuget.org to a place on the local file system.  This will give us the ability to implement fully offline builds.  
 
 ## FAQ
 
