@@ -183,15 +183,17 @@
   <!-- Determine the appropriate build tools to us.  When doing an official build we need to use the RC2 SDK
        in order to produce the correct V3 VSIX.  Otherwise default to the current Dev15 build the code 
        is sync'd with when possible -->
+  <!--
   <Choose>
-    <When Condition="'$(OfficialBuild)' == 'true' or '$(IsDev15RC)' == 'true'">
+    <When Condition="'$(IsDev15RC)' == 'true'">
       <PropertyGroup>
-        <VisualStudioBuildToolsVersion>15.0.25825-RC</VisualStudioBuildToolsVersion>
+        <VisualStudioBuildToolsVersion>15.0.25907-RC2</VisualStudioBuildToolsVersion>
+        <BypassVsixValidation>true</BypassVsixValidation>
       </PropertyGroup>
     </When>
     <When Condition="'$(IsDev15Vsix)' == 'true'">
       <PropertyGroup>
-        <VisualStudioBuildToolsVersion>15.0.25728-Preview5</VisualStudioBuildToolsVersion>
+        <VisualStudioBuildToolsVersion>15.0.25907-RC2</VisualStudioBuildToolsVersion>
         <DeployExtension>false</DeployExtension>
       </PropertyGroup>
     </When>
@@ -201,6 +203,14 @@
       </PropertyGroup>
     </Otherwise>
   </Choose>
+  -->
+
+  <!-- DELETE: testing only -->
+  <PropertyGroup>
+      <VisualStudioBuildToolsVersion>15.0.25907-RC2</VisualStudioBuildToolsVersion>
+      <BypassVsixValidation>true</BypassVsixValidation>
+      <DeployExtension>false</DeployExtension>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(ProjectLanguage)' == 'CSharp' AND '$(TargetNetFX20)' == 'true'">
     <_ExplicitReference Include="$(FrameworkPathOverride)\mscorlib.dll" />
