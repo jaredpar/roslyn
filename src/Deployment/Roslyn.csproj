@@ -17,6 +17,7 @@
     <CreateVsixContainer>True</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>
     <RoslynProjectType>Vsix</RoslynProjectType>
+    <IsProductComponent>true</IsProductComponent>
   </PropertyGroup>
   <ItemGroup>
     <None Include="source.extension.vsixmanifest">

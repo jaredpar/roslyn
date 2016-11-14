@@ -22,6 +22,7 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <CopyNuGetImplementations>true</CopyNuGetImplementations>
     <RoslynProjectType>Vsix</RoslynProjectType>
+    <IsProductComponent>true</IsProductComponent>
   </PropertyGroup>
   <ItemGroup>
     <None Include="project.json" />
