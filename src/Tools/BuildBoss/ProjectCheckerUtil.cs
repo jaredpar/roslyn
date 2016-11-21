@@ -50,6 +50,7 @@ namespace BuildBoss
             }
 
             allGood &= CheckTestDeploymentProjects(textWriter);
+            allGood &= CheckVsixProject(textWriter);
 
             return allGood;
         }
@@ -291,6 +292,38 @@ namespace BuildBoss
             if (data.IsAnyUnitTest && !Regex.IsMatch(name, @".*(UnitTests|IntegrationTests)$", RegexOptions.IgnoreCase))
             {
                 textWriter.WriteLine($"Assembly {name} is a unit test that doesn't end with UnitTests.dll");
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool CheckVsixProject(TextWriter textWriter)
+        {
+            var data = _projectUtil.TryGetRoslynProjectData();
+            if (data?.DeclaredKind != RoslynProjectKind.Vsix)
+            {
+                return true;
+            }
+
+            var element = _projectUtil.FindSingleProperty("IsProductComponent");
+            var isGood = true;
+            if (element == null)
+            {
+                isGood = false;
+            }
+            else
+            {
+                bool value;
+                if (!bool.TryParse(element.Value, out value) || !value)
+                {
+                    isGood = false;
+                }
+            }
+
+            if (!isGood)
+            { 
+                textWriter.WriteLine($"VSIX projects must contain a property named IsProductComponent with a value of true");
                 return false;
             }
 

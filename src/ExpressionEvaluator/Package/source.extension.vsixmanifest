@@ -5,6 +5,7 @@
     <DisplayName>Roslyn Expression Evaluators</DisplayName>
     <Description xml:space="preserve">Roslyn Expression Evaluators</Description>
     <ShortcutPath>..\CommonExtensions\Microsoft\ManagedLanguages\VBCSharp\ExpressionEvaluators</ShortcutPath>
+    <PackageId>Roslyn.ExpressionEvaluator</PackageId>
   </Metadata>
   <Installation Experimental="true">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[14.0,]" />

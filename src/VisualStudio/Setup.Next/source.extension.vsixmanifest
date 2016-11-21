@@ -5,6 +5,7 @@
     <DisplayName>Roslyn Language Services for Visual Studio 15</DisplayName>
     <Description>C# and VB.NET language services for Visual Studio 15.</Description>
     <ShortcutPath>..\CommonExtensions\Microsoft\ManagedLanguages\VBCSharp\LanguageServicesNext</ShortcutPath>
+    <PackageId>Roslyn.VisualStudio.Setup.Next</PackageId>
   </Metadata>
   <Installation Experimental="true">
     <InstallationTarget Version="[15.0,]" Id="Microsoft.VisualStudio.Pro" />

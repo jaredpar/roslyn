@@ -6,6 +6,7 @@
     <Identity Id="d0122878-51f1-4b36-95ec-dec2079a2a84" Version="|%CurrentProject%;GetBuildVersion|" Language="en-US" Publisher="Microsoft" />
     <DisplayName>Roslyn Visual Studio Test Support</DisplayName>
     <Description xml:space="preserve">Support for running Roslyn Visual Studio integration tests.</Description>
+    <PackageId>Roslyn.VisualStudio.Test.Setup</PackageId>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[15.0,]" />
