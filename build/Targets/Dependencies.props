@@ -16,6 +16,8 @@
     <MicrosoftDiaSymReaderNativeVersion>1.5.0-beta1</MicrosoftDiaSymReaderNativeVersion>
     <MicrosoftDiaSymReaderPortablePdbVersion>1.2.0-beta1-60831-01</MicrosoftDiaSymReaderPortablePdbVersion>
     <MicrosoftVisualBasicVersion>10.0.1</MicrosoftVisualBasicVersion>
+    <MicrosoftVSSDKBuildToolsVersion>15.0.25907-RC2</MicrosoftVSSDKBuildToolsVersion>
+    <MicrosoftVSSDKBuildToolsDev14Version>14.3.25420</MicrosoftVSSDKBuildToolsDev14Version>
     <RoslynToolsMicrosoftLocateVSVersion>0.2.0-beta</RoslynToolsMicrosoftLocateVSVersion>
     <RoslynToolsMicrosoftSignToolVersion>0.2.0-beta</RoslynToolsMicrosoftSignToolVersion>
     <RoslynToolsMicrosoftVSIXExpInstallerVersion>0.2.1-beta</RoslynToolsMicrosoftVSIXExpInstallerVersion>

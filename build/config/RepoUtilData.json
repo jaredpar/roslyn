@@ -1,7 +1,6 @@
 ﻿{
     "fixedPackages": {
         "Microsoft.VisualStudio.Language.Intellisense": "14.3.25407",
-        "Microsoft.VSSDK.BuildTools": [ "14.3.25420", "15.0.25907-RC2" ],
         "System.Reflection.Metadata": "1.0.21",
         "System.Collections.Immutable": "1.1.36",
         "Microsoft.VisualStudio.Editor": [ "14.3.25407", "15.0.25726-Preview5" ],
@@ -11,6 +10,16 @@
         "Microsoft.VisualStudio.Text.Logic": [ "14.3.25407", "15.0.25726-Preview5" ],
         "Microsoft.VisualStudio.Text.Data": [ "14.3.25407", "15.0.25726-Preview5" ],
         "Microsoft.VisualStudio.Text.UI": "14.3.25407",
+        "Microsoft.VSSDK.BuildTools": [ 
+            {
+                "generateName": "Microsoft.VSSDK.BuildTools",
+                "version": "15.0.25907-RC2" 
+            },
+            {
+                "generateName": "Microsoft.VSSDK.BuildTools.Dev14", 
+                "version": "14.3.25420" 
+            }
+        ],
         "Microsoft.Build": {
           "generateName": "Microsoft.Build.14",
           "version": "14.3.0"
@@ -34,6 +43,7 @@
                 "Microsoft.CodeAnalysis.Analyzers",
                 "Microsoft.VisualBasic",
                 "Microsoft.Composition",
+                "Microsoft.VSSDK.*",
                 "ManagedEsent",
                 "xunit",
                 "RoslynTools.*",
