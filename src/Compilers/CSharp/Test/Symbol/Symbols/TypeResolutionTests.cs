@@ -105,6 +105,7 @@ namespace System
             }
         }
 
+        /*
         [ClrOnlyFact(ClrOnlyReason.Unknown)]
         public void TypeSymbolFromReflectionType()
         {
@@ -153,6 +154,7 @@ namespace System
             err = c.Assembly.GetTypeByReflectionType(typeof(SyntaxKind).MakePointerType(), includeReferences: true);
             Assert.Null(err);
         }
+        */
 
         [Fact]
         public void AmbiguousNestedTypeSymbolFromMetadata()

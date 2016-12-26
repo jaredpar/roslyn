@@ -3973,6 +3973,7 @@ public class C
                 SymbolDisplayPartKind.Punctuation);
         }
 
+        /*
         [Fact, WorkItem(546638, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546638")]
         public void InvariantCultureNegatives()
         {
@@ -4016,6 +4017,7 @@ public class C
                 Thread.CurrentThread.CurrentCulture = oldCulture;
             }
         }
+        */
 
         [Fact]
         public void TestMethodVB()

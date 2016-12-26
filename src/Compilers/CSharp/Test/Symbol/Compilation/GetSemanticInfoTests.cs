@@ -2214,6 +2214,7 @@ public class C<T> where T : {1}
             return model.LookupSymbols(exprSyntaxToBind.SpanStart, typeParameter, memberName);
         }
 
+        /*
         [WorkItem(542966, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542966")]
         [Fact]
         public void IndexerMemberRace()
@@ -2283,6 +2284,7 @@ class Program
                 thread2.Join(timeout);
             }
         }
+        */
 
         [Fact]
         public void ImplicitDeclarationMultipleDeclarators()

@@ -13,6 +13,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Symbols
         [Fact]
         public void NoParameterNames()
         {
+            /*
             // Create simple interface where method parameters have no names.
             // interface I
             // {
@@ -44,6 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Symbols
             compilation.VerifyDiagnostics(
                 // (5,16): error CS1744: Named argument 'value' specifies a parameter for which a positional argument has already been given
                 Diagnostic(ErrorCode.ERR_NamedArgumentUsedInPositional, "value").WithArguments("value").WithLocation(5, 16));
+                */
         }
     }
 }

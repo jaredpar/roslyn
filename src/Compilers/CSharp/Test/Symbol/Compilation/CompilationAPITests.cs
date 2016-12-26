@@ -178,6 +178,7 @@ namespace A.B {
             r.Diagnostics.Verify();
         }
 
+        /*
         [ClrOnlyFact(ClrOnlyReason.Pdb)]
         public void EmitToStreamWithNonZeroPosition()
         {
@@ -196,6 +197,7 @@ namespace A.B {
             AssertEx.Equal(new byte[] { 0x12, (byte)'M', (byte)'i', (byte)'c', (byte)'r', (byte)'o' }, pdbStream.GetBuffer().Take(6).ToArray());
             AssertEx.Equal(new byte[] { 0x12, (byte)'M', (byte)'Z' }, peStream.GetBuffer().Take(3).ToArray());
         }
+        */
 
         [ClrOnlyFact(ClrOnlyReason.Pdb)]
         public void EmitToNonSeekableStreams()
@@ -2145,6 +2147,7 @@ public class C { public static FrameworkName Foo() { return null; }}";
             });
         }
 
+/*
         [Fact]
         public void SubmissionCompilation_Errors()
         {
@@ -2179,6 +2182,7 @@ public class C { public static FrameworkName Foo() { return null; }}";
             Assert.Throws<ArgumentException>(() => CSharpCompilation.CreateScriptCompilation("a", options: TestOptions.ReleaseDll.WithDelaySign(true)));
             Assert.Throws<ArgumentException>(() => CSharpCompilation.CreateScriptCompilation("a", options: TestOptions.ReleaseDll.WithDelaySign(false)));
         }
+        */
 
         [Fact]
         public void HasSubmissionResult()

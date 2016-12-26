@@ -37,6 +37,10 @@
       <Project>{b501a547-c911-4a05-ac6e-274a50dff30e}</Project>
       <Name>CSharpCodeAnalysis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Compilers\CSharp\Test\Symbol\CSharpCompilerSymbolTest.csproj">
+      <Project>{28026d16-eb0c-40b0-bda7-11caa2b97ccc}</Project>
+      <Name>CSharpCompilerSymbolTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Compilers\CSharp\Test\Syntax\CSharpCompilerSyntaxTest.csproj">
       <Project>{50d26304-0961-4a51-abf6-6cad1a56d202}</Project>
       <Name>CSharpCompilerSyntaxTest</Name>

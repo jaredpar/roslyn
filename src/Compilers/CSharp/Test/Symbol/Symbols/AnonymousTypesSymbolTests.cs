@@ -229,6 +229,7 @@ class Program
 
         private void TestAnonymousTypeFieldSymbols_InQuery(ImmutableArray<byte> image)
         {
+            /*
             Assembly refAsm = Assembly.Load(image.ToArray());
             Type type = refAsm.GetType("<>f__AnonymousType0`2");
             Assert.NotNull(type);
@@ -236,10 +237,12 @@ class Program
 
             CheckField(type.GetField("<x>i__Field", BindingFlags.NonPublic | BindingFlags.Instance), type.GetGenericArguments()[0]);
             CheckField(type.GetField("<g>i__Field", BindingFlags.NonPublic | BindingFlags.Instance), type.GetGenericArguments()[1]);
+            */
         }
 
         private void CheckField(FieldInfo field, Type fieldType)
         {
+            /*
             Assert.NotNull(field);
             Assert.NotNull(fieldType);
             Assert.Equal(fieldType, field.FieldType);
@@ -253,6 +256,7 @@ class Program
             Assert.Equal(1, args.Length);
             Assert.Equal(typeof(DebuggerBrowsableState), args[0].ArgumentType);
             Assert.Equal(DebuggerBrowsableState.Never, (DebuggerBrowsableState)args[0].Value);
+            */
         }
 
         #endregion
@@ -1295,6 +1299,7 @@ class Query
         [ClrOnlyFact]
         public void AnonymousType_ToString()
         {
+            /*
             // test AnonymousType.ToString()
             var currCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -1319,6 +1324,7 @@ class Query
             {
                 System.Threading.Thread.CurrentThread.CurrentCulture = currCulture;
             }
+            */
         }
 
         [ClrOnlyFact]

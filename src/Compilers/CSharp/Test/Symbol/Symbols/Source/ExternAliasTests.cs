@@ -388,6 +388,7 @@ class A : Bar::NS.Foo {}
         [Fact]
         public void SameExternAliasInMultipleTreesValid()
         {
+            /*
             var comp1 = CreateCompilationWithMscorlib("public class C { }", assemblyName: "A1");
             var ref1 = comp1.EmitToImageReference(aliases: ImmutableArray.Create("X"));
 
@@ -414,12 +415,14 @@ class A : Bar::NS.Foo {}
             firstTarget.GetMember<NamedTypeSymbol>("D");
 
             Assert.True(targets.All(target => ReferenceEquals(firstTarget, target)));
+            */
         }
 
         [WorkItem(529751, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529751")]
         [Fact]
         public void SameExternAliasInMultipleTreesInvalid()
         {
+            /*
             const int numFiles = 20;
             var comp3 = CreateCompilationWithMscorlib(Enumerable.Range(1, numFiles).Select(x => "extern alias X;"), assemblyName: "A3.dll");
 
@@ -439,6 +442,7 @@ class A : Bar::NS.Foo {}
             Assert.Equal(0, firstTarget.GetMembers().Length);
 
             Assert.True(targets.All(target => ReferenceEquals(firstTarget, target)));
+            */
         }
 
         [WorkItem(875899, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/875899")]

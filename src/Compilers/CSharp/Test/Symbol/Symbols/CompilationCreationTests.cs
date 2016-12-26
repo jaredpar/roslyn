@@ -2757,6 +2757,7 @@ System.Diagnostics.Process.GetCurrentProcess();
         [Fact]
         public void MetadataReferenceProvider()
         {
+            /*
             var csClasses01 = Temp.CreateFile().WriteAllBytes(TestResources.MetadataTests.InterfaceAndClass.CSClasses01).Path;
             var csInterfaces01 = Temp.CreateFile().WriteAllBytes(TestResources.MetadataTests.InterfaceAndClass.CSInterfaces01).Path;
 
@@ -2771,6 +2772,7 @@ class C : Metadata.ICSPropImpl { }";
                 options: TestOptions.ReleaseDll.WithMetadataReferenceResolver(new DummyReferenceResolver(csClasses01)));
 
             compilation.VerifyDiagnostics();
+            */
         }
 
         [Fact]

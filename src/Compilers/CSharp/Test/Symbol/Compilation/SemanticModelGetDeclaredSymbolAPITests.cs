@@ -3792,6 +3792,7 @@ class P
             Assert.Equal(SymbolKind.Method, symbolInfo.Symbol.Kind);
         }
 
+        /*
         [WorkItem(542495, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542495")]
         [ClrOnlyFact(ClrOnlyReason.Unknown)]
         public void AliasSymbolEquality()
@@ -3820,6 +3821,7 @@ class C
             Assert.Equal(alias1, alias2);
             Assert.NotSame(alias1, alias2);
         }
+        */
 
         [WorkItem(542475, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/542475")]
         [Fact]
