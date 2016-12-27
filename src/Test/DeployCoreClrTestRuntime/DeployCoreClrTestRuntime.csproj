@@ -89,6 +89,10 @@
       <Project>{afde6bea-5038-4a4a-a88e-dbd2e4088eed}</Project>
       <Name>PdbUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utilities\CoreClr\TestUtilities.CoreClr.csproj">
+      <Project>{67ca3eee-37f1-4edf-bd9b-c11911748f37}</Project>
+      <Name>TestUtilities.CoreClr</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utilities\Portable\TestUtilities.csproj">
       <Project>{ccbd3438-3e84-40a9-83ad-533f23bcfca5}</Project>
       <Name>TestUtilities</Name>

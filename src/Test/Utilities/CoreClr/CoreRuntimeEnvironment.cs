@@ -2,14 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeGen;
 using Microsoft.CodeAnalysis.Emit;
-using Roslyn.Test.Utilities;
+using Microsoft.CodeAnalysis.Test.Utilities;
 using static Roslyn.Test.Utilities.RuntimeUtilities; 
 
-namespace Microsoft.CodeAnalysis.Test.Utilities
+namespace Roslyn.Test.Utilities
 {
-    public class CoreCLRRuntimeEnvironment : IRuntimeEnvironment, IInternalRuntimeEnvironment
+    public class CoreRuntimeEnvironment : IRuntimeEnvironment, IInternalRuntimeEnvironment
     {
         private IEnumerable<ModuleData> _additionalDependencies;
         private CompilationTestData _testData = new CompilationTestData();
@@ -17,7 +18,7 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
         private ImmutableArray<byte> _pdb;
         private ImmutableArray<Diagnostic> _diagnostics;
 
-        public CoreCLRRuntimeEnvironment(IEnumerable<ModuleData> additionalDependencies = null)
+        public CoreRuntimeEnvironment(IEnumerable<ModuleData> additionalDependencies = null)
         {
             _additionalDependencies = additionalDependencies;
         }

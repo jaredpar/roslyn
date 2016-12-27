@@ -42,7 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
-    <Compile Include="CoreCLRRuntimeEnvironment.cs" />
+    <Compile Include="CoreRuntimeEnvironmentFactory.cs" />
+    <Compile Include="CoreRuntimeEnvironment.cs" />
   </ItemGroup>
   <Import Project="..\..\..\..\build\Targets\Imports.targets" />
 </Project>

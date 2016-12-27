@@ -24,19 +24,33 @@ namespace Roslyn.Test.Utilities
             return s_lazyFactory.Value.Create(additionalDependencies);
         }
 
+        // TODO: Need to centralize this logic.
+        private static bool IsCoreClrRuntime()
+        {
+            try
+            { 
+                var type = ReflectionUtilities.TryGetType("System.Runtime.Loader.AssemblyLoadContext, System.Runtime.Loader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+                return type != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private static IRuntimeEnvironmentFactory GetFactoryImplementation()
         {
             string assemblyName;
             string typeName;
-            if (DesktopShim.FileNotFoundException.Type != null)
+            if (IsCoreClrRuntime())
             {
-                assemblyName = "Roslyn.Test.Utilities.Desktop";
-                typeName = "Microsoft.CodeAnalysis.Test.Utilities.CodeRuntime.DesktopRuntimeEnvironmentFactory";
+                assemblyName = "Roslyn.Test.Utilities.CoreClr";
+                typeName = "Roslyn.Test.Utilities.CoreRuntimeEnvironmentFactory";
             }
             else
             {
-                assemblyName = "Roslyn.Test.Utilities.CoreClr";
-                typeName = "Roslyn.Test.Utilities.CoreClrRuntimeEnvironmentFactory";
+                assemblyName = "Roslyn.Test.Utilities.Desktop";
+                typeName = "Microsoft.CodeAnalysis.Test.Utilities.CodeRuntime.DesktopRuntimeEnvironmentFactory";
             }
 
             var thisAssemblyName = typeof(RuntimeEnvironmentFactory).GetTypeInfo().Assembly.GetName();
