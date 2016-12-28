@@ -24,17 +24,9 @@ namespace RunTests.Cache
 
         internal ContentFile GetTestResultContentFile(AssemblyInfo assemblyInfo)
         {
-            try
-            {
-                var content = BuildTestResultContent(assemblyInfo);
-                var checksum = GetChecksum(content);
-                return new ContentFile(checksum: checksum, content: content);
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"Error creating log file {ex.Message} {ex.StackTrace}");
-                return ContentFile.Empty;
-            }
+            var content = BuildTestResultContent(assemblyInfo);
+            var checksum = GetChecksum(content);
+            return new ContentFile(checksum: checksum, content: content);
         }
 
         private string BuildTestResultContent(AssemblyInfo assemblyInfo)
@@ -67,10 +59,10 @@ namespace RunTests.Cache
         {
             builder.AppendLine("References:");
 
-            var initialAssembly = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
+            var binariesPath = Path.GetDirectoryName(assemblyPath);
+            var assemblyUtil = new AssemblyUtil(binariesPath);
             var set = new HashSet<string>();
-            var toVisit = new Queue<AssemblyName>(initialAssembly.GetReferencedAssemblies());
-            var binariesPath = Path.GetDirectoryName(initialAssembly.Location);
+            var toVisit = new Queue<AssemblyName>(assemblyUtil.GetReferencedAssemblies(assemblyPath));
             var references = new List<Tuple<string, string>>();
 
             while (toVisit.Count > 0)
@@ -81,24 +73,24 @@ namespace RunTests.Cache
                     continue;
                 }
 
-                try
+                string currentPath;
+                if (assemblyUtil.TryGetAssemblyPath(current, out currentPath))
                 {
-                    var currentPath = Path.Combine(binariesPath, $"{current.Name}.dll");
-                    var currentAssembly = File.Exists(currentPath)
-                        ? Assembly.ReflectionOnlyLoadFrom(currentPath)
-                        : Assembly.ReflectionOnlyLoad(current.FullName);
-
-                    foreach (var name in currentAssembly.GetReferencedAssemblies())
+                    foreach (var name in assemblyUtil.GetReferencedAssemblies(currentPath))
                     {
                         toVisit.Enqueue(name);
                     }
 
-                    var currentHash = GetFileChecksum(currentAssembly.Location);
+                    var currentHash = GetFileChecksum(currentPath);
                     references.Add(Tuple.Create(current.Name, currentHash));
                 }
-                catch
+                else if (assemblyUtil.IsKnownLightUpAssembly(current))
                 {
-                    references.Add(Tuple.Create(current.Name, "<could not calculate checksum>"));
+                    references.Add(Tuple.Create(current.Name, "<missing light up reference>"));
+                }
+                else
+                {
+                    throw new Exception($"Unable to find reference {current}");
                 }
             }
 

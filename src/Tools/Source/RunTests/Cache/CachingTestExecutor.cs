@@ -30,7 +30,26 @@ namespace RunTests.Cache
 
         public async Task<TestResult> RunTestAsync(AssemblyInfo assemblyInfo, CancellationToken cancellationToken)
         {
-            var contentFile = _contentUtil.GetTestResultContentFile(assemblyInfo);
+            ContentFile contentFile;
+            try
+            {
+                contentFile = _contentUtil.GetTestResultContentFile(assemblyInfo);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Error getting content file for {assemblyInfo.AssemblyPath}";
+                Console.WriteLine(msg);
+                Logger.LogError(ex, msg);
+                contentFile = null;
+            }
+
+            return contentFile != null
+                ? await RunTestWithCachingAsync(assemblyInfo, contentFile, cancellationToken)
+                : await _testExecutor.RunTestAsync(assemblyInfo, cancellationToken);
+        }
+
+        private async Task<TestResult> RunTestWithCachingAsync(AssemblyInfo assemblyInfo, ContentFile contentFile, CancellationToken cancellationToken)
+        { 
             var assemblyPath = assemblyInfo.AssemblyPath;
             var builder = new StringBuilder();
             builder.AppendLine($"{Path.GetFileName(assemblyPath)} - {contentFile.Checksum}");
