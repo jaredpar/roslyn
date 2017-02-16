@@ -4,6 +4,7 @@ REM Parse Arguments.
 
 set RoslynRoot=%~dp0
 set BuildConfiguration=Debug
+set BuildXCopy=true
 
 REM Because override the C#/VB toolset to build against our LKG package, it is important
 REM that we do not reuse MSBuild nodes from other jobs/builds on the machine. Otherwise,
@@ -20,9 +21,9 @@ if /I "%1" == "/test32" set Test64=false&&shift&& goto :ParseArguments
 if /I "%1" == "/test64" set Test64=true&&shift&& goto :ParseArguments
 if /I "%1" == "/testDeterminism" set TestDeterminism=true&&shift&& goto :ParseArguments
 if /I "%1" == "/testBuildCorrectness" set TestBuildCorrectness=true&&shift&& goto :ParseArguments
-if /I "%1" == "/testPerfCorrectness" set TestPerfCorrectness=true&&shift&& goto :ParseArguments
-if /I "%1" == "/testPerfRun" set TestPerfRun=true&&shift&& goto :ParseArguments
-if /I "%1" == "/testVsi" set TestVsi=true&&shift&& goto :ParseArguments
+if /I "%1" == "/testPerfCorrectness" set TestPerfCorrectness=true&&shift&&set BuildXCopy=false&& goto :ParseArguments
+if /I "%1" == "/testPerfRun" set TestPerfRun=true&&shift&&set BuildXCopy=false&& goto :ParseArguments
+if /I "%1" == "/testVsi" set TestVsi=true&&shift&&set BuildXCopy=false&& goto :ParseArguments
 if /I "%1" == "/skipTest" set BuildAndTestBuildTarget=Build&&shift&&goto :ParseArguments
 if /I "%1" == "/skipCommitPrinting" set SkipCommitPrinting=1&&shift&&goto :ParseArguments
 
@@ -49,10 +50,6 @@ if not "%BuildTimeLimit%" == "" (
     set RunProcessWatchdog=false
 )
 
-REM Restore the NuGet packages
-call "%RoslynRoot%\Restore.cmd" || goto :BuildFailed
-call "%RoslynRoot%SetDevCommandPrompt.cmd" || goto :BuildFailed
-
 REM Ensure the binaries directory exists because msbuild can fail when part of the path to LogFile isn't present.
 set bindir=%RoslynRoot%Binaries
 if not exist "%bindir%" mkdir "%bindir%" || goto :BuildFailed
@@ -61,6 +58,17 @@ if defined testBuildCorrectness (
     powershell -noprofile -executionPolicy RemoteSigned -file "%RoslynRoot%\build\scripts\test-build-correctness.ps1" %RoslynRoot% "%bindir%\%BuildConfiguration%" || goto :BuildFailed
     call :TerminateBuildProcesses
     exit /b 0
+)
+
+REM Restore the solution and ensure MSBuild is available on the path for use in the remainder
+REM of the script.
+if "%BuildXCopy%" == "true" (
+    call "%RoslynRoot%build\scripts\EnsureMSBuild.cmd" -xcopy || goto :BuildFailed
+    call "%RoslynRoot%Restore.cmd" /msbuild "%RoslynRoot%Binaries\Toolset\msbuild" || goto :BuildFailed
+    set MSBuildAdditionalCommandLineArgs=%MSBuildAdditionalCommandLineArgs% /p:TargetFrameworkRootPath="%RoslynRoot%Binaries\Toolset\msbuild\Framework"
+) else (
+    call "%RoslynRoot%build\scripts\EnsureMSBuild.cmd" || goto :BuildFailed
+    call "%RoslynRoot%Restore.cmd" || goto :BuildFailed
 )
 
 REM Output the commit that we're building, for reference in Jenkins logs

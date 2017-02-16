@@ -25,8 +25,14 @@ function Get-PackagesPath {
 }
 
 pushd $sourcePath
-try
-{
+try {
+
+    . (join-path $PSScriptRoot "build-utils.ps1")
+    
+    # Get MSBuild and restore setup
+    $msbuildDir = ensure-msbuild -xcopy
+    restore-packages -xcopy 
+
     # Need to parse out the current NuGet package version of Structured Logger
     [xml]$deps = get-content (join-path $sourcePath "build\Targets\Dependencies.props")
     $structuredLoggerVersion = $deps.Project.PropertyGroup.MicrosoftBuildLoggingStructuredLoggerVersion
@@ -62,8 +68,7 @@ try
 
     exit 0
 }
-catch [exception]
-{
+catch [exception] {
     write-host $_.Exception
     exit -1
 }

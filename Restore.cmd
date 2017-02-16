@@ -8,9 +8,15 @@ set DevDivPackages=%RoslynRoot%src\Setup\DevDivPackages
 if /I "%1" == "/?" goto :Usage
 if /I "%1" == "/clean" set RestoreClean=true&&shift&& goto :ParseArguments
 if /I "%1" == "/fast" set RestoreFast=true&&shift&& goto :ParseArguments
+if /I "%1" == "/msbuild" set MSBuildCustomPath=%2&&shift&&shift&& goto :ParseArguments
 goto :DoneParsing
 
 :DoneParsing
+
+echo Test it
+powershell -noprofile -executionPolicy RemoteSigned -file "%RoslynRoot%\build\scripts\test.ps1" 
+
+echo MSBuild custom path argument is %MSBuildCustomPath%
 
 REM Allow for alternate solutions to be passed as restore targets.
 set RoslynSolution=%1
@@ -18,6 +24,14 @@ if "%RoslynSolution%" == "" set RoslynSolution=%RoslynRoot%\Roslyn.sln
 
 REM Load in the inforation for NuGet
 call "%RoslynRoot%build\scripts\LoadNuGetInfo.cmd" || goto :LoadNuGetInfoFailed
+
+if "%MSBuildCustomPath%" == "" (
+    call "%RoslynRoot%\build\scripts\LocateMSBuild.cmd" || goto :RestoreFailed
+    set MSBuildCustomPath="%RoslynMSBuildDir%"
+)
+
+echo MSBuild custom path final value is %MSBuildCustomPath%
+set NuGetAdditionalCommandLineArgs=-MSBuildPath %MSBuildCustomPath% %NuGetAdditionalCommandLineArgs%
 
 if "%RestoreClean%" == "true" (
     echo Clearing the NuGet caches
@@ -40,14 +54,6 @@ call "%NugetExe%" restore "%RoslynRoot%build\ToolsetPackages\dev14.project.json"
 
 echo Restoring packages: Toolsets (Dev15 VS SDK RC build tools)
 call "%NugetExe%" restore "%RoslynRoot%build\ToolsetPackages\dev15rc.project.json" %NuGetAdditionalCommandLineArgs% || goto :RestoreFailed
-
-echo Locating MSBuild for Solution restore
-call "%RoslynRoot%SetDevCommandPrompt.cmd" || goto :RestoreFailed
-
-REM If we have an applocal copy of MSBuild, pass it to NuGet.  Otherwise, assume NuGet knows how to find it.
-if exist "%DevenvDir%\..\..\MSBuild\15.0\Bin\MSBuild.exe" (
-    set NuGetAdditionalCommandLineArgs=%NuGetAdditionalCommandLineArgs% -msbuildpath "%DevenvDir%\..\..\MSBuild\15.0\Bin"
-)
 
 echo Restoring packages: Samples
 call "%NugetExe%" restore "%RoslynRoot%src\Samples\Samples.sln" %NuGetAdditionalCommandLineArgs% || goto :RestoreFailed
