@@ -69,9 +69,23 @@ function locate-msbuild() {
 
 # Locate the xcopy version of MSBuild
 function locate-msbuild-xcopy() {
-    # Use the xcopy toolset
-    & (join-path $PSScriptRoot "deploy-msbuild.ps1")
-    $p = join-path $PSScriptRoot "..\..\Binaries\Toolset\msbuild"
+    $version = "0.1.5-alpha"
+    $packagesDir = locate-packages
+    $p = join-path $packagesDir "RoslynTools.XCopyMSBuild.$($version)\tools"
+    if (-not (test-path $p)) { 
+        $nuget = join-path $repoDir "NuGet.exe"
+        if (-not (test-path $nuget)) { 
+            & (join-path $PSScriptRoot "deploy-nuget.ps1")
+        }
+
+        $output = & $nuget install -OutputDirectory $packagesDir -Version $version RoslynTools.XCopyMSBuild
+        if (-not $?) { 
+            write-host $output
+            throw $"Unable to restore xcopy MSBuild toolset"
+        }
+    }
+
+
     $p = [IO.Path]::GetFullPath($p)
     return $p
 }
@@ -132,6 +146,8 @@ function restore-packages() {
     }
 }
 
+# This function will return the directory where our NuGet packages are being 
+# restored to.  Needs to be kept up to date with the logic in Versions.props
 function locate-packages {
     $d = $null
     if ($env:NUGET_PACKAGES -ne $null) {
