@@ -1674,14 +1674,7 @@ class C
 }
 </Code>
 
-            Dim expectedPropertyNames =
-                {"DTE", "Collection", "Name", "FullName", "ProjectItem", "Kind", "IsCodeType",
-                 "InfoLocation", "Children", "Language", "StartPoint", "EndPoint", "ExtenderNames",
-                 "ExtenderCATID", "Parent", "Type", "Getter", "Setter", "Access", "Attributes",
-                 "DocComment", "Comment", "Parameters", "IsGeneric", "OverrideKind", "IsShared",
-                 "IsDefault", "Parent2", "ReadWrite"}
-
-            Await TestPropertyDescriptors(code, expectedPropertyNames)
+            Await TestPropertyDescriptors(Of EnvDTE80.CodeProperty2)(code)
         End Function
 
         Private Function GetAutoImplementedPropertyExtender(codeElement As EnvDTE80.CodeProperty2) As ICSAutoImplementedPropertyExtender

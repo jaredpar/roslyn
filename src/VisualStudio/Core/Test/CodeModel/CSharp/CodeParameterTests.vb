@@ -1254,12 +1254,7 @@ class C
 }
 </Code>
 
-            Dim expectedPropertyNames =
-                {"DTE", "Collection", "Name", "FullName", "ProjectItem", "Kind", "IsCodeType",
-                 "InfoLocation", "Children", "Language", "StartPoint", "EndPoint", "ExtenderNames",
-                 "ExtenderCATID", "Parent", "Type", "Attributes", "DocComment", "ParameterKind", "DefaultValue"}
-
-            Await TestPropertyDescriptors(code, expectedPropertyNames)
+            Await TestPropertyDescriptors(Of EnvDTE80.CodeParameter2)(code)
         End Function
 
         Protected Overrides ReadOnly Property LanguageName As String

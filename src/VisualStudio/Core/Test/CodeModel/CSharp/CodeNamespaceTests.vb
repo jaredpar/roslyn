@@ -459,12 +459,7 @@ namespace $$N
 }
 </Code>
 
-            Dim expectedPropertyNames =
-                {"DTE", "Collection", "Name", "FullName", "ProjectItem", "Kind", "IsCodeType",
-                 "InfoLocation", "Children", "Language", "StartPoint", "EndPoint", "ExtenderNames",
-                 "ExtenderCATID", "Parent", "Members", "DocComment", "Comment"}
-
-            Await TestPropertyDescriptors(code, expectedPropertyNames)
+            Await TestPropertyDescriptors(Of EnvDTE.CodeNamespace)(code)
         End Function
 
         Protected Overrides ReadOnly Property LanguageName As String
