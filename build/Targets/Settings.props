@@ -30,7 +30,7 @@
     <OutDir>$(BaseOutputPath)$(Configuration)\</OutDir>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(RepoRoot)Binaries\Obj\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
-
+    <TargetFramework Condition="'$(TargetFramework)' = ''" >netstandard13</TargetFramework>
     <!-- Workaround until we move to Microsoft.Net.Compilers.nupkg with this fix: https://github.com/dotnet/roslyn/commit/05c12ebfcdd08a02dbceded5327a8da7a7df23be:
          Use the Microsoft.Net.Compilers.props file with the fix checked into the repo instead of the one that comes along with the nuget package:
          $(NuGetPackageRoot)\Microsoft.Net.Compilers\$(ToolsetCompilerPackageVersion)\build\Microsoft.Net.Compilers.props -->
