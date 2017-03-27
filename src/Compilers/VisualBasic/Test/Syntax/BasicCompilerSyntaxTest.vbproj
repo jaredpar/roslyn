@@ -63,6 +63,9 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <PackageReference Include="xunit" Version="$(xunitVersion)" />
+    <PackageReference Include="xunit.runner.console" Version="$(xunitrunnerconsoleVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(xunitrunnervisualstudioVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(IntermediateOutputPath)\Syntax.xml.Generated.vb" />
@@ -121,7 +124,6 @@
     <Compile Include="Syntax\SyntaxTriviaListTests.vb" />
     <Compile Include="TestSyntaxNodes.vb" />
     <Content Include="Syntax\VBAllInOne.txt" />
-    <None Include="project.json" />
     <None Include="Resources\VBAllInOne.vb" />
   </ItemGroup>
   <ItemGroup>

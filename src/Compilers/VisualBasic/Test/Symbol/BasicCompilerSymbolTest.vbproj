@@ -53,6 +53,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <PackageReference Include="xunit" Version="$(xunitVersion)" />
+    <PackageReference Include="xunit.runner.console" Version="$(xunitrunnerconsoleVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(xunitrunnervisualstudioVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\" />
@@ -152,7 +155,6 @@
     <Compile Include="SymbolsTests\XmlLiteralsTests_UseSiteErrors.vb" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
     <None Include="SymbolsTests\Metadata\MscorlibNamespacesAndTypes.bsl" />
   </ItemGroup>
   <ItemGroup>

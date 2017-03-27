@@ -84,6 +84,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
+    <PackageReference Include="xunit" Version="$(xunitVersion)" />
+    <PackageReference Include="xunit.runner.console" Version="$(xunitrunnerconsoleVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(xunitrunnervisualstudioVersion)" />
+    <PackageReference Include="Moq" Version="$(MoqVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CachingLookupTests.cs" />
@@ -162,7 +166,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
     <None Include="Resources/default.win32manifest" />
     <None Include="Resources/nativeWithStringIDsAndTypesAndIntTypes.res" />
     <None Include="Resources/Roslyn.ico.blah" />
