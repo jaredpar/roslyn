@@ -83,9 +83,6 @@
     <InternalsVisibleToTest Include="Roslyn.Services.UnitTests" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Assert\AssertEx.cs" />
     <Compile Include="Assert\AssertXml.cs" />
     <Compile Include="Assert\ClrOnlyFactAttribute.cs" />
@@ -206,6 +203,71 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Test.Resources.Proprietary">
+      <Version>$(MicrosoftCodeAnalysisTestResourcesProprietaryVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp">
+      <Version>$(MicrosoftCSharpVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Platforms">
+      <Version>$(MicrosoftNETCorePlatformsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DiaSymReader.Converter.Xml">
+      <Version>$(MicrosoftDiaSymReaderConverterXmlVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Concurrent">
+      <Version>$(SystemCollectionsConcurrentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Console">
+      <Version>$(SystemConsoleVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Debug">
+      <Version>$(SystemDiagnosticsDebugVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tools">
+      <Version>$(SystemDiagnosticsToolsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.TraceSource">
+      <Version>$(SystemDiagnosticsTraceSourceVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Process">
+      <Version>$(SystemDiagnosticsProcessVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem">
+      <Version>$(SystemIOFileSystemVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Primitives">
+      <Version>$(SystemNetPrimitivesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.TypeExtensions">
+      <Version>$(SystemReflectionTypeExtensionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.RegularExpressions">
+      <Version>$(SystemTextRegularExpressionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Thread">
+      <Version>$(SystemThreadingThreadVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument">
+      <Version>$(SystemXmlXDocumentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlDocument">
+      <Version>$(SystemXmlXmlDocumentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="xunit">
+      <Version>$(xunitVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.console">
+      <Version>$(xunitrunnerconsoleVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio">
+      <Version>$(xunitrunnervisualstudioVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\..\..\..\build\Targets\Imports.targets" />
   <ProjectExtensions />

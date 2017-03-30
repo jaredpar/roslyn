@@ -876,12 +876,82 @@
     <None Include="..\CodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>
     </None>
-    <None Include="project.json" />
     <None Include="RuleSet\RuleSetSchema.xsd">
       <SubType>Designer</SubType>
     </None>
     <PublicAPI Include="PublicAPI.Shipped.txt" />
     <PublicAPI Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>$(SystemCollectionsImmutableVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections">
+      <Version>$(SystemCollectionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Concurrent">
+      <Version>$(SystemCollectionsConcurrentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tools">
+      <Version>$(SystemDiagnosticsToolsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.FileVersionInfo">
+      <Version>$(SystemDiagnosticsFileVersionInfoVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO">
+      <Version>$(SystemIOVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Compression">
+      <Version>$(SystemIOCompressionVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem">
+      <Version>$(SystemIOFileSystemVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem.Primitives">
+      <Version>$(SystemIOFileSystemPrimitivesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Metadata">
+      <Version>$(SystemReflectionMetadataVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Numerics">
+      <Version>$(SystemRuntimeNumericsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>$(SystemSecurityCryptographyAlgorithmsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Encoding">
+      <Version>$(SystemSecurityCryptographyEncodingVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.X509Certificates">
+      <Version>$(SystemSecurityCryptographyX509CertificatesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding">
+      <Version>$(SystemTextEncodingVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.CodePages">
+      <Version>$(SystemTextEncodingCodePagesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.Extensions">
+      <Version>$(SystemTextEncodingExtensionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>$(SystemValueTupleVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.ReaderWriter">
+      <Version>$(SystemXmlReaderWriterVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument">
+      <Version>$(SystemXmlXDocumentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlDocument">
+      <Version>$(SystemXmlXmlDocumentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XPath.XDocument">
+      <Version>$(SystemXmlXPathXDocumentVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
   <Import Project="..\..\..\Dependencies\CodeAnalysis.Metadata\Microsoft.CodeAnalysis.Metadata.projitems" Label="Shared" />

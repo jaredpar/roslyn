@@ -813,7 +813,6 @@
     <Content Include="UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
     <Content Include="UseSiteDiagnosticsCheckEnforcer\Run.bat" />
     <None Include="FlowAnalysis\Flow Analysis Design.docx" />
-    <None Include="project.json" />
     <None Include="Symbols\PublicSymbolTable.cd" />
     <None Include="..\CSharpCodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>
@@ -866,6 +865,14 @@
     <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.CSharp.Scripting.Desktop.UnitTests" />
     <InternalsVisibleToTest Include="Roslyn.Services.Editor.CSharp.UnitTests" />
     <InternalsVisibleToTest Include="Roslyn.Services.Editor2.UnitTests" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Linq.Expressions">
+      <Version>$(SystemLinqExpressionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Parallel">
+      <Version>$(SystemThreadingTasksParallelVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="..\..\..\..\build\Targets\Imports.targets" />

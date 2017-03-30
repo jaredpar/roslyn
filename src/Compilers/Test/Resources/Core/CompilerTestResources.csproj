@@ -400,5 +400,13 @@
   <ItemGroup>
     <EmbeddedResource Include="SymbolsTests\nativeCOFFResources.obj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.ReaderWriter">
+      <Version>$(SystemXmlReaderWriterVersion)</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="..\..\..\..\..\build\Targets\Imports.targets" />
 </Project>

@@ -30,7 +30,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>$(NETStandardLibraryVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlDocument">
+      <Version>$(SystemXmlXmlDocumentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlSerializer">
+      <Version>$(SystemXmlXmlSerializerVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\..\..\..\..\..\build\Targets\Imports.targets" />
 </Project>

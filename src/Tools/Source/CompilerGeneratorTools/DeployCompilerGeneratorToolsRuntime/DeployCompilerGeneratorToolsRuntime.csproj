@@ -24,9 +24,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" />
   <ItemGroup>
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Class1.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +47,20 @@
       <Project>{6aa96934-d6b7-4cc8-990d-db6b9dd56e34}</Project>
       <Name>VisualBasicSyntaxGenerator</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Platforms">
+      <Version>$(MicrosoftNETCorePlatformsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Runtime.CoreCLR">
+      <Version>$(MicrosoftNETCoreRuntimeCoreCLRVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.TestHost">
+      <Version>$(MicrosoftNETCoreTestHostVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\..\..\..\..\build\Targets\Imports.targets" />
 </Project>

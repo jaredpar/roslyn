@@ -29,6 +29,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
     <Reference Include="System" />
+    <PackageReference Include="Microsoft.DiaSymReader.Native">
+      <Version>$(MicrosoftDiaSymReaderNativeVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Shared\BuildClient.cs">
@@ -59,7 +62,6 @@
     <None Include="csc.rsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="project.json" />
   </ItemGroup>
   <Import Project="..\..\Core\CommandLine\CommandLine.projitems" Label="Shared" />
   <Import Project="..\..\..\..\build\Targets\Imports.targets" />

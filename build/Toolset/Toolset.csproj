@@ -22,9 +22,6 @@
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Compilers\Core\MSBuildTask\MSBuildTask.csproj">
       <Project>{7ad4fe65-9a30-41a6-8004-aa8f89bcb7f3}</Project>
       <Name>MSBuildTask</Name>

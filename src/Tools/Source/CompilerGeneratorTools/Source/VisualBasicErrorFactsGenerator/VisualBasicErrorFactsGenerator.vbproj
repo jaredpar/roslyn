@@ -28,10 +28,15 @@
     <Compile Include="Program.vb" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
+    <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="My Project\" />
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>$(NETStandardLibraryVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\..\..\..\..\..\build\Targets\Imports.targets" />
 </Project>

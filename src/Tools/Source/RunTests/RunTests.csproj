@@ -21,6 +21,21 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>$(NewtonsoftJsonVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="RestSharp">
+      <Version>$(RestSharpVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>$(SystemCollectionsImmutableVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Metadata">
+      <Version>$(SystemReflectionMetadataVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>$(SystemValueTupleVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyScheduler.cs" />
@@ -47,7 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.Json.cs" />
-    <None Include="project.json" />
   </ItemGroup>
   <Import Project="..\..\..\..\build\Targets\Imports.targets" />
 </Project>

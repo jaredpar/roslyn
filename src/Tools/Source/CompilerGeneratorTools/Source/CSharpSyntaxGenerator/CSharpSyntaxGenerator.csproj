@@ -39,12 +39,23 @@
     <Compile Include="TestWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="..\..\..\..\..\Compilers\CSharp\Portable\Syntax\Syntax.xml">
       <Link>Syntax.xml</Link>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>$(NETStandardLibraryVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlDocument">
+      <Version>$(SystemXmlXmlDocumentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlSerializer">
+      <Version>$(SystemXmlXmlSerializerVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\..\..\..\..\..\build\Targets\Imports.targets" />
 </Project>

@@ -59,7 +59,158 @@
     <None Include="vbc.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Platforms">
+      <Version>$(MicrosoftNETCorePlatformsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Runtime.CoreCLR">
+      <Version>$(MicrosoftNETCoreRuntimeCoreCLRVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.TestHost">
+      <Version>$(MicrosoftNETCoreTestHostVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.AppContext">
+      <Version>$(SystemAppContextVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections">
+      <Version>$(SystemCollectionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Concurrent">
+      <Version>$(SystemCollectionsConcurrentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>$(SystemCollectionsImmutableVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Console">
+      <Version>$(SystemConsoleVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Debug">
+      <Version>$(SystemDiagnosticsDebugVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.FileVersionInfo">
+      <Version>$(SystemDiagnosticsFileVersionInfoVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Process">
+      <Version>$(SystemDiagnosticsProcessVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.StackTrace">
+      <Version>$(SystemDiagnosticsStackTraceVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tools">
+      <Version>$(SystemDiagnosticsToolsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Dynamic.Runtime">
+      <Version>$(SystemDynamicRuntimeVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Globalization">
+      <Version>$(SystemGlobalizationVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Compression">
+      <Version>$(SystemIOCompressionVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem">
+      <Version>$(SystemIOFileSystemVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem.Primitives">
+      <Version>$(SystemIOFileSystemPrimitivesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem.Watcher">
+      <Version>$(SystemIOFileSystemWatcherVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Pipes">
+      <Version>$(SystemIOPipesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq">
+      <Version>$(SystemLinqVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq.Expressions">
+      <Version>$(SystemLinqExpressionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.NameResolution">
+      <Version>$(SystemNetNameResolutionVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Sockets">
+      <Version>$(SystemNetSocketsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection">
+      <Version>$(SystemReflectionVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Primitives">
+      <Version>$(SystemReflectionPrimitivesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Resources.ResourceManager">
+      <Version>$(SystemResourcesResourceManagerVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>$(SystemRuntimeVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Extensions">
+      <Version>$(SystemRuntimeExtensionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Handles">
+      <Version>$(SystemRuntimeHandlesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.InteropServices">
+      <Version>$(SystemRuntimeInteropServicesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Loader">
+      <Version>$(SystemRuntimeLoaderVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Numerics">
+      <Version>$(SystemRuntimeNumericsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Serialization.Primitives">
+      <Version>$(SystemRuntimeSerializationPrimitivesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Serialization.Json">
+      <Version>$(SystemRuntimeSerializationJsonVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>$(SystemSecurityCryptographyAlgorithmsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Encoding">
+      <Version>$(SystemSecurityCryptographyEncodingVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.X509Certificates">
+      <Version>$(SystemSecurityCryptographyX509CertificatesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding">
+      <Version>$(SystemTextEncodingVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.CodePages">
+      <Version>$(SystemTextEncodingCodePagesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.Extensions">
+      <Version>$(SystemTextEncodingExtensionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading">
+      <Version>$(SystemThreadingVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks">
+      <Version>$(SystemThreadingTasksVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Parallel">
+      <Version>$(SystemThreadingTasksParallelVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Thread">
+      <Version>$(SystemThreadingThreadVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.ReaderWriter">
+      <Version>$(SystemXmlReaderWriterVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument">
+      <Version>$(SystemXmlXDocumentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlDocument">
+      <Version>$(SystemXmlXmlDocumentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XPath.XDocument">
+      <Version>$(SystemXmlXPathXDocumentVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\..\Core\CommandLine\CommandLine.projitems" Label="Shared" />
   <Import Project="..\..\..\..\build\Targets\Imports.targets" />

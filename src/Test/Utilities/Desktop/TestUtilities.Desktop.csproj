@@ -47,6 +47,24 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Test.Resources.Proprietary">
+      <Version>$(MicrosoftCodeAnalysisTestResourcesProprietaryVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DiaSymReader.Native">
+      <Version>$(MicrosoftDiaSymReaderNativeVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DiaSymReader">
+      <Version>$(MicrosoftDiaSymReaderVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="xunit">
+      <Version>$(xunitVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.console">
+      <Version>$(xunitrunnerconsoleVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio">
+      <Version>$(xunitrunnervisualstudioVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Compilers\Shared\DesktopAnalyzerAssemblyLoader.cs">
@@ -111,9 +129,6 @@
     <InternalsVisibleToTest Include="Roslyn.Services.Test.Utilities" />
     <InternalsVisibleToTest Include="Roslyn.Services.Test.Utilities2" />
     <InternalsVisibleToTest Include="Roslyn.Services.UnitTests" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="project.json" />
   </ItemGroup>
   <Import Project="..\..\..\..\build\Targets\Imports.targets" />
 </Project>

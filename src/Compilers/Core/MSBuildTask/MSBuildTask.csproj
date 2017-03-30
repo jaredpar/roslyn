@@ -25,7 +25,6 @@
     <None Include="Microsoft.VisualBasic.Core.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="project.json" />
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +78,74 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ErrorString.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build">
+      <Version>$(MicrosoftBuildVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Tasks.Core">
+      <Version>$(MicrosoftBuildTasksCoreVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Platforms">
+      <Version>$(MicrosoftNETCorePlatformsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Win32.Primitives">
+      <Version>$(MicrosoftWin32PrimitivesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.AppContext">
+      <Version>$(SystemAppContextVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Console">
+      <Version>$(SystemConsoleVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Concurrent">
+      <Version>$(SystemCollectionsConcurrentVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Process">
+      <Version>$(SystemDiagnosticsProcessVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tools">
+      <Version>$(SystemDiagnosticsToolsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem">
+      <Version>$(SystemIOFileSystemVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem.DriveInfo">
+      <Version>$(SystemIOFileSystemDriveInfoVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Pipes">
+      <Version>$(SystemIOPipesVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq">
+      <Version>$(SystemLinqVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection">
+      <Version>$(SystemReflectionVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.AccessControl">
+      <Version>$(SystemSecurityAccessControlVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>$(SystemSecurityCryptographyAlgorithmsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Principal.Windows">
+      <Version>$(SystemSecurityPrincipalWindowsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding">
+      <Version>$(SystemTextEncodingVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.Extensions">
+      <Version>$(SystemTextEncodingExtensionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.RegularExpressions">
+      <Version>$(SystemTextRegularExpressionsVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Thread">
+      <Version>$(SystemThreadingThreadVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\CommandLine\CommandLine.projitems" Label="Shared" />
   <Import Project="..\..\..\..\build\Targets\Imports.targets" />

@@ -59,7 +59,18 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
+    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
+      <Version>$(MicrosoftNETCorePortableCompatibilityVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>$(NETStandardLibraryVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Console">
+      <Version>$(SystemConsoleVersion)</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>$(SystemSecurityCryptographyAlgorithmsVersion)</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\..\..\..\..\..\build\Targets\Imports.targets" />
 </Project>
