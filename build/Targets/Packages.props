@@ -201,6 +201,7 @@
     <SystemXmlXmlDocumentVersion>4.3.0</SystemXmlXmlDocumentVersion>                                                                                                  
     <SystemXmlXmlSerializerVersion>4.3.0</SystemXmlXmlSerializerVersion>                                                                                              
     <SystemXmlXPathXDocumentVersion>4.3.0</SystemXmlXPathXDocumentVersion>                                                                                            
+    <MicrosoftVSSDKBuildToolsVersion>15.0.26124-RC3</MicrosoftVSSDKBuildToolsVersion>
     <VSExternalAPIsCodingConventionsVersion>1.0.60704.2</VSExternalAPIsCodingConventionsVersion>                                                                      
     <VSLangProjVersion>7.0.3300</VSLangProjVersion>                                                                                                                   
     <VSLangProj140Version>14.3.25407-alpha</VSLangProj140Version>                                                                                                     

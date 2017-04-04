@@ -62,6 +62,15 @@
       {TargetFrameworkDirectory};
       {RawFileName};
     </AssemblySearchPaths>
+
+    <!-- DO NOT MERGE  hack to test out the basic premise I outlined in the following
+         https://github.com/dotnet/sdk/issues/1083#issuecomment-292013375 -->
+    <MSBuildSDKsPath>e:\temp</MSBuildSDKsPath>
+    <MicrosoftNetSdkVersion>sdk</MicrosoftNetSdkVersion>
+
+    <!-- DO NOT MERGE this is set in the old build but not in the new SDK.  Need to figure out what is 
+         going on with this -->
+    <NoWarn>$(NoWarn);1701</NoWarn>
   </PropertyGroup>
 
   <!-- Windows specific settings -->
