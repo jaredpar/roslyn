@@ -811,6 +811,13 @@
     <Compile Include="Xml\XmlCharType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
+    <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+    <PackageReference Include="System.Xml.XPath.XDocument" Version="$(SystemXmlXPathXDocumentVersion)" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
+  </ItemGroup>
+  <ItemGroup>
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.CSharp" />
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.VisualBasic" />
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.ExpressionEvaluator.ExpressionCompiler" />
