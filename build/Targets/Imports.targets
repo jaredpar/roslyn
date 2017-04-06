@@ -235,7 +235,7 @@
   </ItemGroup>
 
   <Import Project="$(MSBuildTargetsFilePath)" Condition="'$(RoslynSdkProject)' != 'true'" />
-  <Import Project="Sdk.targets" Sdk="$(MicrosoftNetSdkVersion)" Condition="'$(RoslynSdkProject)' == 'true'" />
+  <Import Project="$(RoslynNetSdkRootPath)Sdk.targets" Condition="'$(RoslynSdkProject)' == 'true'" />
 
   <!-- On *nix the NuGet targets aren't imported by default, so we do that here -->
   <Import Project="$(MSBuildBinPath)\Microsoft.NuGet.targets" Condition="'$(OS)' != 'Windows_NT'" />
@@ -449,7 +449,7 @@
 
        https://github.com/Microsoft/msbuild/issues/1499 -->
   <Target Name="DeployPortableOnDeveloperBuild"
-          Condition="'$(_IsAnyPortableUnitTest)' == 'true' AND '$(DeveloperBuild)' == 'true' AND '$(OS)' == 'Windows_NT'">
+          Condition="'$(_IsAnyPortableUnitTest)' == 'true' AND '$(DeveloperBuild)' == 'true' AND '$(OS)' == 'Windows_NT' AND '$(RoslynSdkProject)' != 'true'">
     <ResolveNuGetPackageAssets IncludeFrameworkReferences="true"
                                NuGetPackagesDirectory="$(NuGetPackageRoot)"
                                RuntimeIdentifier="win7"
