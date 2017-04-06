@@ -53,6 +53,7 @@
     <MicrosoftNETCoreRuntimeCoreCLRVersion>1.1.0</MicrosoftNETCoreRuntimeCoreCLRVersion>                                                                              
     <MicrosoftNETCoreTestHostVersion>1.1.0</MicrosoftNETCoreTestHostVersion>                                                                                          
     <MicrosoftNetFX20Version>1.0.3</MicrosoftNetFX20Version>                                                                                                          
+    <MicrosoftNetSdkVersion>2.0.0-alpha-20170405-2</MicrosoftNetSdkVersion>
     <MicrosoftNuGetBuildTasksVersion>0.1.0</MicrosoftNuGetBuildTasksVersion>                                                                                          
     <MicrosoftPortableTargetsVersion>0.1.2-dev</MicrosoftPortableTargetsVersion>                                                                                      
     <MicrosoftServiceHubClientVersion>1.0.177-rc-g56d40a8a02</MicrosoftServiceHubClientVersion>                                                                       
