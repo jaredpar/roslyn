@@ -235,7 +235,7 @@
   </ItemGroup>
 
   <Import Project="$(MSBuildTargetsFilePath)" Condition="'$(RoslynSdkProject)' != 'true'" />
-  <Import Project="Sdk.targets" Sdk="$(SdkImportAttributeValue)" Condition="'$(RoslynSdkProject)' == 'true'" />
+  <Import Project="$(RoslynNetSdkRootPath)Sdk.targets" Condition="'$(RoslynSdkProject)' == 'true'" />
 
   <!-- On *nix the NuGet targets aren't imported by default, so we do that here -->
   <Import Project="$(MSBuildBinPath)\Microsoft.NuGet.targets" Condition="'$(OS)' != 'Windows_NT'" />

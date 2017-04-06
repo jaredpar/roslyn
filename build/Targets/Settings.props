@@ -66,25 +66,13 @@
     <!-- DO NOT MERGE this is set in the old build but not in the new SDK.  Need to figure out what is 
          going on with this -->
     <NoWarn>$(NoWarn);1701</NoWarn>
+
+    <!-- DO NOT MERGE  hack to test out the basic premise I outlined in the following
+         https://github.com/dotnet/sdk/issues/1083#issuecomment-292013375 
+
+         This needs to be conditional to support a fresh restore -->
+    <RoslynNetSdkRootPath>$(NuGetPackageRoot)\Microsoft.Net.Sdk\$(MicrosoftNetSdkVersion)\Sdk\</RoslynNetSdkRootPath> 
   </PropertyGroup>
-
-  <!-- DO NOT MERGE  hack to test out the basic premise I outlined in the following
-       https://github.com/dotnet/sdk/issues/1083#issuecomment-292013375 
-
-       This needs to be conditional to support a fresh restore -->
-  <Choose>
-    <When Condition="Exists('$(NuGetPackageRoot)\Microsoft.Net.Sdk\$(MicrosoftNetSdkVersion)')" >
-      <PropertyGroup>
-        <SdkImportAttributeValue>$(MicrosoftNetSdkVersion)</SdkImportAttributeValue> 
-        <MSBuildSDKsPath>$(NuGetPackageRoot)\Microsoft.Net.Sdk\</MSBuildSDKsPath> 
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <SdkImportAttributeValue>Microsoft.Net.Sdk</SdkImportAttributeValue> 
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
 
   <!-- Windows specific settings -->
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
@@ -245,7 +233,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
           Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props') AND '$(RoslynSdkProject)' != 'true'" />
 
-  <Import Project="Sdk.props" Sdk="$(SdkImportAttributeValue)" Condition="'$(RoslynSdkProject)' == 'true'" />
+  <Import Project="$(RoslynNetSdkRootPath)Sdk.props" Condition="'$(RoslynSdkProject)' == 'true'" />
 
   <Import Project="$(RoslynDiagnosticsPropsFilePath)" Condition="'$(UseRoslynAnalyzers)' == 'true' AND Exists('$(RoslynDiagnosticsPropsFilePath)')" />
 
