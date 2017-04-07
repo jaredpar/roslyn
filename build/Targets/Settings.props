@@ -71,7 +71,8 @@
          https://github.com/dotnet/sdk/issues/1083#issuecomment-292013375 
 
          This needs to be conditional to support a fresh restore -->
-    <RoslynNetSdkRootPath>$(NuGetPackageRoot)\Microsoft.Net.Sdk\$(MicrosoftNetSdkVersion)\Sdk\</RoslynNetSdkRootPath> 
+    <!-- <RoslynNetSdkRootPath>$(NuGetPackageRoot)\Microsoft.Net.Sdk\$(MicrosoftNetSdkVersion)\Sdk\</RoslynNetSdkRootPath>  -->
+    <RoslynNetSdkRootPath>$(MSBuildSDKsPath)\Microsoft.Net.Sdk\Sdk\</RoslynNetSdkRootPath> 
   </PropertyGroup>
 
   <!-- Windows specific settings -->
@@ -246,4 +247,10 @@
     <!-- NuGet props aren't imported by default on *nix so we do that here -->
     <Import Project="$(MSBuildBinPath)\Microsoft.NuGet.props" Condition="'$(OS)' != 'Windows_NT'" />
   </ImportGroup>
+
+  <!-- The Sdk props will set the rootnamespace to the assembly name when the property
+       is empty.  Need to override this after  -->
+  <PropertyGroup Condition="'$(MSBuildTargetsLanguageName)' == 'VisualBasic' AND '$(RoslynSdkProject)' == 'true'" >
+      <RootNamespace></RootNamespace>
+  </PropertyGroup>
 </Project>
