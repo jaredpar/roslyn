@@ -240,7 +240,7 @@ function Get-MSBuildDir([switch]$xcopy = $false) {
 # requirements for the Roslyn repo
 function Get-VisualStudioDir() {
     $vswhere = Join-Path (Ensure-BasicTool "vswhere" "1.0.50") "tools\vswhere.exe"
-    $output = & $vswhere -requires Microsoft.Component.MSBuild -format json | Out-String
+    $output = & $vswhere -latest -requires Microsoft.Component.MSBuild -format json | Out-String
     if (-not $?) {
         throw "Could not locate a valid Visual Studio"
     }
