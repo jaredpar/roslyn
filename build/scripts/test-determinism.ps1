@@ -53,6 +53,31 @@ function Run-Build() {
     }
 }
 
+# Return all of the files that need to be processed for determinism under the given
+# directory.
+function Get-FilesToProcess([string]$dir) {
+    foreach ($item in Get-ChildItem -re -in *.dll,*.exe $dir) {
+        $fileFullName = $item.FullName 
+        $fileName = Split-Path -leaf $fileFullName
+        $keyFullName = $fileFullName + ".key"
+        $keyName = Split-Path -leaf $keyFullName
+
+        # Do not process binaries that have been explicitly skipped or do not have a key
+        # file.  The lack of a key file means it's a binary that wasn't specifically 
+        # built for that directory (dependency).  Only need to check the binaries we are
+        # building. 
+        if ($script:skipList.Contains($fileName) -or -not (test-path $keyFullName)) {
+            continue;
+        }
+
+        Write-Output $fileFullName
+        $pdbFullName = [IO.Path]::ChangeExtension($fileFullName, ".pdb")
+        if (Test-Path $pdbFullName) { 
+            Write-Output $pdbFullName
+        }
+    }
+}
+
 function Run-Analysis() {
     param ( [string]$rootDir = $(throw "Need a root directory to build"),
             [bool]$buildMap = $(throw "Whether to build the map or analyze it"),
@@ -68,49 +93,46 @@ function Run-Analysis() {
     Push-Location $debugDir
 
     Write-Host "Testing the binaries"
-    foreach ($dll in gci -re -in *.dll,*.exe) {
-        $dllFullName = $dll.FullName
-        $dllId = $dllFullName.Substring($debugDir.Length)
-        $dllName = Split-Path -leaf $dllFullName
-        $dllHash = (get-filehash $dll -algorithm MD5).Hash
-        $keyFullName = $dllFullName + ".key"
+    foreach ($fileFullName in Get-FilesToProcess $debugDir) {
+        $fileId = $fileFullName.Substring($debugDir.Length)
+        $fileName = Split-Path -leaf $fileFullName
+        $fileHash = (get-filehash $fileFullName -algorithm MD5).Hash
+        $keyFullName = $fileFullName + ".key"
         $keyName = Split-Path -leaf $keyFullName
 
-        # Do not process binaries that have been explicitly skipped or do not have a key
-        # file.  The lack of a key file means it's a binary that wasn't specifically 
-        # built for that directory (dependency).  Only need to check the binaries we are
-        # building. 
-        if ($script:skipList.Contains($dllName) -or -not (test-path $keyFullName)) {
-            continue;
-        }
-
         if ($buildMap) {
-            Write-Host "`tRecording $dllName = $dllHash"
+            Write-Host "`tRecording $fileName = $fileHash"
             $data = @{}
-            $data["Hash"] = $dllHash
-            $data["Content"] = [IO.File]::ReadAllBytes($dllFullName)
-            $data["Key"] = [IO.File]::ReadAllBytes($dllFullName + ".key")
-            $script:dataMap[$dllId] = $data
+            $data["Hash"] = $fileHash
+            $data["Content"] = [IO.File]::ReadAllBytes($fileFullName)
+
+            $keyBytes = ""
+            if (Test-Path $keyFullName) { 
+                $keyBytes = [IO.File]::ReadAllBytes($keyFullName)
+            }
+
+            $data["Key"] = $keyBytes
+            $script:dataMap[$fileId] = $data
         }
-        elseif (-not $script:dataMap.Contains($dllId)) {
-            Write-Host "Missing entry in map $dllId->$dllFullName"
+        elseif (-not $script:dataMap.Contains($fileId)) {
+            Write-Host "Missing entry in map $fileId->$fileFullName"
             $allGood = $false
         }
         else {
-            $data = $script:dataMap[$dllId]
+            $data = $script:dataMap[$fileId]
             $oldHash = $data.Hash
-            if ($oldHash -eq $dllHash) {
-                Write-Host "`tVerified $dllName"
+            if ($oldHash -eq $fileHash) {
+                Write-Host "`tVerified $fileName"
             }
             else {
-                Write-Host "`tERROR! $dllName"
+                Write-Host "`tERROR! $fileName"
                 $allGood = $false
-                $errorList += $dllName
+                $errorList += $fileName
 
                 # Save out the original and baseline so Jenkins will archive them for investigation
-                [IO.File]::WriteAllBytes((Join-Path $script:errorDirLeft $dllName), $data.Content)
+                [IO.File]::WriteAllBytes((Join-Path $script:errorDirLeft $fileName), $data.Content)
                 [IO.File]::WriteAllBytes((Join-Path $script:errorDirLeft $keyName), $data.Key)
-                cp $dllFullName (Join-Path $script:errorDirRight $dllName)
+                cp $fileFullName (Join-Path $script:errorDirRight $fileName)
                 cp $keyFullName (Join-Path $script:errorDirRight $keyName)
             }
         }
