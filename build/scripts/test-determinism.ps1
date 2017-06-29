@@ -1,6 +1,6 @@
 [CmdletBinding(PositionalBinding=$false)]
 param ( [string]$bootstrapDir = "",
-        [bool]$debugDeterminism = $false)
+        [switch]$debugDeterminism = $false)
 
 Set-StrictMode -version 2.0
 $ErrorActionPreference = "Stop"
@@ -19,11 +19,7 @@ $script:dataMap = @{}
 [string]$script:errorDirLeft = ""
 [string]$script:errorDirRight = ""
 
-function Run-Build() {
-    param ( [string]$rootDir = $(throw "Need a root directory to build"),
-            [string]$pathMapBuildOption = "",
-            [switch]$restore = $false)
-
+function Run-Build([string]$rootDir, [string]$pathMapBuildOption, [switch]$restore = $false) {
     $sln = Join-Path $rootDir "Roslyn.sln"
     $debugDir = Join-Path $rootDir "Binaries\Debug"
     $objDir = Join-Path $rootDir "Binaries\Obj"
@@ -78,11 +74,7 @@ function Get-FilesToProcess([string]$dir) {
     }
 }
 
-function Run-Analysis() {
-    param ( [string]$rootDir = $(throw "Need a root directory to build"),
-            [bool]$buildMap = $(throw "Whether to build the map or analyze it"),
-            [string]$pathMapBuildOption = "",
-            [switch]$restore = $false)
+function Run-Analysis([string]$rootDir, [bool]$buildMap, [string]$pathMapBuildOption, [switch]$restore = $false) {
             
     $debugDir = Join-Path $rootDir "Binaries\Debug"
     $errorList = @()
@@ -139,12 +131,6 @@ function Run-Analysis() {
     }
 
     Pop-Location
-
-    # During determinism debugging shutdown the compiler after every pass so we get a unique
-    # log directory.
-    if ($debugDeterminism) {
-        Get-Process VBCSCompiler -ErrorAction SilentlyContinue | kill
-    }
 
     # Sanity check to ensure we didn't return a false positive because we failed
     # to examine any binaries.
@@ -210,12 +196,14 @@ try {
     exit 0
 }
 catch {
-    Write-Host "Error: $($_.Exception.Message)"
+    Write-Host $_
+    Write-Host $_.Exception
+    Write-Host $_.ScriptStackTrace
     exit 1
 }
 finally {
     Write-Host "Stopping VBCSCompiler"
-    Get-Process VBCSCompiler -ErrorAction SilentlyContinue | kill
+    Get-Process VBCSCompiler -ErrorAction SilentlyContinue | Stop-Process
     Write-Host "Stopped VBCSCompiler"
 }
 
