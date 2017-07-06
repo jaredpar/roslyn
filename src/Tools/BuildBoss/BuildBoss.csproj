@@ -5,7 +5,6 @@
   <PropertyGroup>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <ProjectGuid>{9C0660D9-48CA-40E1-BABA-8F6A1F11FE10}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>BuildBoss</RootNamespace>
     <AssemblyName>BuildBoss</AssemblyName>

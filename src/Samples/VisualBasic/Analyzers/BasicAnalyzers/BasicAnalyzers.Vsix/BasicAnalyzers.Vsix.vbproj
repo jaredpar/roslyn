@@ -5,7 +5,6 @@
   <PropertyGroup>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <ProjectGuid>{6E9FD555-EC3F-4865-A164-CB11A424B910}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>BasicAnalyzers</RootNamespace>
     <AssemblyName>BasicAnalyzers.Vsix</AssemblyName>
@@ -39,10 +38,7 @@
     <Compile Include="Empty.vb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BasicAnalyzers\BasicAnalyzers.vbproj">
-      <Project>{9E86BCE5-E095-4E9F-9C45-22D5AEB6AD2A}</Project>
-      <Name>BasicAnalyzers</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\BasicAnalyzers\BasicAnalyzers.vbproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\" />
