@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
             Dictionary<string, DiagnosticAnalyzer[]> analyzerMap, IAsynchronousOperationListener listener)
         {
             return analyzerMap == null || analyzerMap.Count == 0
-                ? new MyDiagnosticAnalyzerService(DiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap(), listener: listener)
+                ? new MyDiagnosticAnalyzerService(FeaturesDiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap(), listener: listener)
                 : new MyDiagnosticAnalyzerService(analyzerMap.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value.ToImmutableArray()), listener: listener);
         }
 

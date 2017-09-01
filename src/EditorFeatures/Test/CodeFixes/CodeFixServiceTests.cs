@@ -26,7 +26,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.CodeFixes
         [Fact]
         public async Task TestGetFirstDiagnosticWithFixAsync()
         {
-            var diagnosticService = new TestDiagnosticAnalyzerService(DiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap());
+            var diagnosticService = new TestDiagnosticAnalyzerService(FeaturesDiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap());
 
             var fixers = CreateFixers();
             var code = @"
@@ -135,7 +135,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.CodeFixes
 
         private static Tuple<TestWorkspace, TestDiagnosticAnalyzerService, CodeFixService, IErrorLoggerService> ServiceSetup(CodeFixProvider codefix)
         {
-            var diagnosticService = new TestDiagnosticAnalyzerService(DiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap());
+            var diagnosticService = new TestDiagnosticAnalyzerService(FeaturesDiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap());
             var fixers = SpecializedCollections.SingletonEnumerable(
                 new Lazy<CodeFixProvider, CodeChangeProviderMetadata>(
                 () => codefix,

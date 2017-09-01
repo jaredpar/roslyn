@@ -23,7 +23,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Preview
 
         private static IEnumerable<string> GetCompilerAnalyzerAssemblies()
         {
-            var compilerAnalyzersMap = DiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap();
+            var compilerAnalyzersMap = FeaturesDiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap();
             foreach (var analyzers in compilerAnalyzersMap.Values)
             {
                 foreach (var analyzer in analyzers)

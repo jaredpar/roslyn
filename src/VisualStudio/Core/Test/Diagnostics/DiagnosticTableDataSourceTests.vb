@@ -656,7 +656,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.UnitTests.Diagnostics
 
             Dim notificationService = New TestForegroundNotificationService()
 
-            Dim compilerAnalyzersMap = DiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap()
+            Dim compilerAnalyzersMap = FeaturesDiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap()
             Dim analyzerService = New MyDiagnosticAnalyzerService(compilerAnalyzersMap, registrationService, listener)
 
             Dim service = DirectCast(workspace.Services.GetService(Of ISolutionCrawlerRegistrationService)(), SolutionCrawlerRegistrationService)

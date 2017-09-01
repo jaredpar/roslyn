@@ -309,7 +309,7 @@ Namespace Microsoft.CodeAnalysis.Editor.Implementation.Diagnostics.UnitTests
 
             Dim notificationService = New TestForegroundNotificationService()
 
-            Dim compilerAnalyzersMap = DiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap().Add(
+            Dim compilerAnalyzersMap = FeaturesDiagnosticExtensions.GetCompilerDiagnosticAnalyzersMap().Add(
                 NoCompilationConstants.LanguageName, ImmutableArray.Create(Of DiagnosticAnalyzer)(New NoCompilationDocumentDiagnosticAnalyzer()))
 
             Dim analyzerService = New TestDiagnosticAnalyzerService(compilerAnalyzersMap)
