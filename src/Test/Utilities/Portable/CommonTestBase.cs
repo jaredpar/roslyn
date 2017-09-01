@@ -306,33 +306,6 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
                 referencedCompilations);
         }
 
-        protected VisualBasic.VisualBasicCompilation CreateVisualBasicCompilation(
-            XCData code,
-            VisualBasic.VisualBasicParseOptions parseOptions = null,
-            VisualBasic.VisualBasicCompilationOptions compilationOptions = null,
-            string assemblyName = null,
-            IEnumerable<MetadataReference> referencedAssemblies = null)
-        {
-            return CreateVisualBasicCompilation(assemblyName, code, parseOptions, compilationOptions, referencedAssemblies, referencedCompilations: null);
-        }
-
-        protected VisualBasic.VisualBasicCompilation CreateVisualBasicCompilation(
-            string assemblyName,
-            XCData code,
-            VisualBasic.VisualBasicParseOptions parseOptions = null,
-            VisualBasic.VisualBasicCompilationOptions compilationOptions = null,
-            IEnumerable<MetadataReference> referencedAssemblies = null,
-            IEnumerable<Compilation> referencedCompilations = null)
-        {
-            return CreateVisualBasicCompilation(
-                assemblyName,
-                code.Value,
-                parseOptions,
-                compilationOptions,
-                referencedAssemblies,
-                referencedCompilations);
-        }
-
         protected CSharp.CSharpCompilation CreateCSharpCompilation(
             string code,
             CSharp.CSharpParseOptions parseOptions = null,
@@ -388,62 +361,7 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             return CSharp.CSharpCompilation.Create(assemblyName, new[] { tree }, references, compilationOptions);
         }
 
-        protected VisualBasic.VisualBasicCompilation CreateVisualBasicCompilation(
-            string code,
-            VisualBasic.VisualBasicParseOptions parseOptions = null,
-            VisualBasic.VisualBasicCompilationOptions compilationOptions = null,
-            string assemblyName = null,
-            IEnumerable<MetadataReference> referencedAssemblies = null)
-        {
-            return CreateVisualBasicCompilation(assemblyName, code, parseOptions, compilationOptions, referencedAssemblies, referencedCompilations: null);
-        }
-
-        protected VisualBasic.VisualBasicCompilation CreateVisualBasicCompilation(
-            string assemblyName,
-            string code,
-            VisualBasic.VisualBasicParseOptions parseOptions = null,
-            VisualBasic.VisualBasicCompilationOptions compilationOptions = null,
-            IEnumerable<MetadataReference> referencedAssemblies = null,
-            IEnumerable<Compilation> referencedCompilations = null)
-        {
-            if (assemblyName == null)
-            {
-                assemblyName = GetUniqueName();
-            }
-
-            if (parseOptions == null)
-            {
-                parseOptions = VisualBasic.VisualBasicParseOptions.Default;
-            }
-
-            if (compilationOptions == null)
-            {
-                compilationOptions = new VisualBasic.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
-            }
-
-            var references = new List<MetadataReference>();
-            if (referencedAssemblies == null)
-            {
-                references.Add(MscorlibRef);
-                references.Add(SystemRef);
-                references.Add(SystemCoreRef);
-                references.Add(MsvbRef);
-                references.Add(SystemXmlRef);
-                references.Add(SystemXmlLinqRef);
-            }
-            else
-            {
-                references.AddRange(referencedAssemblies);
-            }
-
-            AddReferencedCompilations(referencedCompilations, references);
-
-            var tree = VisualBasic.VisualBasicSyntaxTree.ParseText(code, options: parseOptions);
-
-            return VisualBasic.VisualBasicCompilation.Create(assemblyName, new[] { tree }, references, compilationOptions);
-        }
-
-        private void AddReferencedCompilations(IEnumerable<Compilation> referencedCompilations, List<MetadataReference> references)
+        protected void AddReferencedCompilations(IEnumerable<Compilation> referencedCompilations, List<MetadataReference> references)
         {
             if (referencedCompilations != null)
             {

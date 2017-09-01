@@ -414,6 +414,82 @@ End Class
 Public MustInherit Class BasicTestBaseBase
     Inherits CommonTestBase
 
+    Protected Function CreateVisualBasicCompilation(
+        code As XCData,
+        Optional parseOptions As VisualBasicParseOptions = Nothing,
+        Optional compilationOptions As VisualBasicCompilationOptions = Nothing,
+        Optional assemblyName As String = Nothing,
+        Optional referencedAssemblies As IEnumerable(Of MetadataReference) = Nothing) As VisualBasicCompilation
+
+        Return CreateVisualBasicCompilation(assemblyName, code, parseOptions, compilationOptions, referencedAssemblies, referencedCompilations:=Nothing)
+    End Function
+
+    Protected Function CreateVisualBasicCompilation(
+            assemblyName As String,
+            code As XCData,
+            Optional parseOPtions As VisualBasicParseOptions = Nothing,
+            Optional compilationOptions As VisualBasicCompilationOptions = Nothing,
+            Optional referencedAssemblies As IEnumerable(Of MetadataReference) = Nothing,
+            Optional referencedCompilations As IEnumerable(Of Compilation) = Nothing) As VisualBasicCompilation
+        Return CreateVisualBasicCompilation(
+                assemblyName,
+                code.Value,
+                parseOPtions,
+                compilationOptions,
+                referencedAssemblies,
+                referencedCompilations)
+    End Function
+
+    Protected Function CreateVisualBasicCompilation(
+        assemblyName As String,
+        code As String,
+        Optional parseOptions As VisualBasicParseOptions = Nothing,
+        Optional compilationOptions As VisualBasicCompilationOptions = Nothing,
+        Optional referencedAssemblies As IEnumerable(Of MetadataReference) = Nothing,
+        Optional referencedCompilations As IEnumerable(Of Compilation) = Nothing) As VisualBasicCompilation
+
+        If assemblyName Is Nothing Then
+            assemblyName = GetUniqueName()
+        End If
+
+
+        If parseOptions Is Nothing Then
+            parseOptions = VisualBasic.VisualBasicParseOptions.Default
+        End If
+
+
+        If compilationOptions Is Nothing Then
+            compilationOptions = New VisualBasic.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        End If
+
+        Dim references As New List(Of MetadataReference)
+        If referencedAssemblies Is Nothing Then
+            references.Add(MscorlibRef)
+            references.Add(SystemRef)
+            references.Add(SystemCoreRef)
+            references.Add(MsvbRef)
+            references.Add(SystemXmlRef)
+            references.Add(SystemXmlLinqRef)
+        Else
+            references.AddRange(referencedAssemblies)
+        End If
+
+        AddReferencedCompilations(referencedCompilations, references)
+
+        Dim tree = VisualBasicSyntaxTree.ParseText(code, options:=parseOptions)
+
+        Return VisualBasicCompilation.Create(assemblyName, {tree}, references, compilationOptions)
+    End Function
+
+    Protected Function CreateVisualBasicCompilation(
+            code As String,
+            Optional parseOptions As VisualBasicParseOptions = Nothing,
+            Optional compilationOptions As VisualBasicCompilationOptions = Nothing,
+            Optional assemblyName As String = Nothing,
+            Optional referencedAssemblies As IEnumerable(Of MetadataReference) = Nothing) As VisualBasicCompilation
+        Return CreateVisualBasicCompilation(assemblyName, code, parseOptions, compilationOptions, referencedAssemblies, referencedCompilations:=Nothing)
+    End Function
+
     Protected Overrides ReadOnly Property CompilationOptionsReleaseDll As CompilationOptions
         Get
             Return TestOptions.ReleaseDll
@@ -478,13 +554,13 @@ Public MustInherit Class BasicTestBaseBase
 
     Public Shared Shadows Function GetSequencePoints(pdbXml As XElement) As XElement
         Return <sequencePoints>
-                   <%= From entry In pdbXml.<methods>.<method>.<sequencePoints>.<entry>
-                       Select <entry
-                                  startLine=<%= entry.@startLine %>
-                                  startColumn=<%= entry.@startColumn %>
-                                  endLine=<%= entry.@endLine %>
-                                  endColumn=<%= entry.@endColumn %>/> %>
-               </sequencePoints>
+                                    <%= From entry In pdbXml.<methods>.<method>.<sequencePoints>.<entry>
+                                        Select <entry
+                                                   startLine=<%= entry.@startLine %>
+                                                   startColumn=<%= entry.@startColumn %>
+                                                   endLine=<%= entry.@endLine %>
+                                                   endColumn=<%= entry.@endColumn %>/> %>
+                                </sequencePoints>
     End Function
 
     Public Shared ReadOnly ClassesWithReadWriteProperties As XCData = <![CDATA[
