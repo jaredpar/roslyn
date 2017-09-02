@@ -25,6 +25,7 @@ using System.Threading;
 using Xunit;
 using static TestReferences;
 using System.Xml.Linq;
+using Microsoft.CodeAnalysis.UnitTests.Diagnostics;
 
 namespace Microsoft.CodeAnalysis.CSharp.Test.Utilities
 {
@@ -219,6 +220,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Test.Utilities
         {
             get { return TestOptions.ReleaseDll; }
         }
+
+        public SemanticModelAnalyzer<SyntaxKind> GetSemanticModelAnalyzer() => new SemanticModelAnalyzer<SyntaxKind>(SyntaxKind.NumericLiteralExpression);
+
+        public SemanticModelInternalAnalyzer<SyntaxKind> GetSemanticModelInternalAnalyzer() => new SemanticModelInternalAnalyzer<SyntaxKind>(SyntaxKind.NumericLiteralExpression);
 
         // PROTOTYPE SHIM!!!
 

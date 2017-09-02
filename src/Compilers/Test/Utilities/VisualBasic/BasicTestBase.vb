@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.CodeGen
 Imports Microsoft.CodeAnalysis.Emit
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.Text
+Imports Microsoft.CodeAnalysis.UnitTests.Diagnostics
 Imports Roslyn.Test.Utilities
 Imports Xunit
 
@@ -414,6 +415,14 @@ End Class
 Public MustInherit Class BasicTestBaseBase
     Inherits CommonTestBase
 
+    Public Function GetSemanticModelAnalyzer() As SemanticModelAnalyzer(Of SyntaxKind)
+        Return New SemanticModelAnalyzer(Of SyntaxKind)(SyntaxKind.NumericLiteralExpression)
+    End Function
+
+    Public Function GetSemanticModelInternalAnalyzer() As SemanticModelInternalAnalyzer(Of SyntaxKind)
+        Return New SemanticModelInternalAnalyzer(Of SyntaxKind)(SyntaxKind.NumericLiteralExpression)
+    End Function
+
     Protected Function CreateVisualBasicCompilation(
         code As XCData,
         Optional parseOptions As VisualBasicParseOptions = Nothing,
@@ -554,13 +563,13 @@ Public MustInherit Class BasicTestBaseBase
 
     Public Shared Shadows Function GetSequencePoints(pdbXml As XElement) As XElement
         Return <sequencePoints>
-                                    <%= From entry In pdbXml.<methods>.<method>.<sequencePoints>.<entry>
-                                        Select <entry
-                                                   startLine=<%= entry.@startLine %>
-                                                   startColumn=<%= entry.@startColumn %>
-                                                   endLine=<%= entry.@endLine %>
-                                                   endColumn=<%= entry.@endColumn %>/> %>
-                                </sequencePoints>
+                   <%= From entry In pdbXml.<methods>.<method>.<sequencePoints>.<entry>
+                       Select <entry
+                                  startLine=<%= entry.@startLine %>
+                                  startColumn=<%= entry.@startColumn %>
+                                  endLine=<%= entry.@endLine %>
+                                  endColumn=<%= entry.@endColumn %>/> %>
+               </sequencePoints>
     End Function
 
     Public Shared ReadOnly ClassesWithReadWriteProperties As XCData = <![CDATA[

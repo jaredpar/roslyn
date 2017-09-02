@@ -1903,7 +1903,7 @@ public class A
                 Diagnostic("AD0001").WithArguments("Microsoft.CodeAnalysis.UnitTests.Diagnostics.CompilationStartAnalysisContextAnalyzer", "System.InvalidOperationException", "Feature 'IOperation' is disabled.").WithLocation(1, 1));
 
             CreateCompilationWithMscorlib45(source)
-             .VerifyAnalyzerDiagnostics(new DiagnosticAnalyzer[] { new SemanticModelAnalyzer() }, null, null, true,
+             .VerifyAnalyzerDiagnostics(new DiagnosticAnalyzer[] { GetSemanticModelAnalyzer() }, null, null, true,
                 Diagnostic("AD0001").WithArguments("Microsoft.CodeAnalysis.UnitTests.Diagnostics.SemanticModelAnalyzer", "System.InvalidOperationException", "Feature 'IOperation' is disabled.").WithLocation(1, 1));
 
             // with IOperation disabled (by default), internal methods
@@ -1916,8 +1916,8 @@ public class A
                 Diagnostic(CompilationStartAnalysisContextInternalAnalyzer.OperationActionInternalDescriptor.Id, "1").WithArguments("Operation", "CompilationStart within Analysis").WithLocation(6, 17));
 
             CreateCompilationWithMscorlib45(source)
-             .VerifyAnalyzerDiagnostics(new DiagnosticAnalyzer[] { new SemanticModelInternalAnalyzer() }, null, null, true,
-                Diagnostic(SemanticModelInternalAnalyzer.GetOperationInternalDescriptor.Id, "1").WithLocation(6, 17));
+             .VerifyAnalyzerDiagnostics(new DiagnosticAnalyzer[] { GetSemanticModelInternalAnalyzer() }, null, null, true,
+                Diagnostic(SemanticModelInternalAnalyzer<SyntaxKind>.GetOperationInternalDescriptor.Id, "1").WithLocation(6, 17));
 
             // with IOperation enabled, public methods
             CreateCompilationWithMscorlib45(source, parseOptions: TestOptions.RegularWithIOperationFeature)
@@ -1929,8 +1929,8 @@ public class A
                 Diagnostic(CompilationStartAnalysisContextAnalyzer.OperationActionDescriptor.Id, "1").WithArguments("Operation", "CompilationStart within Analysis").WithLocation(6, 17));
 
             CreateCompilationWithMscorlib45(source, parseOptions: TestOptions.RegularWithIOperationFeature)
-             .VerifyAnalyzerDiagnostics(new DiagnosticAnalyzer[] { new SemanticModelAnalyzer() }, null, null, true,
-                Diagnostic(SemanticModelAnalyzer.GetOperationDescriptor.Id, "1").WithLocation(6, 17));
+             .VerifyAnalyzerDiagnostics(new DiagnosticAnalyzer[] { GetSemanticModelAnalyzer() }, null, null, true,
+                Diagnostic(SemanticModelAnalyzer<SyntaxKind>.GetOperationDescriptor.Id, "1").WithLocation(6, 17));
 
             // with IOperation enabled, internal methods
             CreateCompilationWithMscorlib45(source, parseOptions: TestOptions.RegularWithIOperationFeature)
@@ -1942,8 +1942,8 @@ public class A
                 Diagnostic(CompilationStartAnalysisContextInternalAnalyzer.OperationActionInternalDescriptor.Id, "1").WithArguments("Operation", "CompilationStart within Analysis").WithLocation(6, 17));
 
             CreateCompilationWithMscorlib45(source, parseOptions: TestOptions.RegularWithIOperationFeature)
-             .VerifyAnalyzerDiagnostics(new DiagnosticAnalyzer[] { new SemanticModelInternalAnalyzer() }, null, null, true,
-                Diagnostic(SemanticModelInternalAnalyzer.GetOperationInternalDescriptor.Id, "1").WithLocation(6, 17));
+             .VerifyAnalyzerDiagnostics(new DiagnosticAnalyzer[] { GetSemanticModelInternalAnalyzer() }, null, null, true,
+                Diagnostic(SemanticModelInternalAnalyzer<SyntaxKind>.GetOperationInternalDescriptor.Id, "1").WithLocation(6, 17));
         }
     }
 }

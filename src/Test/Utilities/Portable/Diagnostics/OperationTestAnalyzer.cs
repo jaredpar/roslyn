@@ -2203,7 +2203,8 @@ namespace Microsoft.CodeAnalysis.UnitTests.Diagnostics
     }
 
     // This analyzer is to test GetOperation method in SemanticModel
-    public class SemanticModelAnalyzer : DiagnosticAnalyzer
+    public class SemanticModelAnalyzer<TLanguageKindEnum> : DiagnosticAnalyzer
+        where TLanguageKindEnum : struct
     {
         private const string ReliabilityCategory = "Reliability";
 
@@ -2215,8 +2216,15 @@ namespace Microsoft.CodeAnalysis.UnitTests.Diagnostics
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
+        private readonly TLanguageKindEnum _kind;
+
         public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(GetOperationDescriptor);
+
+        public SemanticModelAnalyzer(TLanguageKindEnum kind)
+        {
+            _kind = kind;
+        }
 
         public sealed override void Initialize(AnalysisContext context)
         {
@@ -2230,24 +2238,13 @@ namespace Microsoft.CodeAnalysis.UnitTests.Diagnostics
                         syntaxContext.ReportDiagnostic(Diagnostic.Create(GetOperationDescriptor, node.GetLocation()));
                     }
                 },
-                Microsoft.CodeAnalysis.CSharp.SyntaxKind.NumericLiteralExpression);
-
-            context.RegisterSyntaxNodeAction(
-                (syntaxContext) =>
-                {
-                    var node = syntaxContext.Node;
-                    var model = syntaxContext.SemanticModel;
-                    if (model.GetOperation(node) != null)
-                    {
-                        syntaxContext.ReportDiagnostic(Diagnostic.Create(GetOperationDescriptor, node.GetLocation()));
-                    }
-                },
-                Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.NumericLiteralExpression);
+                _kind);
         }
     }
 
     // This analyzer is to test GetOperationInternal method in SemanticModel
-    public class SemanticModelInternalAnalyzer : DiagnosticAnalyzer
+    public class SemanticModelInternalAnalyzer<TLanguageKindEnum> : DiagnosticAnalyzer
+        where TLanguageKindEnum : struct
     {
         private const string ReliabilityCategory = "Reliability";
 
@@ -2260,9 +2257,15 @@ namespace Microsoft.CodeAnalysis.UnitTests.Diagnostics
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
+        private readonly TLanguageKindEnum _kind;
 
         public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(GetOperationInternalDescriptor);
+
+        public SemanticModelInternalAnalyzer(TLanguageKindEnum kind)
+        {
+            _kind = kind;
+        }
 
         public sealed override void Initialize(AnalysisContext context)
         {
@@ -2276,19 +2279,7 @@ namespace Microsoft.CodeAnalysis.UnitTests.Diagnostics
                         syntaxContext.ReportDiagnostic(Diagnostic.Create(GetOperationInternalDescriptor, node.GetLocation()));
                     }
                 },
-                Microsoft.CodeAnalysis.CSharp.SyntaxKind.NumericLiteralExpression);
-
-            context.RegisterSyntaxNodeAction(
-                (syntaxContext) =>
-                {
-                    var node = syntaxContext.Node;
-                    var model = syntaxContext.SemanticModel;
-                    if (model.GetOperationInternal(node) != null)
-                    {
-                        syntaxContext.ReportDiagnostic(Diagnostic.Create(GetOperationInternalDescriptor, node.GetLocation()));
-                    }
-                },
-                Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.NumericLiteralExpression);
+                _kind);
         }
     }
 }
