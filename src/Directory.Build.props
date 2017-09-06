@@ -2,5 +2,5 @@
   <PropertyGroup>
     <UsedDirectoryBuildProps>true</UsedDirectoryBuildProps>
   </PropertyGroup>  
-  <Import Project="..\build\Targets\Settings.props" />
+  <Import Project="..\build\Targets\SettingsSdk.props" />
 </Project>
