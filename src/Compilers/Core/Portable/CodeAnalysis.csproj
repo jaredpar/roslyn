@@ -11,7 +11,7 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <ServiceablePackage>true</ServiceablePackage>
     <DefineConstants>$(DefineConstants);COMPILERCORE</DefineConstants>
-    <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <RoslynCodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</RoslynCodeAnalysisRuleSet>
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />

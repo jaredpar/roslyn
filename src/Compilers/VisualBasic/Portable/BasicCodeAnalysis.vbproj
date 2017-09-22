@@ -9,7 +9,8 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <ServiceablePackage>true</ServiceablePackage>
     <NoWarn>$(NoWarn);42014</NoWarn>
-    <CodeAnalysisRuleSet>..\BasicCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <RootNamespace></RootNamespace>
+    <RoslynCodeAnalysisRuleSet>..\BasicCodeAnalysisRules.ruleset</RoslynCodeAnalysisRuleSet>
     <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
          reference Microsoft.NETCore.App to target the shared framework (bug
          https://github.com/dotnet/sdk/issues/1159) and NETCore.App

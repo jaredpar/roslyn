@@ -11,6 +11,7 @@
     <RuntimeIdentifiers>win7</RuntimeIdentifiers>
     <VBRuntime>Default</VBRuntime>
     <RoslynProjectType>UnitTest</RoslynProjectType>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <ItemGroup Label="File References">
     <Reference Include="System.Xml.Linq" />

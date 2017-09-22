@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Choose>
+    <When Condition="'$(RoslynProjectType)' == 'UnitTest' OR '$(RoslynProjectType)' == 'UnitTestPortable'">
+      <PropertyGroup>
+        <_IsAnyUnitTest>true</_IsAnyUnitTest>
+        <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
+        <CopyNuGetImplementations>true</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)UnitTests\$(MSBuildProjectName)\</OutputPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(RoslynProjectType)' == 'Vsix'">
+      <PropertyGroup>
+        <_CopyReferences>false</_CopyReferences>
+        <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
+        <CopyNuGetImplementations>true</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)Vsix\$(MSBuildProjectName)\</OutputPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(RoslynProjectType)' == 'Custom'">
+      <!-- Do nothing -->
+    </When>
+    <When Condition="'$(RoslynProjectType)' == '' AND '$(OutputType)' == 'Library'">
+      <PropertyGroup>
+        <_CopyReferences>false</_CopyReferences>
+        <_CopyProjectReferences>false</_CopyProjectReferences>
+        <CopyNuGetImplementations>false</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)Dlls\$(MSBuildProjectName)\</OutputPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(RoslynProjectType)' == '' AND '$(OutputType)' == 'Exe'">
+      <PropertyGroup>
+        <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
+        <CopyNuGetImplementations>true</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)Exes\$(MSBuildProjectName)\</OutputPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(RoslynProjectType)' == '' AND '$(OutputType)' == 'WinExe'">
+      <PropertyGroup>
+        <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
+        <CopyNuGetImplementations>true</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)Exes\$(MSBuildProjectName)\</OutputPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 
+        <CopyNuGetImplementations>true</CopyNuGetImplementations>
+        <OutputPath>$(OutputPath)Oops\$(MSBuildProjectName)\</OutputPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+ <!--
+    If TargetNetFX20 is true the project targets Framework 2.0 reference assemblies provided by Microsoft.NetFX20 nuget package.
+    Use the latest Framework toolset to build, but set msbuild properties below
+    so to avoid 4.5 specific artifacts to be added to the compilation (references, attributes).
+  -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net20'">
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <NoStdLib>true</NoStdLib>
+    <FrameworkPathOverride>$(NuGetPackageRoot)\Microsoft.NetFX20\$(MicrosoftNetFX20Version)\lib\net20</FrameworkPathOverride>
+    <ExecuteAsTool>false</ExecuteAsTool>
+    <GenerateResourceMSBuildRuntime>CurrentRuntime</GenerateResourceMSBuildRuntime>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- When building WPF / VSIX projects MSBuild will create a temporary project with an extension of
+         tmp_proj.  In that case the SDK is unable to determine the target language and cannot pick
+         the correct import.  Need to set it explicitly here. -->
+    <LanguageTargets Condition="'$(ProjectLanguage)' != ''">$(MSBuildToolsPath)\Microsoft.$(ProjectLanguage).targets</LanguageTargets>
+  </PropertyGroup>
+
+  <!-- 
+    Language specifc settings 
+    
+    These deliberately come after importing the core targets. That way we can assure these are 
+    the final settings, and not over written by core targets. Certain versions of the SDK for 
+    example do exactly that.
+    -->
+  <Choose>
+    <!-- VB specific settings -->
+    <When Condition="'$(MSBuildProjectExtension)' == '.vbproj' OR '$(Language)' == 'VB' OR '$(ProjectLanguage)' == 'VisualBasic'">
+      <PropertyGroup>
+        <ProjectLanguage>VB</ProjectLanguage>
+        <MyType>Empty</MyType>
+        <OptionCompare>Binary</OptionCompare>
+        <OptionExplicit>On</OptionExplicit>
+        <OptionInfer>On</OptionInfer>
+        <OptionStrict>On</OptionStrict>
+        <VBRuntime>Embed</VBRuntime>
+        <RemoveIntegerChecks>true</RemoveIntegerChecks>
+        <MSBuildTargetsLanguageName>VisualBasic</MSBuildTargetsLanguageName>
+        <NoWarn>$(NoWarn);40057</NoWarn>
+      </PropertyGroup>
+      <ItemGroup>
+        <Import Include="Microsoft.VisualBasic" />
+        <Import Include="System" />
+        <Import Include="System.Collections" />
+        <Import Include="System.Collections.Generic" />
+        <Import Include="System.Diagnostics" />
+        <Import Include="System.Linq" />
+      </ItemGroup>
+      <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <DebugSymbols>true</DebugSymbols>
+        <DefineDebug>true</DefineDebug>
+        <DefineTrace>true</DefineTrace>
+      </PropertyGroup>
+      <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DefineTrace>true</DefineTrace>
+        <Optimize>true</Optimize>
+      </PropertyGroup>
+      <PropertyGroup>
+        <DefineConstants Condition="'$(InitialDefineConstants)' != ''">$(InitialDefineConstants)</DefineConstants>
+      </PropertyGroup>
+    </When>
+
+    <!-- C# specific settings -->
+    <When Condition="'$(MSBuildProjectExtension)' == '.csproj' OR '$(Language)' == 'C#' OR '$(ProjectLanguage)' == 'CSharp'">
+      <PropertyGroup>
+        <ProjectLanguage>CSharp</ProjectLanguage>
+        <LangVersion>7.1</LangVersion>
+        <WarningLevel>4</WarningLevel>
+        <ErrorReport>prompt</ErrorReport>
+
+        <!-- Suppress the following warnings by default for C# projects
+                1573: Suppressed in order to allow documentation for some but not all parameters.
+                      A warning will still be reported if the documentation defines/references a
+                      parameter which does not exist.
+                1591: So far we've chosen to implicitly implement interfaces and as a consequence
+                      the methods are public.  We don't want to duplicate documentation for them
+                      and hence suppress this warning until we get closer to release and a more
+                      thorough documentation story
+        -->
+        <NoWarn>$(NoWarn);1573;1591;1701</NoWarn>
+        <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+        <MSBuildTargetsLanguageName>CSharp</MSBuildTargetsLanguageName>
+      </PropertyGroup>
+      <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+      </PropertyGroup>
+      <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+        <Optimize>true</Optimize>
+      </PropertyGroup>
+      <PropertyGroup>
+        <DefineConstants Condition="'$(InitialDefineConstants)' != ''">$(DefineConstants);$(InitialDefineConstants)</DefineConstants>
+      </PropertyGroup>
+    </When>
+
+    <!-- C++ specific settings -->
+    <When Condition="'$(MSBuildProjectExtension)' == '.vcxproj' OR '$(Language)' == 'C++' OR '$(ProjectLanguage)' == 'C++'">
+      <PropertyGroup>
+        <ProjectLanguage>C++</ProjectLanguage>
+        <!-- Put intermediate outputs in the same place as managed projects for sanity -->
+        <IntDir>$(IntermediateOutputPath)</IntDir>
+
+        <!-- We just always want to build with whatever toolset matches the VS you're building with -->
+        <PlatformToolset>v$(VisualStudioReferenceMajorVersion)0</PlatformToolset>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <PropertyGroup>
+    <DebugType>$(RoslynDebugType)</DebugType>
+  </PropertyGroup>
+</Project>

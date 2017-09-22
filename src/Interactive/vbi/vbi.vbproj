@@ -10,6 +10,7 @@
     <TargetFrameworks>$(RoslynPortableTargetFrameworks46)</TargetFrameworks>
     <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
     <DisableImplicitFrameworkReferences>false</DisableImplicitFrameworkReferences>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />

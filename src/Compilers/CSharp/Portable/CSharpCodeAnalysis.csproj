@@ -10,7 +10,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFramework>netstandard1.3</TargetFramework>
     <ServiceablePackage>true</ServiceablePackage>
-    <CodeAnalysisRuleSet>..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <RoslynCodeAnalysisRuleSet>..\CSharpCodeAnalysisRules.ruleset</RoslynCodeAnalysisRuleSet>
     <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
          reference Microsoft.NETCore.App to target the shared framework (bug
          https://github.com/dotnet/sdk/issues/1159) and NETCore.App

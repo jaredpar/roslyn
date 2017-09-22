@@ -23,6 +23,8 @@
     <RoslynPortableRuntimeIdentifiers>win7;win7-x64</RoslynPortableRuntimeIdentifiers>
  
     <Features>strict,IOperation</Features>
+    <!-- Temp disable while i work this out -->
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <SignAssembly>true</SignAssembly>
     <!-- The new SDK introduced a GenerateAssemblyInfo target, which is disabled by GenerateAssemblyInfo=false.
@@ -52,11 +54,6 @@
     <VisualStudioReferenceAssemblyVersion Condition="'$(VisualStudioReferenceAssemblyVersion)' == ''">$(VisualStudioReferenceMajorVersion).0.0.0</VisualStudioReferenceAssemblyVersion>
     <VisualStudioCodename>Dev$(VisualStudioReferenceMajorVersion)</VisualStudioCodename>
     <MinimumVisualStudioVersion>$(VisualStudioVersion)</MinimumVisualStudioVersion>
-
-    <!-- When building WPF / VSIX projects MSBuild will create a temporary project with an extension of
-         tmp_proj.  In that case the SDK is unable to determine the target language and cannot pick
-         the correct import.  Need to set it explicitly here. -->
-    <LanguageTargets Condition="'$(ProjectLanguage)' != ''">$(MSBuildToolsPath)\Microsoft.$(ProjectLanguage).targets</LanguageTargets>
 
     <!-- Disable AppX packaging for the Roslyn source. Not setting this to false has the side effect
          that any builds of portable projects end up in a sub folder of $(OutputPath). Search for this flag in
@@ -95,6 +92,8 @@
     <DisableImplicitFrameworkReferences Condition="'$(DisableImplicitFrameworkReferences)' == ''" >true</DisableImplicitFrameworkReferences>
     <AppendTargetFrameworkToOutputPath Condition="'$(TargetFrameworks)' == ''">false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
+    <CustomBeforeMicrosoftCommonTargets>$(MSBuildThisFileDirectory)\ImportsBefore.targets</CustomBeforeMicrosoftCommonTargets> 
   </PropertyGroup>
 
   <!-- Windows specific settings -->
@@ -125,20 +124,6 @@
     <RoslynPortableTargetFrameworks>netcoreapp2.0</RoslynPortableTargetFrameworks>
     <RoslynPortableTargetFrameworks46>netcoreapp2.0</RoslynPortableTargetFrameworks46>
     <RoslynPortableRuntimeIdentifiers>ubuntu.14.04-x64;ubuntu.16.04-x64;osx.10.12-x64</RoslynPortableRuntimeIdentifiers>
-  </PropertyGroup>
-
-  <!--
-    If TargetNetFX20 is true the project targets Framework 2.0 reference assemblies provided by Microsoft.NetFX20 nuget package.
-    Use the latest Framework toolset to build, but set msbuild properties below
-    so to avoid 4.5 specific artifacts to be added to the compilation (references, attributes).
-  -->
-  <PropertyGroup Condition="'$(TargetNetFX20)' == 'true'">
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <NoStdLib>true</NoStdLib>
-    <FrameworkPathOverride>$(NuGetPackageRoot)\Microsoft.NetFX20\$(MicrosoftNetFX20Version)\lib\net20</FrameworkPathOverride>
-    <ExecuteAsTool>false</ExecuteAsTool>
-    <GenerateResourceMSBuildRuntime>CurrentRuntime</GenerateResourceMSBuildRuntime>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(DevEnvDir)' == ''">
@@ -189,101 +174,4 @@
    -->
   <Import Project="$(ToolsetCompilerPropsFilePath)" Condition="Exists('$(ToolsetCompilerPropsFilePath)') AND '$(BootstrapBuildPath)' == '' AND '$(OS)' == 'Windows_NT'" />
 
-  <!-- 
-    Language specifc settings 
-    
-    These deliberately come after importing the core targets. That way we can assure these are 
-    the final settings, and not over written by core targets. Certain versions of the SDK for 
-    example do exactly that.
-    -->
-  <Choose>
-    <!-- VB specific settings -->
-    <When Condition="'$(MSBuildProjectExtension)' == '.vbproj' OR '$(Language)' == 'VB' OR '$(ProjectLanguage)' == 'VisualBasic'">
-      <PropertyGroup>
-        <ProjectLanguage>VB</ProjectLanguage>
-        <MyType>Empty</MyType>
-        <OptionCompare>Binary</OptionCompare>
-        <OptionExplicit>On</OptionExplicit>
-        <OptionInfer>On</OptionInfer>
-        <OptionStrict>On</OptionStrict>
-        <VBRuntime>Embed</VBRuntime>
-        <RemoveIntegerChecks>true</RemoveIntegerChecks>
-        <RootNamespace></RootNamespace>
-        <MSBuildTargetsLanguageName>VisualBasic</MSBuildTargetsLanguageName>
-        <NoWarn>$(NoWarn);40057</NoWarn>
-      </PropertyGroup>
-      <ItemGroup>
-        <Import Include="Microsoft.VisualBasic" />
-        <Import Include="System" />
-        <Import Include="System.Collections" />
-        <Import Include="System.Collections.Generic" />
-        <Import Include="System.Diagnostics" />
-      </ItemGroup>
-      <ItemGroup Condition="'$(TargetNetFX20)' != 'true'">
-        <Import Include="System.Linq" />
-      </ItemGroup>
-      <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-        <DebugSymbols>true</DebugSymbols>
-        <DefineDebug>true</DefineDebug>
-        <DefineTrace>true</DefineTrace>
-      </PropertyGroup>
-      <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <DefineTrace>true</DefineTrace>
-        <Optimize>true</Optimize>
-      </PropertyGroup>
-      <PropertyGroup>
-        <DefineConstants Condition="'$(InitialDefineConstants)' != ''">$(InitialDefineConstants)</DefineConstants>
-      </PropertyGroup>
-    </When>
-
-    <!-- C# specific settings -->
-    <When Condition="'$(MSBuildProjectExtension)' == '.csproj' OR '$(Language)' == 'C#' OR '$(ProjectLanguage)' == 'CSharp'">
-      <PropertyGroup>
-        <ProjectLanguage>CSharp</ProjectLanguage>
-        <LangVersion>7.1</LangVersion>
-        <WarningLevel>4</WarningLevel>
-        <ErrorReport>prompt</ErrorReport>
-
-        <!-- Suppress the following warnings by default for C# projects
-                1573: Suppressed in order to allow documentation for some but not all parameters.
-                      A warning will still be reported if the documentation defines/references a
-                      parameter which does not exist.
-                1591: So far we've chosen to implicitly implement interfaces and as a consequence
-                      the methods are public.  We don't want to duplicate documentation for them
-                      and hence suppress this warning until we get closer to release and a more
-                      thorough documentation story
-        -->
-        <NoWarn>$(NoWarn);1573;1591;1701</NoWarn>
-        <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-        <MSBuildTargetsLanguageName>CSharp</MSBuildTargetsLanguageName>
-      </PropertyGroup>
-      <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-        <DebugSymbols>true</DebugSymbols>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-      </PropertyGroup>
-      <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <DefineConstants>TRACE</DefineConstants>
-        <Optimize>true</Optimize>
-      </PropertyGroup>
-      <PropertyGroup>
-        <DefineConstants Condition="'$(InitialDefineConstants)' != ''">$(DefineConstants);$(InitialDefineConstants)</DefineConstants>
-      </PropertyGroup>
-    </When>
-
-    <!-- C++ specific settings -->
-    <When Condition="'$(MSBuildProjectExtension)' == '.vcxproj' OR '$(Language)' == 'C++' OR '$(ProjectLanguage)' == 'C++'">
-      <PropertyGroup>
-        <ProjectLanguage>C++</ProjectLanguage>
-        <!-- Put intermediate outputs in the same place as managed projects for sanity -->
-        <IntDir>$(IntermediateOutputPath)</IntDir>
-
-        <!-- We just always want to build with whatever toolset matches the VS you're building with -->
-        <PlatformToolset>v$(VisualStudioReferenceMajorVersion)0</PlatformToolset>
-      </PropertyGroup>
-    </When>
-  </Choose>
-
-  <PropertyGroup>
-    <DebugType>$(RoslynDebugType)</DebugType>
-  </PropertyGroup>
 </Project>
