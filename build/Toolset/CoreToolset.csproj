@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Targets\SettingsSdk.props" />
+  <PropertyGroup>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>CoreToolset_DoNetUse</AssemblyName>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RuntimeIdentifiers>$(RoslynPortableRuntimeIdentifiers)</RuntimeIdentifiers>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Compilers\CSharp\csc\csc.csproj" />
+    <ProjectReference Include="..\..\src\Compilers\VisualBasic\vbc\vbc.csproj" />
+    <ProjectReference Include="..\..\src\Compilers\Server\VBCSCompiler\VBCSCompiler.csproj" />
+  </ItemGroup>
+  <Import Project="..\Targets\Imports.targets" />
+</Project>

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                     pipeStream.WaitForConnection();
                     CompilerServerLogger.Log("Pipe connection detected.");
 
-                    if (Environment.Is64BitProcess || MemoryHelper.IsMemoryAvailable())
+                    if (RuntimeInformation.ProcessArchitecture == Architecture.X64 || MemoryHelper.IsMemoryAvailable())
                     {
                         CompilerServerLogger.Log("Memory available - accepting connection");
                         listenSource.SetResult(pipeStream);
@@ -86,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                     {
                         try
                         {
-                            pipeStream.Close();
+                            pipeStream.Dispose();
                         }
                         catch
                         {
@@ -114,7 +115,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             waitCancellationTokenSource.Cancel();
             try
             {
-                pipeStream.Close();
+                pipeStream.Dispose();
             }
             catch
             {
@@ -145,7 +146,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             NamedPipeServerStream pipeStream = new NamedPipeServerStream(
                 pipeName,
                 PipeDirection.InOut,
-                NamedPipeServerStream.MaxAllowedServerInstances, // Maximum connections.
+                -1, // Maximum connections.
                 PipeTransmissionMode.Byte,
                 PipeOptions.Asynchronous | PipeOptions.WriteThrough,
                 PipeBufferSize, // Default input buffer
@@ -164,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             NamedPipeServerStream pipeStream = new NamedPipeServerStream(
                 pipeName,
                 PipeDirection.InOut,
-                NamedPipeServerStream.MaxAllowedServerInstances, // Maximum connections.
+                -1, // Maximum connections.
                 PipeTransmissionMode.Byte,
                 PipeOptions.Asynchronous | PipeOptions.WriteThrough,
                 PipeBufferSize, // Default input buffer
@@ -213,6 +214,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
         /// </summary>
         private static bool ClientAndOurIdentitiesMatch(NamedPipeServerStream pipeStream)
         {
+#if NET46
             var serverIdentity = GetIdentity(impersonating: false);
 
             Tuple<string, bool> clientIdentity = null;
@@ -224,6 +226,10 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             return
                 StringComparer.OrdinalIgnoreCase.Equals(serverIdentity.Item1, clientIdentity.Item1) &&
                 serverIdentity.Item2 == clientIdentity.Item2;
+#else
+            // TODO
+            return true;
+#endif
         }
 
         /// <summary>
@@ -242,7 +248,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             CompilerServerLogger.Log($"Pipe {LoggingIdentifier}: Closing.");
             try
             {
-                _pipeStream.Close();
+                _pipeStream.Dispose();
             }
             catch (Exception e)
             {

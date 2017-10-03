@@ -1,14 +1,16 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Globalization;
 using Microsoft.CodeAnalysis.CommandLine;
-using System.Runtime.InteropServices;
-using System.Collections.Specialized;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CompilerServer
 {
@@ -25,16 +27,36 @@ namespace Microsoft.CodeAnalysis.CompilerServer
 
         protected override IClientConnectionHost CreateClientConnectionHost(string pipeName)
         {
+            var compilerServerHost = CreateCompilerServerHost();
+            return CreateClientConnectionHostForServerHost(compilerServerHost, pipeName);
+        }
+
+        internal static ICompilerServerHost CreateCompilerServerHost()
+        {
             // VBCSCompiler is installed in the same directory as csc.exe and vbc.exe which is also the 
             // location of the response files.
-            var clientDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var clientDirectory = Path.GetDirectoryName(typeof(DesktopBuildServerController).GetTypeInfo().Assembly.Location);
 #if NET46
             var sdkDirectory = RuntimeEnvironment.GetRuntimeDirectory();
 #else
             var sdkDirectory = (string)null;
 #endif
-            var compilerServerHost = new DesktopCompilerServerHost(clientDirectory, sdkDirectory);
-            return new NamedPipeClientConnectionHost(compilerServerHost, pipeName);
+            return new DesktopCompilerServerHost(clientDirectory, sdkDirectory);
+        }
+
+        internal static IClientConnectionHost CreateClientConnectionHostForServerHost(
+            ICompilerServerHost compilerServerHost,
+            string pipeName)
+        {
+
+            if (PlatformInformation.IsWindows)
+            {
+                return new NamedPipeClientConnectionHost(compilerServerHost, pipeName);
+            }
+            else
+            {
+                return new DomainSocketClientConnectionHost(compilerServerHost, pipeName);
+            }
         }
 
         protected internal override TimeSpan? GetKeepAliveTimeout()
@@ -70,14 +92,21 @@ namespace Microsoft.CodeAnalysis.CompilerServer
 
         protected override Task<Stream> ConnectForShutdownAsync(string pipeName, int timeout)
         {
-            var client = new NamedPipeClientStream(pipeName);
-            client.Connect(timeout);
-            return Task.FromResult<Stream>(client);
+            if (PlatformInformation.IsWindows)
+            {
+                var client = new NamedPipeClientStream(pipeName);
+                client.Connect(timeout);
+                return Task.FromResult<Stream>(client);
+            }
+            else
+            {
+                return Task.FromResult<Stream>(UnixDomainSocket.CreateClient(pipeName));
+            }
         }
 
         protected override string GetDefaultPipeName()
         {
-            var clientDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var clientDirectory = Path.GetDirectoryName(typeof(DesktopBuildServerController).GetTypeInfo().Assembly.Location);
             return BuildServerConnection.GetPipeNameForPathOpt(clientDirectory);
         }
 

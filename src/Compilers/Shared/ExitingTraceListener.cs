@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace Microsoft.CodeAnalysis.CommandLine
@@ -29,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
             var builder = new StringBuilder();
             builder.AppendLine($"Debug.Assert failed with message: {originalMessage}");
             builder.AppendLine("Stack Trace");
-            var stackTrace = new StackTrace();
+            var stackTrace = new StackTrace(new Exception(), false);
             builder.AppendLine(stackTrace.ToString());
 
             var message = builder.ToString();
@@ -44,7 +45,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
 
         private static string GetLogFileFullName()
         {
-            var assembly = typeof(ExitingTraceListener).Assembly;
+            var assembly = typeof(ExitingTraceListener).GetTypeInfo().Assembly;
             var name = $"{Path.GetFileName(assembly.Location)}.tracelog";
             var path = Path.GetDirectoryName(assembly.Location);
             return Path.Combine(path, name);
