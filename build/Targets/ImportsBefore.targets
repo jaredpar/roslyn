@@ -67,13 +67,6 @@
     <GenerateResourceMSBuildRuntime>CurrentRuntime</GenerateResourceMSBuildRuntime>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- When building WPF / VSIX projects MSBuild will create a temporary project with an extension of
-         tmp_proj.  In that case the SDK is unable to determine the target language and cannot pick
-         the correct import.  Need to set it explicitly here. -->
-    <LanguageTargets Condition="'$(ProjectLanguage)' != ''">$(MSBuildToolsPath)\Microsoft.$(ProjectLanguage).targets</LanguageTargets>
-  </PropertyGroup>
-
   <!-- 
     Language specifc settings 
     
