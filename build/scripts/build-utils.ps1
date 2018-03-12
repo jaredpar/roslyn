@@ -456,3 +456,8 @@ function Restore-All([string]$dotnetExe = "") {
     Restore-Packages -dotnetExe $dotnetExe
 }
 
+function Unzip-File([string]$zipFilePath, [string]$outputDir) {
+    Add-Type -AssemblyName System.IO.Compression.FileSystem | Out-Null
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipFilePath, $outputDir)
+}
+
