@@ -189,6 +189,7 @@ function Make-BootstrapBuild() {
     Create-Directory $dir
     if ($buildCoreClr) {
         $bootstrapFramework = "netcoreapp2.0"
+        $bootstrapArgs = "$bootstrapArgs /p:Configuration=$buildConfiguration"
         $projectFiles = @(
             'src/Compilers/CSharp/csc/csc.csproj',
             'src/Compilers/VisualBasic/vbc/vbc.csproj',
@@ -202,7 +203,7 @@ function Make-BootstrapBuild() {
             Exec-Console "dotnet" "publish --no-restore $projectFilePath --framework netcoreapp2.0 $bootstrapArgs -v:m -m -bl:$logsDir/$logFileName"
         }
 
-        Exec-Console "dotnet" "build --no-restore src/Interactive/csi/csi.csproj -v:m -m -bl:$logsDir/BootstrapCsi.binlog"
+        Exec-Console "dotnet" "build --no-restore src/Interactive/csi/csi.csproj -v:m -m $bootstrapArgs -bl:$logsDir/BootstrapCsi.binlog"
 
         Ensure-NuGet | Out-Null
         Exec-Console "$configDir\Exes\csi\net46\csi.exe" "$repoDir\src\NuGet\BuildNuGets.csx $configDir 1.0.0-bootstrap $dir `"<developer build>`" Microsoft.NETCore.Compilers.nuspec"
