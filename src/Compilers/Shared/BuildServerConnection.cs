@@ -123,9 +123,9 @@ namespace Microsoft.CodeAnalysis.CommandLine
             var holdsMutex = false;
             try
             {
+                var clientMutexName = GetClientMutexName(pipeName);
                 try
                 {
-                    var clientMutexName = GetClientMutexName(pipeName);
                     clientMutex = new Mutex(initiallyOwned: true, name: clientMutexName, out holdsMutex);
                 }
                 catch
@@ -573,8 +573,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
             try
             {
                 Mutex mutex;
-                var open = Mutex.TryOpenExisting(mutexName, out mutex);
-                if (open)
+                if (Mutex.TryOpenExisting(mutexName, out mutex))
                 {
                     mutex.Dispose();
                     return true;
