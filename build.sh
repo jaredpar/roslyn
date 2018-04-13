@@ -15,6 +15,7 @@ usage()
     echo "  --release             Build Release"
     echo "  --restore             Restore projects required to build"
     echo "  --build               Build all projects"
+    echo "  --pack                Build nuget packages"
     echo "  --test                Run unit tests"
     echo "  --mono                Run unit tests with mono"
     echo "  --build-bootstrap     Build the bootstrap compilers"
@@ -32,6 +33,7 @@ build_configuration=Debug
 restore=false
 build=false
 test_=false
+pack=false
 use_mono=false
 build_bootstrap=false
 use_bootstrap=false
@@ -93,6 +95,9 @@ do
         --stop-vbcscompiler)
             stop_vbcscompiler=true
             ;;
+        --pack)
+            pack=true
+            ;;
         *)
             echo "$1"
             usage
@@ -108,6 +113,25 @@ logs_path=${config_path}/Logs
 mkdir -p ${binaries_path}
 mkdir -p ${config_path}
 mkdir -p ${logs_path}
+
+function pack_all() {
+# MS.CA.CSharp
+# MS.CA.Compilers
+# MS.CA.Common
+# MS.CA.VisualBasic
+# Microsoft.NetCore.Compilers
+    pushd "${root_path}/src/NuGet"
+
+    local nupkg_path="${config_path}/NuGet/PreRelease"
+    local nuspec_files=("Microsoft.CodeAnalysis.CSharp")
+    mkdir -p ${nupkg_path}
+    for i in "${nuspec_files[@]}" 
+    do
+        dotnet pack -nologo --no-build NuGetProjectPackUtil.csproj -p:NuSpecFile=$i -p:NuGetPackageKind=PreRelease -p:NuspecBasePath=${binaries_path}/Debug -o ${nupkg_path}
+    done
+
+    popd
+}
 
 if [[ "$build_in_docker" = true ]]
 then
@@ -165,6 +189,11 @@ if [[ "${build}" == true ]]
 then
     echo "Building Compilers.sln"
     dotnet build "${root_path}"/Compilers.sln ${build_args} "/bl:${binaries_path}/Build.binlog"
+fi
+
+if [[ "${pack}" == true ]]
+then
+    pack_all
 fi
 
 if [[ "${stop_vbcscompiler}" == true ]]
