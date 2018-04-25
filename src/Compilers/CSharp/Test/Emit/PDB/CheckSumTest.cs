@@ -251,7 +251,7 @@ int y = 1;
         }
 
         [WorkItem(729235, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/729235")]
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         public void NormalizedPath_Tree()
         {
             var source = @"

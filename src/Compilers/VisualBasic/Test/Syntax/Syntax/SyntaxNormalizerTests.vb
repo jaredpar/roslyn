@@ -15,7 +15,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Public Class SyntaxNormalizerTests
 
         <WorkItem(546397, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546397")>
-        <WindowsFact(WindowsFactKind.Unknown)>
+        <WindowsFact(TestEnvironmentReason.Unknown)>
         Public Sub TestAllInVB()
             Dim allInVB As String = TestResource.AllInOneVisualBasicCode
             Dim expected As String = TestResource.AllInOneVisualBasicBaseline

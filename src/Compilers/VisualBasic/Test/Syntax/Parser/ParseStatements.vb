@@ -4148,7 +4148,7 @@ End Module
     End Sub
 
     <WorkItem(545543, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545543")>
-    <WindowsFact(WindowsFactKind.Unknown)>
+    <WindowsFact(TestEnvironmentReason.Unknown)>
     Public Sub ParseValidUseOfBlockWithinMultiLineLambda()
         Dim compilationDef =
 <compilation name="LambdaTests_err">
@@ -4176,7 +4176,7 @@ End Module
     End Sub
 
     <WorkItem(545543, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545543")>
-    <WindowsFact(WindowsFactKind.Unknown)>
+    <WindowsFact(TestEnvironmentReason.Unknown)>
     Public Sub ParseValidUseOfNonBlockWithinSingleLineLambda()
         Dim compilationDef =
 <compilation name="LambdaTests_err">
@@ -4206,7 +4206,7 @@ End Module
     End Sub
 
     <WorkItem(545543, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545543")>
-    <WindowsFact(WindowsFactKind.Unknown)>
+    <WindowsFact(TestEnvironmentReason.Unknown)>
     Public Sub ParseValidUseOfBlockWithinSingleLineLambda()
         'Subtle Variation with Single line Statement Lambda and a Block Construct
         Dim compilationDef =

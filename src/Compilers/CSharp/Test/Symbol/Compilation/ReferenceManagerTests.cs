@@ -1341,7 +1341,7 @@ public class A
         }
 
         // TODO: make x-plat (https://github.com/dotnet/roslyn/issues/6465)
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         public void ReferenceResolution_RelativePaths()
         {
             var t1 = Parse(@"

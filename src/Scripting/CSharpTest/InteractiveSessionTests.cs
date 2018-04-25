@@ -1158,7 +1158,7 @@ new C()
         }
 
         [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public void ReferenceDirective_RelativeToBaseRoot()
         {
             var file = Temp.CreateFile();

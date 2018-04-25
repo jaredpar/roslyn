@@ -68,7 +68,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionPr
             }
         }
 
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public async Task SendEnterThroughToEditorTest()
         {
             await VerifySendEnterThroughToEnterAsync("#r \"System$$", "System", sendThroughEnterOption: EnterKeyRule.Never, expected: false);
@@ -76,13 +76,13 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionPr
             await VerifySendEnterThroughToEnterAsync("#r \"System$$", "System", sendThroughEnterOption: EnterKeyRule.Always, expected: false); // note: GAC completion helper uses its own EnterKeyRule
         }
 
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public async Task GacReference()
         {
             await VerifyItemExistsAsync("#r \"$$", "System.Windows.Forms", expectedDescriptionOrNull: null, sourceCodeKind: SourceCodeKind.Script);
         }
 
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public async Task GacReferenceFullyQualified()
         {
             await VerifyItemExistsAsync(
@@ -90,7 +90,7 @@ namespace Microsoft.CodeAnalysis.Editor.CSharp.UnitTests.Completion.CompletionPr
                 "System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", expectedDescriptionOrNull: null, sourceCodeKind: SourceCodeKind.Script);
         }
 
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public async Task FileSystemReference()
         {
             var systemDir = Path.GetFullPath(Environment.SystemDirectory);

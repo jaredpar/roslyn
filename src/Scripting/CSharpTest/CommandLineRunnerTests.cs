@@ -325,7 +325,7 @@ $@"{s_logoAndHelpPrompt}
         }
 
         [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public void Args_InteractiveWithScript1()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -359,7 +359,7 @@ $@"""@arg1""
         }
 
         [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public void Args_Script1()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -377,7 +377,7 @@ $@"""@arg1""
         }
 
         [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public void Args_Script2()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -395,7 +395,7 @@ $@"""@arg1""
         }
 
         [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
-        [WindowsFact(WindowsFactKind.Unknown)]
+        [WindowsFact(TestEnvironmentReason.Unknown)]
         public void Args_Script3()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");

@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Completion
             Assert.True(actual.All(i => i.Rules == TestFileSystemCompletionHelper.CompletionRules));
         }
 
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         public void GetItems_Windows1()
         {
             var fsc = new TestFileSystemCompletionHelper(
@@ -84,7 +84,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Completion
                 @"'\\', , 'Text|\5C\5C'");
         }
 
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         public void GetItems_Windows_NoBaseDirectory()
         {
             var fsc = new TestFileSystemCompletionHelper(
@@ -120,7 +120,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Completion
                 @"'file5.abc', File, C#, 'Text|X:\5CB\5Cfile5.abc'");
         }
 
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         public void GetItems_Windows_NoSearchPaths()
         {
             var fsc = new TestFileSystemCompletionHelper(
@@ -152,7 +152,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Completion
                 @"'\\', , 'Text|\5C\5C'");
         }
 
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         public void GetItems_Windows_Network()
         {
             var fsc = new TestFileSystemCompletionHelper(

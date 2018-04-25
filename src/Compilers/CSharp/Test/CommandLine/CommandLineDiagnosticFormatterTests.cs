@@ -7,7 +7,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
 {
     public class CommandLineDiagnosticFormatterTests
     {
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         public void GetPathNameRelativeToBaseDirectory()
         {
             var formatter = new CommandLineDiagnosticFormatter(
@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
             Assert.Equal(@"Y:\rootdir\dir\a.cs", formatter.RelativizeNormalizedPath(@"Y:\rootdir\dir\a.cs"));
         }
 
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         [WorkItem(14725, "https://github.com/dotnet/roslyn/issues/14725")]
         public void RelativizeNormalizedPathShouldHandleRootPaths_1()
         {
@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
             Assert.Equal(@"temp.cs", formatter.RelativizeNormalizedPath(@"c:\temp.cs"));
         }
 
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         [WorkItem(14725, "https://github.com/dotnet/roslyn/issues/14725")]
         public void RelativizeNormalizedPathShouldHandleRootPaths_2()
         {
@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
             Assert.Equal(@"C\D\temp.cs", formatter.RelativizeNormalizedPath(@"c:\A\B\C\D\temp.cs"));
         }
 
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         [WorkItem(14725, "https://github.com/dotnet/roslyn/issues/14725")]
         public void RelativizeNormalizedPathShouldHandleDirectoriesWithSamePrefix_1()
         {
@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
             Assert.Equal(@"c:\ABCD\file.cs", formatter.RelativizeNormalizedPath(@"c:\ABCD\file.cs"));
         }
 
-        [WindowsFact(WindowsFactKind.Paths)]
+        [WindowsFact(TestEnvironmentReason.Paths)]
         [WorkItem(14725, "https://github.com/dotnet/roslyn/issues/14725")]
         public void RelativizeNormalizedPathShouldHandleDirectoriesWithSamePrefix_2()
         {
