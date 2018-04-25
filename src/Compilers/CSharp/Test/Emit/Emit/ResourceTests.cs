@@ -388,7 +388,7 @@ class C
             );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void AddManagedResource()
         {
             string source = @"public class C { static public void Main() {} }";
@@ -433,7 +433,7 @@ class C
             c1 = null;
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void AddResourceToModule()
         {
             bool metadataOnly = false;

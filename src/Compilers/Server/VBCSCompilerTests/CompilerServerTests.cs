@@ -366,7 +366,7 @@ End Module")
             }
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(946954, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/946954")]
         public void CompilerBinariesAreNotX86()
         {
@@ -415,7 +415,7 @@ End Module")
             }
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [Trait(Traits.Environment, Traits.Environments.VSProductInstall)]
         public async Task ExtraMSCorLibCS()
         {
@@ -445,7 +445,7 @@ End Module")
             }
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [Trait(Traits.Environment, Traits.Environments.VSProductInstall)]
         public async Task ExtraMSCorLibVB()
         {
@@ -1157,7 +1157,7 @@ End Module
         }
 
         [WorkItem(871477, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/871477")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [Trait(Traits.Environment, Traits.Environments.VSProductInstall)]
         public async Task AssemblyIdentityComparer1()
         {
@@ -1300,7 +1300,7 @@ class Program
             Assert.Equal("Argument to '/keepalive' option is not a 32-bit integer.", result.Output.Trim());
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(1024619, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1024619")]
         public async Task Bug1024619_01()
         {
@@ -1367,7 +1367,7 @@ class Program
         }
 
         [WorkItem(406649, "https://devdiv.visualstudio.com/DevDiv/_workitems?id=406649")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void MissingCompilerAssembly_CompilerServer()
         {
             var basePath = Path.GetDirectoryName(typeof(CompilerServerUnitTests).Assembly.Location);

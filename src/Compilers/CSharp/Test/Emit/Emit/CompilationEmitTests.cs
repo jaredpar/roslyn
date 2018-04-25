@@ -622,7 +622,7 @@ public class C
             CompareAssemblies(sourceTemplate, left, right, expectedMatch, includePrivateMembers: false);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void RefAssembly_NoPia()
         {
             string piaSource = @"
@@ -700,7 +700,7 @@ public class D : ITest1
             }
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void RefAssembly_NoPia_ReferenceFromMethodBody()
         {
             string piaSource = @"

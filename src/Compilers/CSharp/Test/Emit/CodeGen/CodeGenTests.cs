@@ -426,7 +426,7 @@ public class C
 ");
         }
         [WorkItem(546412, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546412")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void TestBug15818()
         {
             var source =
@@ -1832,7 +1832,7 @@ public class D
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void TestAssignIdentity()
         {
             string source = @"
@@ -1878,7 +1878,7 @@ There are no context policies.
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void TestRefCast()
         {
             string source = @"
@@ -6601,7 +6601,7 @@ public class D
         }
 
         [WorkItem(9229, "DevDiv_Projects/Roslyn")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void InitFromBlob()
         {
             string source = @"
@@ -13221,7 +13221,7 @@ expectedOutput: "-100");
             diagnostics.Free();
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(546957, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546957")]
         public void Bug17352_VarArgCtor()
         {
@@ -13292,7 +13292,7 @@ blah");
         }
 
         [WorkItem(24348, "https://github.com/dotnet/roslyn/issues/24348")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void VarargBridgeSource()
         {
 
@@ -13331,7 +13331,7 @@ public static class P
         }
 
         [WorkItem(26113, "https://github.com/dotnet/roslyn/issues/26113")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void VarargByRef()
         {
             var code = @"
@@ -13391,7 +13391,7 @@ class A
         }
 
         [WorkItem(24348, "https://github.com/dotnet/roslyn/issues/24348")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void VarargBridgeMeta()
         {
             var reference = CreateCompilation(@"

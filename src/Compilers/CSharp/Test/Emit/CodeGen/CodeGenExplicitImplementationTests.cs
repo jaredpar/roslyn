@@ -378,7 +378,7 @@ class Test
             CompileAndVerify(comp, expectedOutput: @"WriteReadOnly NormProp 123456");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void TestExplicitImplSignatureMismatches_ParamsAndOptionals()
         {
             // Tests:

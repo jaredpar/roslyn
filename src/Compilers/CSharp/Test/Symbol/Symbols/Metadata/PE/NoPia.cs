@@ -736,7 +736,7 @@ public class LocalTypes2
             Assert.IsType<NoPiaIllegalGenericInstantiationSymbol>(localTypes3.GetMembers("Test6").OfType<MethodSymbol>().Single().ReturnType);
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void GenericsClosedOverLocalTypes2()
         {
             var mscorlibRef = TestReferences.NetFx.v4_0_21006.mscorlib;

@@ -182,7 +182,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Completion
                 @"'c.cs', File, C#, 'Text|\5C\5Cserver\5Cshare\5CC\5Cc.cs'");
         }
 
-        [ConditionalFact(typeof(UnixLikeOnly))]
+        [UnixFact(TestEnvironmentReason.Paths)]
         public void GetItems_Unix1()
         {
             var fsc = new TestFileSystemCompletionHelper(

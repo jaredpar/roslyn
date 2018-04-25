@@ -18,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
         private static readonly string s_publicKeyFile = SigningTestHelpers.PublicKeyFile;
         private static readonly ImmutableArray<byte> s_publicKey = SigningTestHelpers.PublicKey;
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void RejectIncompatibleModifiers()
         {
             string source =
@@ -52,7 +52,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void AccessibleWhereRequired_01()
         {
             string source =
@@ -76,7 +76,7 @@ public class Derived : Base
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void AccessibleWhereRequired_02()
         {
             string source1 =
@@ -246,7 +246,7 @@ public class Base
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NotAccessibleWhereRequired()
         {
             string source =
@@ -277,7 +277,7 @@ public class Derived // : Base
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NotInStructOrNamespace()
         {
             string source =
@@ -297,7 +297,7 @@ public class Derived // : Base
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NotInStaticClass()
         {
             string source =
@@ -321,7 +321,7 @@ sealed class D
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NestedTypes()
         {
             string source =
@@ -366,7 +366,7 @@ struct Struct
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void PermittedAccessorProtection()
         {
             string source =
@@ -383,7 +383,7 @@ struct Struct
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void ForbiddenAccessorProtection_01()
         {
             string source =
@@ -403,7 +403,7 @@ struct Struct
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void ForbiddenAccessorProtection_02()
         {
             string source =
@@ -419,7 +419,7 @@ struct Struct
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void AtLeastAsRestrictivePositive_01()
         {
             string source =
@@ -445,7 +445,7 @@ public class C
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void AtLeastAsRestrictiveNegative_01()
         {
             string source =
@@ -468,7 +468,7 @@ public class Container
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void DuplicateAccessInBinder()
         {
             string source =
@@ -522,7 +522,7 @@ public class Container
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NotInVersion71()
         {
             string source =
@@ -576,7 +576,7 @@ public class Container
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void VerifyPrivateProtectedIL()
         {
             var text = @"
@@ -596,7 +596,7 @@ class Program
                 });
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void VerifyPartialPartsMatch()
         {
             var source =
@@ -622,7 +622,7 @@ class Program
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void VerifyProtectedSemantics()
         {
             var source =
@@ -661,7 +661,7 @@ class Other : Base
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void HidingAbstract()
         {
             var source =
@@ -678,7 +678,7 @@ abstract class B : A
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void HidingInaccessible()
         {
             string source1 =
@@ -705,7 +705,7 @@ abstract class B : A
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void UnimplementedInaccessible()
         {
             string source1 =
@@ -731,7 +731,7 @@ abstract class B : A
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void ImplementInaccessible()
         {
             string source1 =
@@ -761,7 +761,7 @@ abstract class B : A
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void VerifyPPExtension()
         {
             string source = @"

@@ -2675,7 +2675,7 @@ class D : C
                 Diagnostic(ErrorCode.ERR_UnimplementedAbstractMethod, "D").WithArguments("D", "A.this[int].get"));
         }
 
-        [ConditionalFact(typeof(DesktopOnly), typeof(ClrOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(545658, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545658")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void MethodConstructedFromOverrideWithCustomModifiers()

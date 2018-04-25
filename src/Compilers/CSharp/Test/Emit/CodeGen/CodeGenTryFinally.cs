@@ -918,7 +918,7 @@ Exception: i != 0");
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NestedExceptionHandlersThreadAbort01()
         {
             var source =
@@ -1000,7 +1000,7 @@ catch2
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NestedExceptionHandlersThreadAbort02()
         {
             var source =
@@ -1100,7 +1100,7 @@ catch2
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NestedExceptionHandlersThreadAbort03()
         {
             var source =
@@ -1219,7 +1219,7 @@ finally2
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NestedExceptionHandlersThreadAbort04()
         {
             var source =
@@ -1351,7 +1351,7 @@ finally2
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NestedExceptionHandlersThreadAbort05()
         {
             var source =
@@ -1484,7 +1484,7 @@ catch3
 }");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NestedExceptionHandlersThreadAbort06()
         {
             var source =
@@ -1623,7 +1623,7 @@ catch3
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NestedExceptionHandlersThreadAbort07()
         {
             var source =

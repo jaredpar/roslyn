@@ -13,7 +13,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Symbols
 {
     public class CustomModifiersTests : CSharpTestBase
     {
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ModifiedTypeArgument_01()
@@ -83,7 +83,7 @@ class Module1
             CompileAndVerify(compilation, expectedOutput: "Test");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ModifiedTypeArgument_02()
@@ -157,7 +157,7 @@ class Module1
             CompileAndVerify(compilation, expectedOutput: "Test");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiers_01()
@@ -215,7 +215,7 @@ class Module1
             CompileAndVerify(compilation, expectedOutput: "Test");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiers_02()
@@ -296,7 +296,7 @@ class CL3
             CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRef_01()
@@ -369,7 +369,7 @@ class CL3
             CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRef_02()
@@ -442,7 +442,7 @@ class CL3
             CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRef_03()
@@ -515,7 +515,7 @@ class CL3
             CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRef_04()
@@ -589,7 +589,7 @@ class CL3
             CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRefReturn_01()
@@ -700,7 +700,7 @@ class CL3
 Overridden P");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRefReturn_02()
@@ -810,7 +810,7 @@ class CL3
 Overridden P");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRefReturn_03()
@@ -920,7 +920,7 @@ class CL3
 Overridden P");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRefReturn_04()
@@ -1030,7 +1030,7 @@ class CL3
 Overridden P");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(8948, "https://github.com/dotnet/roslyn/issues/8948")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRefReturn_05()
@@ -1125,7 +1125,7 @@ CL3.P
 ");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiers_03()
@@ -1228,7 +1228,7 @@ class CL3
 Get Overridden");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiers_04()
@@ -1300,7 +1300,7 @@ class CL3
             CompileAndVerify(compilation, expectedOutput: "Overridden");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiers_05()
@@ -1461,7 +1461,7 @@ class Module1
             Assert.NotSame(base1, base3);
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void RetargetingModifiedTypeArgument_01()
@@ -1750,7 +1750,7 @@ interface ITest4<T, U>
             compilation.VerifyDiagnostics();
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void DynamicEncodingDecoding_01()
@@ -1833,7 +1833,7 @@ class CL3 : CL2
                              sourceSymbolValidator: validator, symbolValidator: validator);
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4163, "https://github.com/dotnet/roslyn/issues/4163")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void Delegates_01()
@@ -1976,7 +1976,7 @@ MyDelegate
 Test 6");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(4623, "https://github.com/dotnet/roslyn/issues/4623")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void MultiDimensionalArray_01()
@@ -2032,7 +2032,7 @@ class Test11 : Test1
 Overridden");
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(5725, "https://github.com/dotnet/roslyn/issues/5725")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ModifiersWithConstructedType_01()
@@ -2103,7 +2103,7 @@ class CL3 : CL2
 Overridden");
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(5725, "https://github.com/dotnet/roslyn/issues/5725")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ModifiersWithConstructedType_02()
@@ -2174,7 +2174,7 @@ class CL3 : CL2
 Overridden");
         }
 
-        [ConditionalFact(typeof(DesktopOnly), typeof(ClrOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(5725, "https://github.com/dotnet/roslyn/issues/5725")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ModifiersWithConstructedType_03()
@@ -2247,7 +2247,7 @@ class CL3 : CL2
 Overridden");
         }
 
-        [ConditionalFact(typeof(ClrOnly),typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(14453, "https://github.com/dotnet/roslyn/issues/14453")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ModifiersWithConstructedType_04()
@@ -2281,7 +2281,7 @@ class CL2 : CL1
             CompileAndVerify(compilation, expectedOutput: @"Overridden");
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(14453, "https://github.com/dotnet/roslyn/issues/14453")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ModifiersWithConstructedType_05()
@@ -2329,7 +2329,7 @@ class CL3 : I1
 CL3.Test");
         }
 
-        [ConditionalFact(typeof(DesktopOnly), typeof(ClrOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(5993, "https://github.com/dotnet/roslyn/issues/5993")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRef_05()
@@ -2386,7 +2386,7 @@ Implemented B",
                 });
         }
 
-        [ConditionalFact(typeof(DesktopOnly), typeof(ClrOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void ConcatModifiersAndByRef_06()
         {
@@ -2479,7 +2479,7 @@ Implemented B",
             Assert.True(t2.Equals(t1, TypeCompareKind.IgnoreCustomModifiersAndArraySizesAndLowerBounds));
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(7674, "https://github.com/dotnet/roslyn/issues/7674")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void PropertyWithDynamic()
@@ -2595,7 +2595,7 @@ Set Overridden3
 Get Overridden3");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(7674, "https://github.com/dotnet/roslyn/issues/7674")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void EventWithDynamic()
@@ -2709,7 +2709,7 @@ Add Overridden3
 Remove Overridden3");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(7845, "https://github.com/dotnet/roslyn/issues/7845")]
         [WorkItem(18411, "https://github.com/dotnet/roslyn/issues/18411")]
         public void EventFieldWithDynamic()

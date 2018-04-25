@@ -383,7 +383,7 @@ class Hello
         /// A shutdown request should not abort an existing compilation.  It should be allowed to run to 
         /// completion.
         /// </summary>
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public async Task ShutdownDoesNotAbortCompilation()
         {
             var host = new TestableCompilerServerHost();
@@ -420,7 +420,7 @@ class Hello
         /// Multiple clients should be able to send shutdown requests to the server.
         /// </summary>
         /// <returns></returns>
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public async Task ShutdownRepeated()
         {
             var host = new TestableCompilerServerHost();
@@ -458,7 +458,7 @@ class Hello
             }
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public async Task CancelWillCancelCompilation()
         {
             var host = new TestableCompilerServerHost();

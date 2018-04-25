@@ -1706,7 +1706,7 @@ public class B
             b.VerifyDiagnostics();
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(530839, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530839")]
         public void EmbedInteropTypesReferences()
         {

@@ -196,7 +196,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer.UnitTests
                 Assert.True(await TestableDesktopBuildClient.TryConnectToNamedPipe(pipeName, Timeout.Infinite, cancellationToken: default));
             }
 
-            [ConditionalFact(typeof(DesktopOnly))]
+            [AnyDesktopFact(TestEnvironmentReason.Unknown)]
             public void OnlyStartsOneServer()
             {
                 var ranLocal = false;

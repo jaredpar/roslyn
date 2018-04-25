@@ -163,4 +163,25 @@ namespace Roslyn.Test.Utilities
         {
         }
     }
+
+    public sealed class UnixFactAttribute : TestEnvironmentFactAttribute
+    {
+        public UnixFactAttribute(TestEnvironmentReason reason) : base(reason, TestEnvironmentKind.Unix)
+        {
+        }
+    }
+
+    public sealed class DesktopClrFactAttribute : TestEnvironmentFactAttribute
+    {
+        public DesktopClrFactAttribute(TestEnvironmentReason reason) : base(reason, TestEnvironmentKind.DesktopClr)
+        {
+        }
+    }
+
+    public sealed class AnyDesktopFactAttribute : TestEnvironmentFactAttribute
+    {
+        public AnyDesktopFactAttribute(TestEnvironmentReason reason) : base(reason, TestEnvironmentKind.AnyDesktop)
+        {
+        }
+    }
 }

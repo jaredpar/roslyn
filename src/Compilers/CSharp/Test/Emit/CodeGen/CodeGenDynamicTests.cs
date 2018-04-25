@@ -15387,7 +15387,7 @@ class C
 
         #region Regression Tests
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void ByRefDynamic()
         {
             string source = @"

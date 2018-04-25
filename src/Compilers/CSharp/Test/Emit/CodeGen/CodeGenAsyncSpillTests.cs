@@ -2416,7 +2416,7 @@ class Driver
             CompileAndVerify(source, expected);
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void SpillArglist()
         {
             var source = @"

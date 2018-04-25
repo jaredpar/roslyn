@@ -3057,7 +3057,7 @@ class C
             verifier.VerifyDiagnostics();
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void LongTupleDeclaration()
         {
             var source = @"
@@ -10146,7 +10146,7 @@ CS0151ERR_IntegralTypeValueExpected}
             Assert.Throws<ArgumentNullException>(() => Compilation.GetRequiredLanguageVersion(null));
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void DefaultAndFriendlyElementNames_01()
         {
             var source = @"
@@ -10588,7 +10588,7 @@ class C
             }
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void DefaultAndFriendlyElementNames_02()
         {
             var source = @"
@@ -10718,7 +10718,7 @@ class C
             }
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void DefaultAndFriendlyElementNames_03()
         {
             var source = @"
@@ -10987,7 +10987,7 @@ class C
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void DefaultAndFriendlyElementNames_05()
         {
             var source = @"
@@ -11410,7 +11410,7 @@ class C
                 );
         }
 
-       [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void DefaultAndFriendlyElementNames_08()
         {
             var source = @"
@@ -12204,7 +12204,7 @@ Yes");
             Assert.Equal(1, m9Test.Arity);
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void CreationOfTupleSymbols_01()
         {
             var source = @"
@@ -12765,7 +12765,7 @@ public class Test
                          m1Tuple.ToTestDisplayString());
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void UnifyUnderlyingWithTuple_05()
         {
             var source = @"
@@ -20858,7 +20858,7 @@ public interface I<in T>
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(13767, "https://github.com/dotnet/roslyn/issues/13767")]
         public void TupleInConstant()
         {
@@ -20894,7 +20894,7 @@ class C
             // no assertion in MetadataWriter
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(13767, "https://github.com/dotnet/roslyn/issues/13767")]
         public void ConstantTypeFromReferencedAssembly()
         {
@@ -21370,7 +21370,7 @@ public class A
         }
 #endif
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         [WorkItem(13472, "https://github.com/dotnet/roslyn/issues/13472")]
         public void InvalidCastRef()
         {
@@ -21511,7 +21511,7 @@ public class B1
 
         [WorkItem(14708, "https://github.com/dotnet/roslyn/issues/14708")]
         [WorkItem(14709, "https://github.com/dotnet/roslyn/issues/14709")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void RefTupleDynamicDecode001()
         {
             string lib = @"
@@ -21971,7 +21971,7 @@ namespace ConsoleApplication5
 
         [WorkItem(14708, "https://github.com/dotnet/roslyn/issues/14708")]
         [WorkItem(14709, "https://github.com/dotnet/roslyn/issues/14709")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void RefTupleDynamicDecode004()
         {
             string lib = @"
@@ -23231,7 +23231,7 @@ static class C
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void Serialization()
         {
             var source = @"

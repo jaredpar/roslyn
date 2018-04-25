@@ -1537,7 +1537,7 @@ public class Test
                 );
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void TestWellKnownAttributeOnProperty_DynamicAttribute()
         {
             string source = @"

@@ -107,7 +107,7 @@ namespace System
             }
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void TypeSymbolFromReflectionType()
         {
             var c = CSharpCompilation.Create("TypeSymbolFromReflectionType",

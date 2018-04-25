@@ -341,7 +341,7 @@ public class LocalTypes3
             Assert.Null(assemblies[1].GetTypeByMetadataName(fullName_S2.FullName));
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void LocalTypeSubstitution1_1()
         {
             var LocalTypes1 = CreateCompilationWithMscorlib40(s_sourceLocalTypes1_IL, options: TestOptions.ReleaseDll, assemblyName: "LocalTypes1");
@@ -638,7 +638,7 @@ public class LocalTypes3
             GC.KeepAlive(library1_9);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void LocalTypeSubstitution1_2()
         {
             var LocalTypes1 = CreateCompilation(s_sourceLocalTypes1, options: TestOptions.ReleaseDll, assemblyName: "LocalTypes1",
@@ -939,7 +939,7 @@ public class LocalTypes3
             GC.KeepAlive(library1_9);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void LocalTypeSubstitution1_3()
         {
             var Pia1 = CreateCompilation(s_sourcePia1, options: TestOptions.ReleaseDll, assemblyName: "Pia1", targetFramework: TargetFramework.StandardCompat);
@@ -1294,7 +1294,7 @@ public class LocalTypes3
             GC.KeepAlive(tc2);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void CyclicReference_3()
         {
             var mscorlibRef = TestReferences.SymbolsTests.MDTestLib1;
@@ -1463,7 +1463,7 @@ public class C
             Assert.Equal(SymbolKind.ErrorType, assemblies2[0].GlobalNamespace.GetMember<MethodSymbol>("C.Test1").ReturnType.Kind);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void CannotEmbedValueTuple()
         {
             string piaSource = @"
@@ -1533,7 +1533,7 @@ public class C
             comp2.VerifyDiagnostics(expectedDiagnostics);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(13200, "https://github.com/dotnet/roslyn/issues/13200")]
         public void CannotEmbedValueTupleImplicitlyReferred_ByMethod()
         {
@@ -1587,7 +1587,7 @@ public interface ITest2 : ITest1 { }
             comp2.VerifyEmitDiagnostics(expectedDiagnostics);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(13200, "https://github.com/dotnet/roslyn/issues/13200")]
         public void CannotEmbedValueTupleImplicitlyReferred_ByProperty()
         {
@@ -1640,7 +1640,7 @@ public interface ITest2 : ITest1 { }
             comp2.VerifyEmitDiagnostics(expectedDiagnostics);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(13200, "https://github.com/dotnet/roslyn/issues/13200")]
         public void CannotEmbedGenericDelegateReferred_ByEvent()
         {
@@ -1682,7 +1682,7 @@ public interface ITest2 : ITest1 { }
             comp2.VerifyEmitDiagnostics(expectedDiagnostics);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(13200, "https://github.com/dotnet/roslyn/issues/13200")]
         public void CannotEmbedValueTupleImplicitlyReferred_ByField()
         {
@@ -1737,7 +1737,7 @@ public interface ITest2
             comp2.VerifyEmitDiagnostics(expectedDiagnostics);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(13200, "https://github.com/dotnet/roslyn/issues/13200")]
         public void CannotEmbedValueTupleImplicitlyReferredFromMetadata()
         {
@@ -1805,7 +1805,7 @@ public class C
             comp2.VerifyEmitDiagnostics(expectedDiagnostics);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void CheckForUnembeddableTypesInTuples()
         {
             string piaSource = @"
@@ -1923,7 +1923,7 @@ namespace System
             Assert.IsType<NoPiaIllegalGenericInstantiationSymbol>(localTypes3.GetMembers("Test6").OfType<MethodSymbol>().Single().ReturnType);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void GenericsClosedOverLocalTypes1_3()
         {
             var Pia1 = CreateCompilation(s_sourcePia1, options: TestOptions.ReleaseDll, assemblyName: "Pia1");
@@ -1973,7 +1973,7 @@ namespace System
             Assert.IsType<NoPiaIllegalGenericInstantiationSymbol>(localTypes3.GetMembers("Test6").OfType<MethodSymbol>().Single().ReturnType);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void NestedType1()
         {
             string source =
@@ -2099,7 +2099,7 @@ public struct S1
             Assert.IsType<UnsupportedMetadataTypeSymbol>(args[1].Value);
         }
 
-        [ConditionalFact(typeof(DesktopOnly), typeof(ClrOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void NestedType2()
         {
             string source =
@@ -2224,7 +2224,7 @@ public struct S1
             Assert.IsType<UnsupportedMetadataTypeSymbol>(args[1].Value);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void NestedType3()
         {
             string source =
@@ -2349,7 +2349,7 @@ public struct S1
             Assert.Equal("LocalTypes2", ((TypeSymbol)args[1].Value).ContainingAssembly.Name);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void NestedType4()
         {
             string piaSource =
@@ -2431,7 +2431,7 @@ interface AttrTest1
             Assert.IsType<UnsupportedMetadataTypeSymbol>(args[1].Value);
         }
 
-        [ConditionalFact(typeof(ClrOnly), typeof(DesktopOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         public void GenericType1()
         {
             string source =
@@ -2557,7 +2557,7 @@ public struct S2<T>
             Assert.IsType<UnsupportedMetadataTypeSymbol>(args[1].Value);
         }
 
-        [ConditionalFact(typeof(DesktopOnly), typeof(ClrOnly))]
+        [DesktopClrFact(TestEnvironmentReason.Unknown)]
         [WorkItem(685240, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/685240")]
         public void Bug685240()
         {

@@ -74,28 +74,10 @@ namespace Roslyn.Test.Utilities
         public override string SkipReason => "Test not supported in DEBUG";
     }
 
-    public class WindowsOnly : ExecutionCondition
-    {
-        public override bool ShouldSkip => Path.DirectorySeparatorChar != '\\';
-        public override string SkipReason => "Test not supported on Mac and Linux";
-    }
-
-    public class UnixLikeOnly : ExecutionCondition
-    {
-        public override bool ShouldSkip => !PathUtilities.IsUnixLikePlatform;
-        public override string SkipReason => "Test not supported on Windows";
-    }
-
     public class ClrOnly : ExecutionCondition
     {
         public override bool ShouldSkip => MonoHelpers.IsRunningOnMono();
         public override string SkipReason => "Test not supported on Mono";
-    }
-
-    public class DesktopOnly : ExecutionCondition
-    {
-        public override bool ShouldSkip => CoreClrShim.AssemblyLoadContext.Type != null;
-        public override string SkipReason => "Test not supported on CoreCLR";
     }
 
     public class NoIOperationValidation : ExecutionCondition

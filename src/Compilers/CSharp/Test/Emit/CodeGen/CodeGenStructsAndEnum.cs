@@ -1243,7 +1243,7 @@ public class D
         }
 
         [WorkItem(16364, "https://github.com/dotnet/roslyn/issues/16364")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void InplaceCtor005()
         {
             string source = @"

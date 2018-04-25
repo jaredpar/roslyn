@@ -480,7 +480,7 @@ public abstract class C
         /// The script entry point should complete synchronously.
         /// </summary>
         [WorkItem(4495, "https://github.com/dotnet/roslyn/issues/4495")]
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void ScriptEntryPoint()
         {
             var source =
@@ -539,7 +539,7 @@ public abstract class C
 }");
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void SubmissionEntryPoint()
         {
             var references = new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef };

@@ -504,7 +504,7 @@ public class DrivedClass
             Assert.True(localField.Type is ArrayTypeSymbol);
         }
 
-        [ConditionalFact(typeof(DesktopOnly))]
+        [AnyDesktopFact(TestEnvironmentReason.Unknown)]
         public void NoPIAGenericsAssemblyRefs3()
         {
             //Test a static method that returns Generic(Of NoPIAType)
