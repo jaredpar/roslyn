@@ -9,7 +9,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
 
 Public Class StatementSyntaxWalkerTests
-    <ConditionalFact(GetType(WindowsOnly))>
+    <WindowsFact(WindowsFactKind.Unknown)>
     Public Sub TestStatementSyntaxWalker()
         Dim tree = ParseAndVerify(<![CDATA[
 Option Explicit Off

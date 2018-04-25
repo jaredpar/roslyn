@@ -171,7 +171,7 @@ a.cs
             CleanupAllGeneratedFiles(rsp);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void ResponseFiles_RelativePaths()
         {
             var parentDir = Temp.CreateDirectory();
@@ -224,7 +224,7 @@ d.cs
             Assert.Equal(basePath, args.BaseDirectory);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void SourceFiles_Patterns()
         {
             var parser = new TestCommandLineParser(
@@ -306,7 +306,7 @@ d.cs
 
         [WorkItem(546009, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546009")]
         [WorkItem(545991, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545991")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void SourceFiles_Patterns2()
         {
             var folder = Temp.CreateDirectory();
@@ -363,7 +363,7 @@ d.cs
             Assert.Equal(4, resolvedSourceFiles.Length);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void SourceFile_BadPath()
         {
             var args = DefaultParse(new[] { @"e:c:\test\test.cs", "/t:library" }, _baseDirectory);
@@ -548,7 +548,7 @@ d.cs
             Assert.Equal(@"d:\abc def\ab cd\a.manifest", args.Win32Manifest);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void ParseResources()
         {
             var diags = new List<Diagnostic>();
@@ -854,7 +854,7 @@ d.cs
             parsedArgs.Errors.Verify(Diagnostic(ErrorCode.ERR_BadSwitch).WithArguments("/link-:"));
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void Recurse_SimpleTests()
         {
             var dir = Temp.CreateDirectory();
@@ -1652,7 +1652,7 @@ d.cs
             parsedArgs.Errors.Verify(Diagnostic(ErrorCode.ERR_BadSwitch).WithArguments("/debug-:"));
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void Pdb()
         {
             var parsedArgs = DefaultParse(new[] { "/pdb:something", "a.cs" }, _baseDirectory);
@@ -2878,7 +2878,7 @@ class C
             CleanupAllGeneratedFiles(file.Path);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void DiagnosticFormatting()
         {
             string source = @"
@@ -2977,7 +2977,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
         }
 
         [WorkItem(540891, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/540891")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void ParseOut()
         {
             const string baseDirectory = @"C:\abc\def\baz";
@@ -3325,7 +3325,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
             Assert.True(parsedArgs.EmitOptions.InstrumentationKinds.SequenceEqual(ImmutableArray.Create(InstrumentationKind.TestCoverage)));
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void ParseDoc()
         {
             const string baseDirectory = @"C:\abc\def\baz";
@@ -3427,7 +3427,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
             Assert.Equal(DocumentationMode.Diagnose, parsedArgs.ParseOptions.DocumentationMode); //Even though the format was incorrect
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void ParseErrorLog()
         {
             const string baseDirectory = @"C:\abc\def\baz";
@@ -3522,7 +3522,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
             Assert.False(parsedArgs.CompilationOptions.ReportSuppressedDiagnostics);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void AppConfigParse()
         {
             const string baseDirectory = @"C:\abc\def\baz";
@@ -3585,7 +3585,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
             CleanupAllGeneratedFiles(appConfigFile.Path);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void AppConfigBasicFail()
         {
             var srcFile = Temp.CreateFile().WriteAllText(@"class A { static void Main(string[] args) { } }");
@@ -3603,7 +3603,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
             CleanupAllGeneratedFiles(srcFile.Path);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void ParseDocAndOut()
         {
             const string baseDirectory = @"C:\abc\def\baz";
@@ -3627,7 +3627,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
             Assert.Equal("d.exe", parsedArgs.OutputFileName);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void ParseErrorLogAndOut()
         {
             const string baseDirectory = @"C:\abc\def\baz";
@@ -3895,7 +3895,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
                 Diagnostic(ErrorCode.ERR_InvalidFileAlignment).WithArguments("123"));
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void SdkPathAndLibEnvVariable()
         {
             var dir = Temp.CreateDirectory();
@@ -3913,7 +3913,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
             }, parsedArgs.ReferencePaths);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void SdkPathAndLibEnvVariable_Errors()
         {
             var parsedArgs = DefaultParse(new[] { @"/lib:c:lib2", @"/lib:o:\sdk1", "a.cs" }, _baseDirectory);
@@ -4721,7 +4721,7 @@ class Test { static void Main() {} }").Path;
             parsedArgs.Errors.Verify(Diagnostic(ErrorCode.ERR_BadSwitch).WithArguments("/utf8output:"));
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void CscUtf8Output_WithRedirecting_Off()
         {
             var srcFile = Temp.CreateFile().WriteAllText("\u265A").Path;
@@ -4736,7 +4736,7 @@ class Test { static void Main() {} }").Path;
             CleanupAllGeneratedFiles(tempOut.Path);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void CscUtf8Output_WithRedirecting_On()
         {
             var srcFile = Temp.CreateFile().WriteAllText("\u265A").Path;
@@ -4752,7 +4752,7 @@ class Test { static void Main() {} }").Path;
         }
 
         [WorkItem(546653, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546653")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void NoSourcesWithModule()
         {
             var folder = Temp.CreateDirectory();
@@ -4772,7 +4772,7 @@ class Test { static void Main() {} }").Path;
         }
 
         [WorkItem(546653, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546653")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void NoSourcesWithResource()
         {
             var folder = Temp.CreateDirectory();
@@ -4786,7 +4786,7 @@ class Test { static void Main() {} }").Path;
         }
 
         [WorkItem(546653, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546653")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void NoSourcesWithLinkResource()
         {
             var folder = Temp.CreateDirectory();
@@ -5189,7 +5189,7 @@ class myClass
             AssertEx.Equal(new[] { @"/o:""goo.cs""", @"/o:""abc def""\baz", @"""/o:baz bar""bing" }, args);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         private void SourceFileQuoting()
         {
             string[] responseFile = new string[] {
@@ -5650,7 +5650,7 @@ class C
         }
 
         [WorkItem(545025, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545025")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void CompilationWithWarnAsError_01()
         {
             string source = @"
@@ -5677,7 +5677,7 @@ public class C
         }
 
         [WorkItem(545025, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545025")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void CompilationWithWarnAsError_02()
         {
             string source = @"
@@ -5724,7 +5724,7 @@ public class C
         }
 
         [WorkItem(545247, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545247")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void CompilationWithNonExistingOutPath()
         {
             string source = @"
@@ -5806,7 +5806,7 @@ public class C
         }
 
         [WorkItem(545247, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/545247")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Paths)]
         public void CompilationWithWrongOutPath_03()
         {
             string source = @"
@@ -5998,7 +5998,7 @@ public class C
             CleanupAllGeneratedFiles(file.Path);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void SpecifyProperCodePage()
         {
             byte[] source = {
@@ -6034,7 +6034,7 @@ a.cs(1,10): error CS1022: Type or namespace definition, or end-of-file expected"
             CleanupAllGeneratedFiles(file.Path);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void DefaultWin32ResForExe()
         {
             var source = @"
@@ -6062,7 +6062,7 @@ class C
 </ManifestResource>");
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void DefaultManifestForDll()
         {
             var source = @"
@@ -6074,7 +6074,7 @@ class C
             CheckManifestString(source, OutputKind.DynamicallyLinkedLibrary, explicitManifest: null, expectedManifest: null);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void DefaultManifestForWinExe()
         {
             var source = @"
@@ -6102,7 +6102,7 @@ class C
 </ManifestResource>");
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void DefaultManifestForAppContainerExe()
         {
             var source = @"
@@ -6130,7 +6130,7 @@ class C
 </ManifestResource>");
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void DefaultManifestForWinMD()
         {
             var source = @"
@@ -6142,7 +6142,7 @@ class C
             CheckManifestString(source, OutputKind.WindowsRuntimeMetadata, explicitManifest: null, expectedManifest: null);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void DefaultWin32ResForModule()
         {
             var source = @"
@@ -6154,7 +6154,7 @@ class C
             CheckManifestString(source, OutputKind.NetModule, explicitManifest: null, expectedManifest: null);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void ExplicitWin32ResForExe()
         {
             var source = @"
@@ -6191,7 +6191,7 @@ explicitManifest +
         }
 
         // DLLs don't get the default manifest, but they do respect explicitly set manifests.
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void ExplicitWin32ResForDll()
         {
             var source = @"
@@ -6227,7 +6227,7 @@ explicitManifest +
         }
 
         // Modules don't have manifests, even if one is explicitly specified.
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void ExplicitWin32ResForModule()
         {
             var source = @"
@@ -6392,7 +6392,7 @@ public class C
         }
 
         [WorkItem(544926, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544926")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void ResponseFilesWithNoconfig_02()
         {
             string source = Temp.CreateFile("a.cs").WriteAllText(@"
@@ -6460,7 +6460,7 @@ public class C
         }
 
         [WorkItem(544926, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544926")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void ResponseFilesWithNoconfig_04()
         {
             string source = Temp.CreateFile("a.cs").WriteAllText(@"
@@ -6736,7 +6736,7 @@ namespace System
         }
 
         [WorkItem(733242, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/733242")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void Bug733242()
         {
             var dir = Temp.CreateDirectory();
@@ -6780,7 +6780,7 @@ class C {} ");
         }
 
         [WorkItem(768605, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/768605")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void Bug768605()
         {
             var dir = Temp.CreateDirectory();
@@ -7198,7 +7198,7 @@ class Program
             CleanupAllGeneratedFiles(source);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void ExistingPdb()
         {
             var dir = Temp.CreateDirectory();
@@ -7289,7 +7289,7 @@ class Program3
         /// 
         /// On Windows we can read the original data directly from the stream without creating a memory map. 
         /// </summary>
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void FileShareDeleteCompatibility_Windows()
         {
             var dir = Temp.CreateDirectory();
@@ -7325,7 +7325,8 @@ class Program3
         /// On Linux/Mac <see cref="FileShare.Delete"/> on its own doesn't do anything.
         /// We need to create the actual memory map. This works on Windows as well.
         /// </summary>
-        [ConditionalFact(typeof(WindowsOnly), typeof(IsEnglishLocal)), WorkItem(8896, "https://github.com/dotnet/roslyn/issues/8896")]
+        [ConditionalFact(typeof(WindowsOnly), typeof(IsEnglishLocal))]
+        [WorkItem(8896, "https://github.com/dotnet/roslyn/issues/8896")]
         public void FileShareDeleteCompatibility_Xplat()
         {
             var bytes = TestResources.MetadataTests.InterfaceAndClass.CSClasses01;
@@ -7395,7 +7396,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.", output);
         }
 
         // Seems like File.SetAttributes(libDll.Path, FileAttributes.ReadOnly) doesn't restrict access to the file on Mac (Linux passes).
-        [ConditionalFact(typeof(WindowsOnly)), WorkItem(8939, "https://github.com/dotnet/roslyn/issues/8939")]
+        [WorkItem(8939, "https://github.com/dotnet/roslyn/issues/8939")]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void FileShareDeleteCompatibility_ReadOnlyFiles()
         {
             var dir = Temp.CreateDirectory();
@@ -7738,7 +7740,7 @@ public class C { }
         }
 
         [WorkItem(546468, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546468")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void CS2002WRN_FileAlreadyIncluded()
         {
             const string cs2002 = @"warning CS2002: Source file '{0}' specified multiple times";
@@ -8156,7 +8158,7 @@ using System.Diagnostics; // Unused.
         }
 
         [WorkItem(715339, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/715339")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void WRN_InvalidSearchPathDir()
         {
             var baseDir = Temp.CreateDirectory();
@@ -8185,7 +8187,7 @@ using System.Diagnostics; // Unused.
         }
 
         [WorkItem(650083, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/650083")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void ReservedDeviceNameAsFileName()
         {
             var parsedArgs = DefaultParse(new[] { "com9.cs", "/t:library " }, _baseDirectory);
@@ -9108,7 +9110,7 @@ public class C
 
         [WorkItem(1091972, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1091972")]
         [WorkItem(444, "CodePlex")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void Bug1091972()
         {
             var dir = Temp.CreateDirectory();
@@ -9155,7 +9157,7 @@ class C {
             CleanupAllGeneratedFiles(src.Path);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void CommandLineMisc()
         {
             CSharpCommandLineArguments args = null;
@@ -9400,7 +9402,7 @@ class C {
         }
 
         [CompilerTrait(CompilerFeature.Determinism)]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void DeterministicPdbsRegardlessOfBitness()
         {
             var dir = Temp.CreateDirectory();
@@ -9783,7 +9785,7 @@ class C
             Assert.Equal("", result.Output.Trim());
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         [WorkItem(21935, "https://github.com/dotnet/roslyn/issues/21935")]
         public void PdbPathNotEmittedWithoutPdb()
         {

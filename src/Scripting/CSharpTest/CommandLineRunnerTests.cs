@@ -324,7 +324,8 @@ $@"{s_logoAndHelpPrompt}
             AssertEx.AssertEqualToleratingWhitespaceDifferences(error, runner.Console.Error.ToString());
         }
 
-        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void Args_InteractiveWithScript1()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -357,7 +358,8 @@ $@"""@arg1""
 > ", runner.Console.Out.ToString());
         }
 
-        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void Args_Script1()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -374,7 +376,8 @@ $@"""@arg1""
 ", runner.Console.Out.ToString());
         }
 
-        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void Args_Script2()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");
@@ -391,7 +394,8 @@ $@"""@arg1""
 ", runner.Console.Out.ToString());
         }
 
-        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void Args_Script3()
         {
             var script = Temp.CreateFile(extension: ".csx").WriteAllText("foreach (var arg in Args) Print(arg);");

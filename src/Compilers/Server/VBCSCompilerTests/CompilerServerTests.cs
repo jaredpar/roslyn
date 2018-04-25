@@ -762,7 +762,8 @@ End Module
             GC.KeepAlive(rootDirectory);
         }
 
-        [ConditionalFact(typeof(WindowsOnly), Skip = "https://github.com/dotnet/roslyn/issues/19763")]
+        [WindowsFact(WindowsFactKind.Unknown)]
+        [WorkItem(19763, "https://github.com/dotnet/roslyn/issues/19763")]
         [WorkItem(723280, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/723280")]
         [Trait(Traits.Environment, Traits.Environments.VSProductInstall)]
         public async Task ReferenceCachingCS()
@@ -931,7 +932,7 @@ End Module";
 
         [WorkItem(997372, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/997372")]
         [WorkItem(761326, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/761326")]
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.Unknown)]
         [Trait(Traits.Environment, Traits.Environments.VSProductInstall)]
         public async Task MultipleSimultaneousCompiles()
         {

@@ -1157,7 +1157,8 @@ new C()
             script.GetCompilation().VerifyDiagnostics();
         }
 
-        [ConditionalFact(typeof(WindowsOnly)), WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WorkItem(15860, "https://github.com/dotnet/roslyn/issues/15860")]
+        [WindowsFact(WindowsFactKind.Unknown)]
         public void ReferenceDirective_RelativeToBaseRoot()
         {
             var file = Temp.CreateFile();

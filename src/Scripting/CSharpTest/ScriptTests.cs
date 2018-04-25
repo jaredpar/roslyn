@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting.UnitTests
         [Fact]
         public void TestEmit_PortablePdb() => TestEmit(DebugInformationFormat.PortablePdb);
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [WindowsFact(WindowsFactKind.WindowsPdb)]
         public void TestEmit_WindowsPdb() => TestEmit(DebugInformationFormat.Pdb);
 
         private void TestEmit(DebugInformationFormat format)
