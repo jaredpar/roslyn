@@ -1971,6 +1971,7 @@ class C
         [Fact, WorkItem(17934, "https://github.com/dotnet/roslyn/issues/17934")]
         public void PartialKickoffMethod()
         {
+            Assert.True(false, "here");
             string src = @"
 public partial class C
 {
