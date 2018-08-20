@@ -383,6 +383,17 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             return VisualBasic.VisualBasicCompilation.Create(assemblyName, new[] { tree }, references, compilationOptions);
         }
 
+        public static List<MetadataReference> ConvertToMetadataReferences(params Compilation[] compilations)
+        {
+            var list = new List<MetadataReference>(compilations.Length);
+            foreach (var compilation in compilations)
+            {
+                list.Add(compilation.EmitToImageReference());
+            }
+
+            return list;
+        }
+
         private void AddReferencedCompilations(IEnumerable<Compilation> referencedCompilations, List<MetadataReference> references)
         {
             if (referencedCompilations != null)

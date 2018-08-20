@@ -850,16 +850,17 @@ public class A
         [Fact]
         public void InternalInaccessibleProperty()
         {
-            var assembly1Compilation = CreateCSharpCompilation("Assembly1",
+            var assembly1Compilation = CreateCompilation(
 @"public class InstancePropertyContainer
 {
     internal protected int PropIntProProSet { get { return 5; } protected set { } }
 }",
-                compilationOptions: TestOptions.ReleaseDll);
+                assemblyName: "Assembly1",
+                options: TestOptions.ReleaseDll);
             var assembly1Verifier = CompileAndVerify(assembly1Compilation);
             assembly1Verifier.VerifyDiagnostics();
 
-            var assembly2Compilation = CreateCSharpCompilation("Assembly2",
+            var assembly2Compilation = CreateCompilation(
 @"public class SubInstancePropertyContainer
 {
     public static void RunTest()
@@ -869,8 +870,9 @@ public class A
         InstancePropertyContainer.PropIntProProSet = 12;
     }
 }",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new[] { assembly1Compilation });
+                assemblyName: "Assembly2",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(assembly1Compilation));
 
             assembly2Compilation.VerifyDiagnostics(
                 // (7,35): error CS0122: 'InstancePropertyContainer.PropIntProProSet' is inaccessible due to its protection level

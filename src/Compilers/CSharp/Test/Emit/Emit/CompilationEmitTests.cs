@@ -1312,33 +1312,35 @@ comp => comp.VerifyDiagnostics(
         public void RefAssemblyClient_EmitAllVirtualMethods()
         {
 
-            var comp1 = CreateCSharpCompilation("CS1",
+            var comp1 = CreateCompilation(
 @"[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(""CS2"")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo(""CS3"")]
 public abstract class C1
 {
     internal abstract void M();
 }",
-                referencedAssemblies: new[] { MscorlibRef });
+                assemblyName: "CS1");
             comp1.VerifyDiagnostics();
             var image1 = comp1.EmitToImageReference(EmitOptions.Default);
 
-            var comp2 = CreateCSharpCompilation("CS2",
+            var comp2 = CreateCompilation(
 @"public abstract class C2 : C1
 {
     internal override void M() { }
 }",
-              referencedAssemblies: new[] { MscorlibRef, image1 });
+                assemblyName: "CS2",
+                references: ConvertToMetadataReferences(comp1));
             var image2 = comp2.EmitToImageReference(EmitOptions.Default.WithEmitMetadataOnly(true).WithIncludePrivateMembers(false));
 
             // If internal virtual methods were not included in ref assemblies, then C3 could not be concrete and would report
             // error CS0534: 'C3' does not implement inherited abstract member 'C1.M()'
 
-            var comp3 = CreateCSharpCompilation("CS3",
+            var comp3 = CreateCompilation(
 @"public class C3 : C2
 {
 }",
-                referencedAssemblies: new[] { MscorlibRef, image1, image2 });
+                assemblyName: "CS3",
+                references: new[] { image1, image2 });
             comp3.VerifyDiagnostics();
         }
 

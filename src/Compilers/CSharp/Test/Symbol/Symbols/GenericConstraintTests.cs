@@ -5527,7 +5527,7 @@ class B : A
         [ClrOnlyFact]
         public void InheritedObjectConstraint2()
         {
-            var csCompilation = CreateCSharpCompilation("InheritedObjectConstraint2CS",
+            var csCompilation = CreateCompilation(
 @"using System;
 public abstract class Base1<T>
 {
@@ -5537,7 +5537,8 @@ public class Base2 : Base1<Object>
 {
     public override void Goo<G>(G d) { Console.WriteLine(""Base2""); }
 }",
-                compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                assemblyName: "InheritedObjectConstraint2CS",
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             var csVerifier = CompileAndVerify(csCompilation);
             csVerifier.VerifyDiagnostics();
 

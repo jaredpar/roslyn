@@ -4029,7 +4029,7 @@ End Class",
                 compilationOptions: new VisualBasic.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             vb1Compilation.VerifyDiagnostics();
 
-            var cs1Compilation = CreateCSharpCompilation("CS1",
+            var cs1Compilation = CreateCompilation(
 @"using System;
 public abstract class C2 : C1
 {
@@ -4038,8 +4038,9 @@ public abstract class C2 : C1
         Console.WriteLine(""C2"");
     }
 }",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new[] { vb1Compilation });
+                assemblyName: "CS1",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(vb1Compilation));
             var cs1Verifier = CompileAndVerify(cs1Compilation);
             cs1Verifier.VerifyDiagnostics();
 
@@ -4054,7 +4055,7 @@ End Class",
                 referencedCompilations: new Compilation[] { vb1Compilation, cs1Compilation });
             vb2Compilation.VerifyDiagnostics();
 
-            var cs2Compilation = CreateCSharpCompilation("CS2",
+            var cs2Compilation = CreateCompilation(
 @"
 public class C4 : C3
 {
@@ -4080,8 +4081,9 @@ public class Program
         //y.foo();
     }
 }",
-                compilationOptions: TestOptions.ReleaseExe,
-                referencedCompilations: new Compilation[] { vb1Compilation, cs1Compilation, vb2Compilation });
+                assemblyName: "CS2",
+                options: TestOptions.ReleaseExe,
+                references: ConvertToMetadataReferences(vb1Compilation, cs1Compilation, vb2Compilation));
             var cs2Verifier = CompileAndVerify(cs2Compilation,
                 expectedOutput: @"C3");
             cs2Verifier.VerifyDiagnostics();
@@ -4097,7 +4099,7 @@ End Class",
                 compilationOptions: new VisualBasic.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             vb1Compilation.VerifyDiagnostics();
 
-            var cs1Compilation = CreateCSharpCompilation("CS1",
+            var cs1Compilation = CreateCompilation(
 @"using System;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo(""CS2"")]
 public abstract class C2 : C1
@@ -4107,8 +4109,9 @@ public abstract class C2 : C1
         Console.WriteLine(""C2"");
     }
 }",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new[] { vb1Compilation });
+                assemblyName: "CS1",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(vb1Compilation));
             var cs1Verifier = CompileAndVerify(cs1Compilation);
             cs1Verifier.VerifyDiagnostics();
 
@@ -4123,7 +4126,7 @@ End Class",
                 referencedCompilations: new Compilation[] { vb1Compilation, cs1Compilation });
             vb2Compilation.VerifyDiagnostics();
 
-            var cs2Compilation = CreateCSharpCompilation("CS2",
+            var cs2Compilation = CreateCompilation(
 @"using System;
 
 public class C4 : C3
@@ -4152,8 +4155,9 @@ public class Program
         y.foo();
     }
 }",
-                compilationOptions: TestOptions.ReleaseExe,
-                referencedCompilations: new Compilation[] { vb1Compilation, cs1Compilation, vb2Compilation });
+                assemblyName: "CS2",
+                options: TestOptions.ReleaseExe,
+                references: ConvertToMetadataReferences(vb1Compilation, cs1Compilation, vb2Compilation));
             var cs2Verifier = CompileAndVerify(cs2Compilation, expectedOutput: @"C4
 C2");
             cs2Verifier.VerifyDiagnostics();
@@ -4193,23 +4197,27 @@ Derived.M(y:2)");
         [Fact]
         public void MissingAssemblyReference01()
         {
-            var A = CreateCSharpCompilation("A", @"public class A {}",
-                compilationOptions: TestOptions.ReleaseDll);
+            var A = CreateCompilation(@"public class A {}",
+                assemblyName: "A",
+                options: TestOptions.ReleaseDll);
             CompileAndVerify(A).VerifyDiagnostics();
 
-            var B = CreateCSharpCompilation("B", @"public interface B { void M(A a); }",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new[] { A });
+            var B = CreateCompilation(@"public interface B { void M(A a); }",
+                assemblyName: "B",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(A));
             CompileAndVerify(B).VerifyDiagnostics();
 
-            var C = CreateCSharpCompilation("C", @"public class C { public void M(int a) { } }",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new[] { A });
-            CompileAndVerify(B).VerifyDiagnostics();
+            var C = CreateCompilation(@"public class C { public void M(int a) { } }",
+                assemblyName: "C",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(A));
+            CompileAndVerify(C).VerifyDiagnostics();
 
-            var D = CreateCSharpCompilation("D", @"public class D : C, B { }",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new[] { B, C }).VerifyDiagnostics(
+            var D = CreateCompilation(@"public class D : C, B { }",
+                assemblyName: "D",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(B, C)).VerifyDiagnostics(
     // (1,21): error CS0012: The type 'A' is defined in an assembly that is not referenced. You must add a reference to assembly 'A, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null'.
     // public class D : C, B { }
     Diagnostic(ErrorCode.ERR_NoTypeDef, "B").WithArguments("A", "A, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null").WithLocation(1, 21)
@@ -4247,7 +4255,7 @@ End Class",
                 compilationOptions: new VisualBasic.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             vb1Compilation.VerifyDiagnostics();
 
-            var cs1Compilation = CreateCSharpCompilation("CS1",
+            var cs1Compilation = CreateCompilation(
 @"[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(""CS2"")]
 public abstract class C2 : C1
 {
@@ -4255,8 +4263,9 @@ public abstract class C2 : C1
     {
     }
 }",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new[] { vb1Compilation });
+                assemblyName: "CS1",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(vb1Compilation));
             var cs1Verifier = CompileAndVerify(cs1Compilation);
             cs1Verifier.VerifyDiagnostics();
 
@@ -4269,7 +4278,7 @@ End Class",
                 referencedCompilations: new Compilation[] { vb1Compilation, cs1Compilation });
             vb2Compilation.VerifyDiagnostics();
 
-            var cs2Compilation = CreateCSharpCompilation("CS2",
+            var cs2Compilation = CreateCompilation(
 @"abstract public class C4 : C3
 {
     public override void foo()
@@ -4290,8 +4299,9 @@ public class C6 : C2
     {
     }
 }",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new Compilation[] { vb1Compilation, cs1Compilation, vb2Compilation });
+                assemblyName: "CS2",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(vb1Compilation, cs1Compilation, vb2Compilation));
 
             cs2Compilation.VerifyDiagnostics(
                 // (10,26): error CS0507: 'C5.foo()': cannot change access modifiers when overriding 'internal' inherited member 'C2.foo()'

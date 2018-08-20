@@ -1425,27 +1425,30 @@ public class Program
         [Fact, WorkItem(530303, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530303")]
         public void TestReferenceResolution()
         {
-            var cs1Compilation = CreateCSharpCompilation("CS1",
-@"public class CS1 {}",
-                compilationOptions: TestOptions.ReleaseDll);
+            var cs1Compilation = CreateCompilation(
+                @"public class CS1 {}",
+                assemblyName: "CS1",
+                options: TestOptions.ReleaseDll);
             var cs1Verifier = CompileAndVerify(cs1Compilation);
             cs1Verifier.VerifyDiagnostics();
 
-            var cs2Compilation = CreateCSharpCompilation("CS2",
-@"public class CS2<T> {}",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new Compilation[] { cs1Compilation });
+            var cs2Compilation = CreateCompilation(
+                @"public class CS2<T> {}",
+                assemblyName: "CS2",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(cs1Compilation));
             var cs2Verifier = CompileAndVerify(cs2Compilation);
             cs2Verifier.VerifyDiagnostics();
 
-            var cs3Compilation = CreateCSharpCompilation("CS3",
+            var cs3Compilation = CreateCompilation(
 @"public class CS3 : CS2<CS1> {}",
-                compilationOptions: TestOptions.ReleaseDll,
-                referencedCompilations: new Compilation[] { cs1Compilation, cs2Compilation });
+                assemblyName: "CS3",
+                options: TestOptions.ReleaseDll,
+                references: ConvertToMetadataReferences(cs1Compilation, cs2Compilation));
             var cs3Verifier = CompileAndVerify(cs3Compilation);
             cs3Verifier.VerifyDiagnostics();
 
-            var cs4Compilation = CreateCSharpCompilation("CS4",
+            var cs4Compilation = CreateCompilation(
 @"public class Program
 {
     static void Main()
@@ -1453,8 +1456,9 @@ public class Program
         System.Console.WriteLine(typeof(CS3));
     }
 }",
-                compilationOptions: TestOptions.ReleaseExe,
-                referencedCompilations: new Compilation[] { cs2Compilation, cs3Compilation });
+                assemblyName: "CS4",
+                options: TestOptions.ReleaseExe,
+                references: ConvertToMetadataReferences(cs2Compilation, cs3Compilation));
             cs4Compilation.VerifyDiagnostics();
         }
 

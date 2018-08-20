@@ -1520,9 +1520,10 @@ True";
                 compilationOptions: new VisualBasic.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
             vbCompilation.VerifyDiagnostics();
 
-            var csharpCompilation = CreateCSharpCompilation("CS", csharp,
-                compilationOptions: TestOptions.ReleaseExe,
-                referencedCompilations: new[] { vbCompilation });
+            var csharpCompilation = CreateCompilation(csharp,
+                assemblyName: "CS",
+                options: TestOptions.ReleaseExe,
+                references: ConvertToMetadataReferences(vbCompilation));
 
             var verifier = CompileAndVerify(csharpCompilation, expectedOutput: expected);
             verifier.VerifyIL("D.Main", il);
