@@ -1,5 +1,6 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports Microsoft.CodeAnalysis.CSharp.Test.Utilities
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
@@ -111,7 +112,7 @@ End Module
 
         <Fact()>
         Public Sub AddHandlerWithLambdaConversion()
-            Dim csdllCompilation = CreateCSharpCompilation("CSDll",
+            Dim csdllCompilation = CSharpTestBase.CreateCompilation(
             <![CDATA[
 public class CSDllClass
 {
@@ -129,10 +130,11 @@ public class CSDllClasDerived : CSDllClass
 }
 
 ]]>,
-                compilationOptions:=New Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                assemblyName:="CSDll",
+                options:=New Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
             csdllCompilation.VerifyDiagnostics()
 
-            Dim vbexeCompilation = CreateVisualBasicCompilation("VBExe",
+            Dim vbexeCompilation = BasicTestBase.CreateCompilation("VBExe",
             <![CDATA[Imports System
 
 Public Class VBExeClass

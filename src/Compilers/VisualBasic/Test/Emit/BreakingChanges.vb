@@ -1,5 +1,6 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports Microsoft.CodeAnalysis.CSharp.Test.Utilities
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
@@ -441,7 +442,7 @@ Class1.Goo(i As Integer)
 
             vbVerifier.VerifyDiagnostics()
 
-            Dim csCompilation = CreateCSharpCompilation("CS",
+            Dim csCompilation = CSharpTestBase.CreateCompilation(
             <![CDATA[public class Class3 : Class2
 {
 }
@@ -463,8 +464,9 @@ public class Program
         b.Goo(1);
     }
 }]]>,
-                compilationOptions:=New CSharp.CSharpCompilationOptions(OutputKind.ConsoleApplication),
-                referencedCompilations:={vbCompilation})
+                assemblyName:="CS",
+                options:=New CSharp.CSharpCompilationOptions(OutputKind.ConsoleApplication),
+                references:=ConvertToMetadataReferences(vbCompilation))
             csCompilation.VerifyDiagnostics() 'No errors
         End Sub
 
@@ -619,7 +621,7 @@ Base F]]>)
 
         <Fact, WorkItem(529574, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/529574")>
         Public Sub TestCrossLanguageOptionalAndParamarrayForHandles()
-            Dim csCompilation = CreateCSharpCompilation("TestCrossLanguageOptionalAndParamarrayForHandles_CS",
+            Dim csCompilation = CSharpTestBase.CreateCompilation(
             <![CDATA[public class CSClass
 {
     public delegate int bar(string x = "", params int[] y);
@@ -629,7 +631,8 @@ Base F]]>)
         ev("hi", 1, 2, 3);
     }
 }]]>,
-                compilationOptions:=New Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                assemblyName:="TestCrossLanguageOptionalAndParamarrayForHandles_CS",
+                options:=New Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
             csCompilation.VerifyDiagnostics()
             Dim vbCompilation = CreateVisualBasicCompilation("TestCrossLanguageOptionalAndParamarrayForHandles_VB",
             <![CDATA[

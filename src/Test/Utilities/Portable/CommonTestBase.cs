@@ -219,33 +219,6 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
 
         #region Compilation Creation Helpers
 
-        protected CSharp.CSharpCompilation CreateCSharpCompilation(
-            XCData code,
-            CSharp.CSharpParseOptions parseOptions = null,
-            CSharp.CSharpCompilationOptions compilationOptions = null,
-            string assemblyName = null,
-            IEnumerable<MetadataReference> referencedAssemblies = null)
-        {
-            return CreateCSharpCompilation(assemblyName, code, parseOptions, compilationOptions, referencedAssemblies, referencedCompilations: null);
-        }
-
-        protected CSharp.CSharpCompilation CreateCSharpCompilation(
-            string assemblyName,
-            XCData code,
-            CSharp.CSharpParseOptions parseOptions = null,
-            CSharp.CSharpCompilationOptions compilationOptions = null,
-            IEnumerable<MetadataReference> referencedAssemblies = null,
-            IEnumerable<Compilation> referencedCompilations = null)
-        {
-            return CreateCSharpCompilation(
-                assemblyName,
-                code.Value,
-                parseOptions,
-                compilationOptions,
-                referencedAssemblies,
-                referencedCompilations);
-        }
-
         protected VisualBasic.VisualBasicCompilation CreateVisualBasicCompilation(
             XCData code,
             VisualBasic.VisualBasicParseOptions parseOptions = null,
@@ -271,61 +244,6 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
                 compilationOptions,
                 referencedAssemblies,
                 referencedCompilations);
-        }
-
-        protected CSharp.CSharpCompilation CreateCSharpCompilation(
-            string code,
-            CSharp.CSharpParseOptions parseOptions = null,
-            CSharp.CSharpCompilationOptions compilationOptions = null,
-            string assemblyName = null,
-            IEnumerable<MetadataReference> referencedAssemblies = null)
-        {
-            return CreateCSharpCompilation(assemblyName, code, parseOptions, compilationOptions, referencedAssemblies, referencedCompilations: null);
-        }
-
-        protected CSharp.CSharpCompilation CreateCSharpCompilation(
-            string assemblyName,
-            string code,
-            CSharp.CSharpParseOptions parseOptions = null,
-            CSharp.CSharpCompilationOptions compilationOptions = null,
-            IEnumerable<MetadataReference> referencedAssemblies = null,
-            IEnumerable<Compilation> referencedCompilations = null)
-        {
-            if (assemblyName == null)
-            {
-                assemblyName = GetUniqueName();
-            }
-
-            if (parseOptions == null)
-            {
-                parseOptions = CSharp.CSharpParseOptions.Default.WithDocumentationMode(DocumentationMode.None);
-            }
-
-            if (compilationOptions == null)
-            {
-                compilationOptions = new CSharp.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
-            }
-
-            var references = new List<MetadataReference>();
-            if (referencedAssemblies == null)
-            {
-                references.Add(MscorlibRef);
-                references.Add(SystemRef);
-                references.Add(SystemCoreRef);
-                //TODO: references.Add(MsCSRef);
-                references.Add(SystemXmlRef);
-                references.Add(SystemXmlLinqRef);
-            }
-            else
-            {
-                references.AddRange(referencedAssemblies);
-            }
-
-            AddReferencedCompilations(referencedCompilations, references);
-
-            var tree = CSharp.SyntaxFactory.ParseSyntaxTree(code, options: parseOptions);
-
-            return CSharp.CSharpCompilation.Create(assemblyName, new[] { tree }, references, compilationOptions);
         }
 
         protected VisualBasic.VisualBasicCompilation CreateVisualBasicCompilation(

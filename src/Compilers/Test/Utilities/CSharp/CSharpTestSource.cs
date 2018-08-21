@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Microsoft.CodeAnalysis.CSharp.Test.Utilities
 {
@@ -40,6 +41,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Test.Utilities
                     Debug.Assert(parseOptions == null);
                     Debug.Assert(string.IsNullOrEmpty(sourceFileName));
                     return trees;
+                case XCData xcdata:
+                    return CSharpTestBase.Parse(parseOptions, xcdata.Value);
                 case null:
                     return Array.Empty<SyntaxTree>();
                 default:
@@ -53,5 +56,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Test.Utilities
         public static implicit operator CSharpTestSource(SyntaxTree[] source) => new CSharpTestSource(source);
         public static implicit operator CSharpTestSource(List<SyntaxTree> source) => new CSharpTestSource(source.ToArray());
         public static implicit operator CSharpTestSource(ImmutableArray<SyntaxTree> source) => new CSharpTestSource(source.ToArray());
+        public static implicit operator CSharpTestSource(XCData xcdata) => new CSharpTestSource(xcdata);
     }
 }

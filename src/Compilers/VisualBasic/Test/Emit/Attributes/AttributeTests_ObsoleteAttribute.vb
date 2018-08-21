@@ -1,5 +1,6 @@
 ﻿' Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+Imports Microsoft.CodeAnalysis.CSharp.Test.Utilities
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Roslyn.Test.Utilities
 Imports Xunit
@@ -1403,7 +1404,7 @@ public class Test
 }
 ]]>
 
-            Dim compilation1 = CreateCSharpCompilation("Dll1", source1.Value)
+            Dim compilation1 = CSharpTestBase.CreateCompilation(assemblyName:="Dll1", source:=source1.Value)
 
             Dim ref = compilation1.EmitToImageReference()
 
@@ -1476,7 +1477,7 @@ BC40000: 'Public Sub Bar()' is obsolete: 'hi'.
 public ref struct S { }
 ]]>
 
-            Dim csCompilation = CreateCSharpCompilation("Dll1", csSource.Value, parseOptions:=New CSharp.CSharpParseOptions(CSharp.LanguageVersion.CSharp7_2))
+            Dim csCompilation = CSharpTestBase.CreateCompilation(assemblyName:="Dll1", source:=csSource.Value, parseOptions:=New CSharp.CSharpParseOptions(CSharp.LanguageVersion.CSharp7_2))
             Dim ref = csCompilation.EmitToImageReference()
 
             Dim vbSource =
