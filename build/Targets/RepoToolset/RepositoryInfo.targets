@@ -9,8 +9,11 @@
     <SourceLinkProvider Condition="'$(SourceLinkProvider)' == ''">GitHub</SourceLinkProvider>
   </PropertyGroup>
 
+  <!--
+       Disable on Ubuntu 18.04 as its native library version crashes the MSBuild task
   <ItemGroup Condition="'$(DotNetBuildFromSource)' != 'true'">
     <PackageReference Include="Microsoft.SourceLink.$(SourceLinkProvider)" Version="$(MicrosoftSourceLinkVersion)" PrivateAssets="all" />
   </ItemGroup>
+  -->
 
 </Project>
