@@ -23,9 +23,12 @@ if [[ "${runtime}" == "dotnet" ]]; then
     file_list=( "${unittest_dir}"/*/netcoreapp2.0/*.UnitTests.dll )
     xunit_console="${nuget_dir}"/xunit.runner.console/"${xunit_console_version}"/tools/${target_framework}/xunit.console.dll
 elif [[ "${runtime}" == "mono" ]]; then
+    # file_list=(
+        # "${unittest_dir}/Microsoft.CodeAnalysis.CSharp.Symbol.UnitTests/net46/Microsoft.CodeAnalysis.CSharp.Symbol.UnitTests.dll"
+        # "${unittest_dir}/Microsoft.CodeAnalysis.CSharp.Syntax.UnitTests/net46/Microsoft.CodeAnalysis.CSharp.Syntax.UnitTests.dll"
+    #    )
     file_list=(
-        "${unittest_dir}/Microsoft.CodeAnalysis.CSharp.Symbol.UnitTests/net46/Microsoft.CodeAnalysis.CSharp.Symbol.UnitTests.dll"
-        "${unittest_dir}/Microsoft.CodeAnalysis.CSharp.Syntax.UnitTests/net46/Microsoft.CodeAnalysis.CSharp.Syntax.UnitTests.dll"
+        "${unittest_dir}/Microsoft.CodeAnalysis.CSharp.Semantic.UnitTests/net46/Microsoft.CodeAnalysis.CSharp.Semantic.UnitTests.dll"
         )
     xunit_console="${nuget_dir}"/xunit.runner.console/"${xunit_console_version}"/tools/net452/xunit.console.exe
 else
@@ -82,7 +85,7 @@ do
     fi
 
     # https://github.com/dotnet/roslyn/issues/29380
-    if ${runner} "${xunit_console}" "${file_name[@]}" -xml "${log_file}" -parallel none -maxThreads 2
+    if ${runner} "${xunit_console}" "${file_name[@]}" -xml "${log_file}" -parallel none 
     then
         echo "Assembly ${file_name[@]} passed"
     else
