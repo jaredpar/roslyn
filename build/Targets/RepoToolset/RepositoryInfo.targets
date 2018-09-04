@@ -8,10 +8,12 @@
   <!--
     Include both GitHub and VSTS packages to enable SourceLink in repositories that mirror to VSTS.
   -->
+  <!-- Disable on Ubuntu 18.04 as the native libraries crash the build
   <ItemGroup Condition="'$(DotNetBuildFromSource)' != 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="$(MicrosoftSourceLinkVersion)" PrivateAssets="all" IsImplicitlyDefined="true" />
     <PackageReference Include="Microsoft.SourceLink.Vsts.Git" Version="$(MicrosoftSourceLinkVersion)" PrivateAssets="all" IsImplicitlyDefined="true" />
   </ItemGroup>
+  -->
 
   <Target Name="_TranslateVstsUrlToGitHubUrl"
           DependsOnTargets="$(SourceControlManagerUrlTranslationTargets)"
