@@ -1917,7 +1917,6 @@ End Module
             Dim src = source...<file>.Value
 
             CompileAndVerify(source,
-                             references:={SystemCoreRef},
                              options:=TestOptions.ReleaseExe.WithOverflowChecks(checked),
                              expectedOutput:=result.Trim
             ).VerifyDiagnostics(If(diagnostics, {}))
