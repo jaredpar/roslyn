@@ -20,7 +20,7 @@ xunit_console_version="$(get_package_version xunitrunnerconsole)"
 
 if [[ "${runtime}" == "dotnet" ]]; then
     target_framework=netcoreapp2.0
-    file_list=( "${unittest_dir}"/*/netcoreapp2.0/*.UnitTests.dll )
+    file_list=( "${unittest_dir}"/*/netcoreapp2.0/Microsoft.CodeAnalysis.CSharp.Emit.UnitTests.dll )
     xunit_console="${nuget_dir}"/xunit.runner.console/"${xunit_console_version}"/tools/${target_framework}/xunit.console.dll
 elif [[ "${runtime}" == "mono" ]]; then
     file_list=(
@@ -86,12 +86,16 @@ do
     # Pass additional arguments on to xunit_console directly.
     # This allows you to (for example) run a single test method of a single test assembly, like so:
     # ./build/scripts/tests.sh Debug dotnet Microsoft.CodeAnalysis.CSharp.Semantic.UnitTests -method "*.Query_01"
-    if ${runner} "${xunit_console}" "${file_name[@]}" -xml "${log_file}" -parallel none "${@:4}"
-    then
-        echo "Assembly ${file_name[@]} passed"
-    else
-        echo "Assembly ${file_name[@]} failed"
-        exit_code=1
-    fi
+    for i in `seq 1 100`;
+    do
+        echo TEST RUN BEGIN $i 
+        if ${runner} "${xunit_console}" "${file_name[@]}" -xml "${log_file}" -parallel none "${@:4}"
+        then
+            echo TEST RUN COMPLETE $i
+        else
+            echo TEST RUN FAILED $i
+            exit 1
+        fi
+    done 
 done
 exit ${exit_code}
