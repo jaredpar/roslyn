@@ -25,7 +25,7 @@ if [[ "${runtime}" == "dotnet" ]]; then
     xunit_console="${nuget_dir}"/xunit.runner.console/"${xunit_console_version}"/tools/netcoreapp2.0/xunit.console.dll
 elif [[ "${runtime}" == "mono" ]]; then
     file_list=(
-        "${unittest_dir}/Microsoft.CodeAnalysis.CSharp.Semantic.UnitTests/net46/Microsoft.CodeAnalysis.CSharp.Semantic.UnitTests.dll"
+        "${unittest_dir}/Microsoft.CodeAnalysis.CSharp.Emit.UnitTests/net46/Microsoft.CodeAnalysis.CSharp.Emit.UnitTests.dll"
         )
     xunit_console="${nuget_dir}"/xunit.runner.console/"${xunit_console_version}"/tools/net452/xunit.console.exe
 else
