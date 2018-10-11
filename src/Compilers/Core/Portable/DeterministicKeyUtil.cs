@@ -1,14 +1,81 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Microsoft.CodeAnalysis
 {
+    // PROTOTYPE: need to include file paths in the file here
+    // PROTOTYPE: invariant that needs to be tested: CommonCompiler and Compilation should emit the same key
+    // PROTOTYPE: need to handle mapped paths.
+    // PROTOTYPE: deal with errors on parse options, and errors in general
+    // start with CSharpCompilation and we can work backwards to avoiding a lot of the work like parsing
+    // files.
     internal abstract class DeterministicKeyUtil
     {
+        // PROTOTYPE DO we need the parse options at all or is the source file enough here?
+        protected void AppendCommonParseOptions(StringBuilder builder, ParseOptions parseOptions)
+        {
+            // PROTOTYPE: errors, features
+            builder.AppendLine($"{nameof(ParseOptions.DocumentationMode)}-{parseOptions.DocumentationMode}");
+            builder.AppendLine($"{nameof(ParseOptions.Kind)} - {parseOptions.Kind}");
+            builder.AppendLine($"{nameof(ParseOptions.SpecifiedKind)} - {parseOptions.SpecifiedKind}");
+            builder.AppendLine("Preprocessor Symbols");
+            foreach (var name in parseOptions.PreprocessorSymbolNames)
+            {
+                builder.AppendLine(name);
+            }
+        }
+
+        protected void AppendCommonCompilationOptions(StringBuilder builder, CompilationOptions options)
+        {
+            // PROTOTYPE: crypto key file, script class name,
+            builder.AppendLine($"Checkoverflow: {options.CheckOverflow}");
+            builder.AppendLine($"Concurrent build: {options.ConcurrentBuild}");
+            builder.AppendLine($"Key container: {options.CryptoKeyContainer}");
+            builder.AppendLine($"Delaysign: {options.DelaySign}");
+            builder.AppendLine($"Metadata import options: {options.MetadataImportOptions}");
+            builder.AppendLine($"Module name: {options.ModuleName}");
+            builder.AppendLine($"Optimization  level: {options.OptimizationLevel}");
+            builder.AppendLine($"OutputKind: {options.OutputKind}");
+            builder.AppendLine($"Platform: {options.Platform}");
+            builder.AppendLine($"Publicsign: {options.PublicSign}");
+            builder.AppendLine($"Warning level: {options.WarningLevel}");
+        }
+
+        protected void AppendSyntaxTrees(StringBuilder builder, IEnumerable<SyntaxTree> syntaxTrees, CancellationToken cancellationToken = default)
+        {
+            builder.AppendLine("Source Files");
+            foreach (var syntaxTree in syntaxTrees)
+            {
+                var sourceFile = syntaxTree.GetText(cancellationToken);
+                var checksum = sourceFile.GetChecksum();
+                var fileName = Path.GetFileName(syntaxTree.FilePath);
+                builder.Append(fileName);
+                builder.Append(": ");
+                Append(builder, sourceFile.GetChecksum());
+                builder.AppendLine();
+            }
+        }
+
+        protected void Append(StringBuilder builder, ImmutableArray<byte> bytes)
+        {
+            char getHexValue(int i) => i < 10
+                ? (char)(i - 10)
+                : (char)(i - 10 + 'A');
+
+            foreach (var b in bytes)
+            {
+                builder.Append(getHexValue(b / 16));
+                builder.Append(getHexValue(b % 16));
+            }
+        }
+
         internal static void EmitDeterminismKey(CommandLineArguments args, string[] rawArgs, string baseDirectory, CommandLineParser parser)
         {
             var key = CreateDeterminismKey(args, rawArgs, baseDirectory, parser);
@@ -19,6 +86,7 @@ namespace Microsoft.CodeAnalysis
                 stream.Write(bytes, 0, bytes.Length);
             }
         }
+
         /// <summary>
         /// The string returned from this function represents the inputs to the compiler which impact determinism.  It is 
         /// meant to be inline with the specification here:
