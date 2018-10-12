@@ -139,7 +139,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var loggingFileSystem = new LoggingStrongNameFileSystem(touchedFilesLogger);
 
-            return CSharpCompilation.Create(
+            var temp =  CSharpCompilation.Create(
                 Arguments.CompilationName,
                 trees.WhereNotNull(),
                 resolvedReferences,
@@ -149,6 +149,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     WithXmlReferenceResolver(xmlFileResolver).
                     WithStrongNameProvider(Arguments.GetStrongNameProvider(loggingFileSystem, _tempDirectory)).
                     WithSourceReferenceResolver(sourceFileResolver));
+            var text = CSharpDeterministicKeyUtil.GenerateKey(temp);
+            return temp;
         }
 
         private SyntaxTree ParseFile(

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "csc": {
+      "commandName": "Project",
+      "commandLineArgs": "e:\\temp\\hello.cs"
+    }
+  }
+}

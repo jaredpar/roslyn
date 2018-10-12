@@ -12,7 +12,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private static void AppendCompilationOptions(StringBuilder builder, CSharpCompilationOptions options)
         {
             // PROTOTYPE: usings
-            AppendCompilationOptions(builder, options);
+            AppendCommonCompilationOptions(builder, options);
             builder.AppendLine($"unsafe: {options.AllowUnsafe}");
         }
 
@@ -20,21 +20,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var builder = new StringBuilder();
             AppendCompilationOptions(builder, compilation.Options);
-            /*
-            builder.AppendLine($"Name {compilation.Argume}")
-            AppendName(compilation.
-                Arguments.CompilationName,
-                trees.WhereNotNull(),
-                resolvedReferences,
-                Arguments.CompilationOptions.
-                    WithMetadataReferenceResolver(referenceDirectiveResolver).
-                    WithAssemblyIdentityComparer(assemblyIdentityComparer).
-                    WithXmlReferenceResolver(xmlFileResolver).
-                    WithStrongNameProvider(Arguments.GetStrongNameProvider(loggingFileSystem, _tempDirectory)).
-                    WithSourceReferenceResolver(sourceFileResolver));
-                    */
-            throw null;
-
+            AppendSyntaxTrees(builder, compilation.SyntaxTrees);
+            AppendReferences(builder, compilation.References);
+            return builder.ToString();
         }
     }
 }
