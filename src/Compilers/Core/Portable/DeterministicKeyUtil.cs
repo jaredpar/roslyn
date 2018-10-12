@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis.Text;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -19,7 +21,7 @@ namespace Microsoft.CodeAnalysis
     internal abstract class DeterministicKeyUtil
     {
         // PROTOTYPE DO we need the parse options at all or is the source file enough here?
-        protected void AppendCommonParseOptions(StringBuilder builder, ParseOptions parseOptions)
+        protected static void AppendCommonParseOptions(StringBuilder builder, ParseOptions parseOptions)
         {
             // PROTOTYPE: errors, features
             builder.AppendLine($"{nameof(ParseOptions.DocumentationMode)}-{parseOptions.DocumentationMode}");
@@ -32,7 +34,7 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        protected void AppendCommonCompilationOptions(StringBuilder builder, CompilationOptions options)
+        protected static void AppendCommonCompilationOptions(StringBuilder builder, CompilationOptions options)
         {
             // PROTOTYPE: crypto key file, script class name,
             builder.AppendLine($"Checkoverflow: {options.CheckOverflow}");
@@ -48,7 +50,7 @@ namespace Microsoft.CodeAnalysis
             builder.AppendLine($"Warning level: {options.WarningLevel}");
         }
 
-        protected void AppendSyntaxTrees(StringBuilder builder, IEnumerable<SyntaxTree> syntaxTrees, CancellationToken cancellationToken = default)
+        protected static void AppendSyntaxTrees(StringBuilder builder, IEnumerable<SyntaxTree> syntaxTrees, CancellationToken cancellationToken = default)
         {
             builder.AppendLine("Source Files");
             foreach (var syntaxTree in syntaxTrees)
@@ -63,16 +65,58 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        protected void Append(StringBuilder builder, ImmutableArray<byte> bytes)
+        protected static void Append(StringBuilder builder, ImmutableArray<byte> bytes)
         {
             char getHexValue(int i) => i < 10
-                ? (char)(i - 10)
+                ? (char)(i + '0')
                 : (char)(i - 10 + 'A');
 
             foreach (var b in bytes)
             {
                 builder.Append(getHexValue(b / 16));
                 builder.Append(getHexValue(b % 16));
+            }
+        }
+
+        protected static void AppendReferences(StringBuilder builder, IEnumerable<MetadataReference> references)
+        {
+            builder.AppendLine("References");
+            foreach (var reference in references)
+            {
+                switch (reference)
+                {
+                    case MetadataImageReference mir:
+                        appendMetadataImageReference(mir);
+                        break;
+                    default:
+                        // PROTOTYPE: this can be extended by third parties hence can't exhaust all cases here. Possibly 
+                        // add a GetDeterministicKey member to MetadataReference that defaults to Guid.NewGuid()
+                        builder.AppendLine($"{reference}: {Guid.NewGuid()}");
+                        break;
+               }
+            }
+
+            void appendMetadataImageReference(MetadataImageReference r)
+            {
+                var name = Path.GetFileName(r.FilePath);
+                var metadata = r.GetMetadata();
+                switch (metadata)
+                {
+                    case AssemblyMetadata assemblyMetadata:
+                        {
+                            var modules = assemblyMetadata.GetModules();
+                            Debug.Assert(!modules.IsDefaultOrEmpty);
+                            builder.AppendLine($"{name}: {modules[0].GetModuleVersionId()}");
+                            break;
+                        }
+                    case ModuleMetadata moduleMetadata:
+                        {
+                            builder.AppendLine($"{name}: {moduleMetadata.GetModuleVersionId()}");
+                            break;
+                        }
+                    default:
+                        throw ExceptionUtilities.UnexpectedValue(metadata);
+               }
             }
         }
 
