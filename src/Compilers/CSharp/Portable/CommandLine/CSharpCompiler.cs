@@ -149,7 +149,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     WithXmlReferenceResolver(xmlFileResolver).
                     WithStrongNameProvider(Arguments.GetStrongNameProvider(loggingFileSystem, _tempDirectory)).
                     WithSourceReferenceResolver(sourceFileResolver));
-            var text = CSharpDeterministicKeyUtil.GenerateKey(temp);
             return temp;
         }
 

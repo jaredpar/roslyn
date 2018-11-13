@@ -1652,6 +1652,12 @@ namespace Microsoft.CodeAnalysis
 
         #region Emit
 
+        internal virtual bool TryGetDeterministicKey(out string key)
+        {
+            key = null;
+            return false;
+        }
+
         /// <summary>
         /// Constructs the module serialization properties out of the compilation options of this compilation.
         /// </summary>
