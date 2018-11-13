@@ -15,10 +15,11 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Microsoft.CodeAnalysis
 {
-    internal struct BuildPaths
+    internal readonly struct BuildPaths
     {
         /// <summary>
         /// The path which contains the compiler binaries and response files.
@@ -580,7 +581,45 @@ namespace Microsoft.CodeAnalysis
                 return Failed;
             }
 
+            var outputName = GetOutputFileName(compilation, cancellationToken);
+            var emitPaths = new EmitPaths(outputName, Arguments);
+            string cacheDirectory = null;
+            if (compilation.TryGetDeterministicKey(out string deterministicKey))
+            {
+                using (var sha = SHA256.Create())
+                {
+                    var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(deterministicKey));
+                    var keyName = Convert.ToBase64String(bytes)
+                        .Replace("/", "_")
+                        .Replace("=", string.Empty);
+                    cacheDirectory = Path.Combine(@"e:\temp\cache", keyName);                    
+                }
+            }
+
+            if (cacheDirectory != null && Directory.Exists(cacheDirectory))
+            {
+                void copyCacheItem(string name, string destFilePath)
+                {
+                    if (destFilePath is null)
+                    {
+                        return;
+                    }
+                    var filePath = Path.Combine(cacheDirectory, name);
+                    if (File.Exists(filePath))
+                    { 
+                        File.Copy(filePath, destFilePath, overwrite: true);
+                    }
+                }
+
+                copyCacheItem("cache.dll", emitPaths.PeFilePath);
+                copyCacheItem("ref.dll", emitPaths.RefPeFilePath);
+                copyCacheItem("cache.pdb", emitPaths.PdbFilePath);
+                copyCacheItem("cache.xml", emitPaths.XmlFilePath);
+                return Succeeded;
+            }
+
             CompileAndEmit(
+                in emitPaths,
                 touchedFilesLogger,
                 ref compilation,
                 analyzers,
@@ -621,6 +660,26 @@ namespace Microsoft.CodeAnalysis
                 ReportAnalyzerExecutionTime(consoleOutput, analyzerDriver, Culture, compilation.Options.ConcurrentBuild);
             }
 
+            if (exitCode == Succeeded && cacheDirectory != null)
+            {
+                void saveCacheItem(string name, string sourceFilePath)
+                {
+                    if (sourceFilePath is null || !File.Exists(sourceFilePath))
+                    {
+                        return;
+                    }
+                    var filePath = Path.Combine(cacheDirectory, name);
+                    File.Copy(sourceFilePath, filePath, overwrite: true);
+                }
+
+                Directory.CreateDirectory(cacheDirectory);
+                File.WriteAllText(Path.Combine(cacheDirectory, "key.txt"), deterministicKey);
+                saveCacheItem("cache.dll", emitPaths.PeFilePath);
+                saveCacheItem("ref.dll", emitPaths.RefPeFilePath);
+                saveCacheItem("cache.pdb", emitPaths.PdbFilePath);
+                saveCacheItem("cache.xml", emitPaths.XmlFilePath);
+            }
+
             return exitCode;
         }
 
@@ -630,6 +689,7 @@ namespace Microsoft.CodeAnalysis
         /// and analyzer output.
         /// </summary>
         private void CompileAndEmit(
+            in EmitPaths emitPaths,
             TouchedFileLogger touchedFilesLogger,
             ref Compilation compilation,
             ImmutableArray<DiagnosticAnalyzer> analyzers,
@@ -680,11 +740,7 @@ namespace Microsoft.CodeAnalysis
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            string outputName = GetOutputFileName(compilation, cancellationToken);
-            var finalPeFilePath = Path.Combine(Arguments.OutputDirectory, outputName);
-            var finalPdbFilePath = Arguments.PdbPath ?? Path.ChangeExtension(finalPeFilePath, ".pdb");
-            var finalXmlFilePath = Arguments.DocumentationPath;
-
+            string outputName = Path.GetFileName(emitPaths.PeFilePath);
             NoThrowStreamDisposer sourceLinkStreamDisposerOpt = null;
 
             try
@@ -692,7 +748,7 @@ namespace Microsoft.CodeAnalysis
                 // NOTE: Unlike the PDB path, the XML doc path is not embedded in the assembly, so we don't need to pass it to emit.
                 var emitOptions = Arguments.EmitOptions.
                     WithOutputNameOverride(outputName).
-                    WithPdbFilePath(PathUtilities.NormalizePathPrefix(finalPdbFilePath, Arguments.PathMap));
+                    WithPdbFilePath(PathUtilities.NormalizePathPrefix(emitPaths.PdbFilePath, Arguments.PathMap));
 
                 // TODO(https://github.com/dotnet/roslyn/issues/19592):
                 // This feature flag is being maintained until our next major release to avoid unnecessary 
@@ -752,9 +808,9 @@ namespace Microsoft.CodeAnalysis
                             // NOTE: 'in place', replacing the contents of the file if it exists
                             NoThrowStreamDisposer xmlStreamDisposerOpt = null;
 
-                            if (finalXmlFilePath != null)
+                            if (emitPaths.XmlFilePath != null)
                             {
-                                var xmlStreamOpt = OpenFile(finalXmlFilePath,
+                                var xmlStreamOpt = OpenFile(emitPaths.XmlFilePath,
                                                             diagnostics,
                                                             FileMode.OpenOrCreate,
                                                             FileAccess.Write,
@@ -771,12 +827,12 @@ namespace Microsoft.CodeAnalysis
                                 }
                                 catch (Exception e)
                                 {
-                                    MessageProvider.ReportStreamWriteException(e, finalXmlFilePath, diagnostics);
+                                    MessageProvider.ReportStreamWriteException(e, emitPaths.XmlFilePath, diagnostics);
                                     return;
                                 }
                                 xmlStreamDisposerOpt = new NoThrowStreamDisposer(
                                     xmlStreamOpt,
-                                    finalXmlFilePath,
+                                    emitPaths.XmlFilePath,
                                     diagnostics,
                                     MessageProvider);
                             }
@@ -836,11 +892,10 @@ namespace Microsoft.CodeAnalysis
                     {
                         bool emitPdbFile = Arguments.EmitPdb && emitOptions.DebugInformationFormat != Emit.DebugInformationFormat.Embedded;
 
-                        var peStreamProvider = new CompilerEmitStreamProvider(this, finalPeFilePath);
-                        var pdbStreamProviderOpt = emitPdbFile ? new CompilerEmitStreamProvider(this, finalPdbFilePath) : null;
+                        var peStreamProvider = new CompilerEmitStreamProvider(this, emitPaths.PeFilePath);
+                        var pdbStreamProviderOpt = emitPdbFile ? new CompilerEmitStreamProvider(this, emitPaths.PdbFilePath) : null;
 
-                        string finalRefPeFilePath = Arguments.OutputRefFilePath;
-                        var refPeStreamProviderOpt = finalRefPeFilePath != null ? new CompilerEmitStreamProvider(this, finalRefPeFilePath) : null;
+                        var refPeStreamProviderOpt = emitPaths.RefPeFilePath != null ? new CompilerEmitStreamProvider(this, emitPaths.RefPeFilePath) : null;
 
                         RSAParameters? privateKeyOpt = null;
                         if (compilation.Options.StrongNameProvider != null && compilation.SignUsingBuilder && !compilation.Options.PublicSign)
@@ -870,13 +925,13 @@ namespace Microsoft.CodeAnalysis
                         {
                             if (pdbStreamProviderOpt != null)
                             {
-                                touchedFilesLogger.AddWritten(finalPdbFilePath);
+                                touchedFilesLogger.AddWritten(emitPaths.PdbFilePath);
                             }
                             if (refPeStreamProviderOpt != null)
                             {
-                                touchedFilesLogger.AddWritten(finalRefPeFilePath);
+                                touchedFilesLogger.AddWritten(emitPaths.RefPeFilePath);
                             }
-                            touchedFilesLogger.AddWritten(finalPeFilePath);
+                            touchedFilesLogger.AddWritten(emitPaths.PeFilePath);
                         }
                     }
                 }
@@ -909,7 +964,7 @@ namespace Microsoft.CodeAnalysis
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (!WriteTouchedFiles(diagnostics, touchedFilesLogger, finalXmlFilePath))
+            if (!WriteTouchedFiles(diagnostics, touchedFilesLogger, emitPaths.XmlFilePath))
             {
                 return;
             }

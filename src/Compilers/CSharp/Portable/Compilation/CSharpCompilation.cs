@@ -2501,6 +2501,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             get { return SourceAssembly.StrongNameKeys; }
         }
 
+        internal override bool TryGetDeterministicKey(out string key)
+        {
+            key = CSharpDeterministicKeyUtil.GenerateKey(this);
+            return true;
+        }
+
         internal override CommonPEModuleBuilder CreateModuleBuilder(
             EmitOptions emitOptions,
             IMethodSymbol debugEntryPoint,
