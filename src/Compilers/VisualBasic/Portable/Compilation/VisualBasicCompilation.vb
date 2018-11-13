@@ -2198,6 +2198,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             End Get
         End Property
 
+        Friend Overrides Function TryGetDeterministicKey(ByRef key As String) As Boolean
+            key = VisualBasicDeterministicKeyUtil.GenerateKey(Me)
+            Return True
+        End Function
+
         Friend Overrides Function CreateModuleBuilder(
             emitOptions As EmitOptions,
             debugEntryPoint As IMethodSymbol,
