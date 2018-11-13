@@ -85,8 +85,8 @@ namespace Microsoft.CodeAnalysis
             {
                 switch (reference)
                 {
-                    case MetadataImageReference mir:
-                        appendMetadataImageReference(mir);
+                    case PortableExecutableReference per:
+                        appendMetadataImageReference(per);
                         break;
                     default:
                         // PROTOTYPE: this can be extended by third parties hence can't exhaust all cases here. Possibly 
@@ -96,7 +96,7 @@ namespace Microsoft.CodeAnalysis
                }
             }
 
-            void appendMetadataImageReference(MetadataImageReference r)
+            void appendMetadataImageReference(PortableExecutableReference r)
             {
                 var name = Path.GetFileName(r.FilePath);
                 var metadata = r.GetMetadata();
