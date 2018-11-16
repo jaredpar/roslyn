@@ -56,13 +56,27 @@ namespace Microsoft.CodeAnalysis
             foreach (var syntaxTree in syntaxTrees)
             {
                 var sourceFile = syntaxTree.GetText(cancellationToken);
-                var checksum = sourceFile.GetChecksum();
-                var fileName = Path.GetFileName(syntaxTree.FilePath);
-                builder.Append(fileName);
-                builder.Append(": ");
-                Append(builder, sourceFile.GetChecksum());
-                builder.AppendLine();
+                AppendSourceFile(builder, sourceFile, syntaxTree.FilePath);
             }
+        }
+
+        protected static void AppendSourceFiles(StringBuilder builder, IEnumerable<CommonCompilationSourceFile> sourceFiles, CancellationToken cancellationToken = default)
+        {
+            builder.AppendLine("Source Files");
+            foreach (var sourceFile in sourceFiles)
+            {
+                AppendSourceFile(builder, sourceFile.SourceText, sourceFile.NormalizedFilePath);
+            }
+        }
+
+        protected static void AppendSourceFile(StringBuilder builder, SourceText sourceText, string filePath)
+        {
+            var checksum = sourceText.GetChecksum();
+            var fileName = Path.GetFileName(filePath);
+            builder.Append(fileName);
+            builder.Append(": ");
+            Append(builder, sourceText.GetChecksum());
+            builder.AppendLine();
         }
 
         protected static void Append(StringBuilder builder, ImmutableArray<byte> bytes)

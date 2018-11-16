@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override DiagnosticFormatter DiagnosticFormatter { get { return _diagnosticFormatter; } }
         protected internal new CSharpCommandLineArguments Arguments { get { return (CSharpCommandLineArguments)base.Arguments; } }
 
-        public override Compilation CreateCompilation(TextWriter consoleOutput, TouchedFileLogger touchedFilesLogger, ErrorLogger errorLogger)
+        public override CommonCompilationData? CreateCompilationData(TextWriter consoleOutput, TouchedFileLogger touchedFilesLogger, ErrorLogger errorLogger, bool delayParse)
         {
             var parseOptions = Arguments.ParseOptions;
 
@@ -43,9 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool hadErrors = false;
 
-            var sourceFiles = Arguments.SourceFiles;
-            var trees = new SyntaxTree[sourceFiles.Length];
-            var normalizedFilePaths = new string[sourceFiles.Length];
+            var sourceFiles = new CommonCompilationSourceFile?[Arguments.SourceFiles.Length - 1];
             var diagnosticBag = DiagnosticBag.GetInstance();
 
             if (Arguments.CompilationOptions.ConcurrentBuild)
@@ -53,7 +51,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Parallel.For(0, sourceFiles.Length, UICultureUtilities.WithCurrentUICulture<int>(i =>
                 {
                     //NOTE: order of trees is important!!
-                    trees[i] = ParseFile(parseOptions, scriptParseOptions, ref hadErrors, sourceFiles[i], diagnosticBag, out normalizedFilePaths[i]);
+                    sourceFiles[i] = parseFile(Arguments.SourceFiles[i], ref hadErrors);
                 }));
             }
             else
@@ -61,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 for (int i = 0; i < sourceFiles.Length; i++)
                 {
                     //NOTE: order of trees is important!!
-                    trees[i] = ParseFile(parseOptions, scriptParseOptions, ref hadErrors, sourceFiles[i], diagnosticBag, out normalizedFilePaths[i]);
+                    sourceFiles[i] = parseFile(Arguments.SourceFiles[i], ref hadErrors);
                 }
             }
 
@@ -72,18 +70,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ReportErrors(diagnosticBag.ToReadOnlyAndFree(), consoleOutput, errorLogger);
                 return null;
             }
-            else
-            {
-                Debug.Assert(diagnosticBag.IsEmptyWithoutResolution);
-                diagnosticBag.Free();
-            }
+
+            Debug.Assert(diagnosticBag.IsEmptyWithoutResolution);
+            diagnosticBag.Free();
 
             var diagnostics = new List<DiagnosticInfo>();
-
             var uniqueFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             for (int i = 0; i < sourceFiles.Length; i++)
             {
-                var normalizedFilePath = normalizedFilePaths[i];
+                Debug.Assert(sourceFiles[i].HasValue);
+                var normalizedFilePath = sourceFiles[i].Value.NormalizedFilePath;
                 Debug.Assert(normalizedFilePath != null);
                 Debug.Assert(PathUtilities.IsAbsolute(normalizedFilePath));
 
@@ -93,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     diagnostics.Add(new DiagnosticInfo(MessageProvider, (int)ErrorCode.WRN_FileAlreadyIncluded,
                         Arguments.PrintFullPaths ? normalizedFilePath : _diagnosticFormatter.RelativizeNormalizedPath(normalizedFilePath)));
 
-                    trees[i] = null;
+                    sourceFiles[i] = null;
                 }
             }
 
@@ -139,9 +135,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var loggingFileSystem = new LoggingStrongNameFileSystem(touchedFilesLogger, _tempDirectory);
 
-            var temp =  CSharpCompilation.Create(
-                Arguments.CompilationName,
-                trees.WhereNotNull(),
+            return new CommonCompilationData(
+                sourceFiles.Where(x => x.HasValue).Select(x => x.Value).ToArray(),
                 resolvedReferences,
                 Arguments.CompilationOptions.
                     WithMetadataReferenceResolver(referenceDirectiveResolver).
@@ -149,47 +144,86 @@ namespace Microsoft.CodeAnalysis.CSharp
                     WithXmlReferenceResolver(xmlFileResolver).
                     WithStrongNameProvider(Arguments.GetStrongNameProvider(loggingFileSystem)).
                     WithSourceReferenceResolver(sourceFileResolver));
-            return temp;
+
+            CommonCompilationSourceFile parseFile(
+                CommandLineSourceFile file,
+                ref bool addedDiagnostics)
+            {
+                var fileDiagnostics = new List<DiagnosticInfo>();
+                var content = TryReadFileContent(file, fileDiagnostics, out string normalizedFilePath);
+
+                if (content == null)
+                {
+                    foreach (var info in fileDiagnostics)
+                    {
+                        diagnosticBag.Add(MessageProvider.CreateDiagnostic(info));
+                    }
+                    fileDiagnostics.Clear();
+                    addedDiagnostics = true;
+                }
+
+                var sourceFile = new CommonCompilationSourceFile(content, syntaxTree: null, normalizedFilePath, file.IsScript);
+                if (!delayParse)
+                {
+                    Debug.Assert(fileDiagnostics.Count == 0);
+                    var syntaxTree = ParseFile(parseOptions, scriptParseOptions, sourceFile);
+                    sourceFile = sourceFile.WithSyntaxTree(syntaxTree);
+                }
+
+                return sourceFile;
+            }
         }
 
-        private SyntaxTree ParseFile(
-            CSharpParseOptions parseOptions,
-            CSharpParseOptions scriptParseOptions,
-            ref bool addedDiagnostics,
-            CommandLineSourceFile file,
-            DiagnosticBag diagnostics,
-            out string normalizedFilePath)
+        public override Compilation CreateCompilation(CommonCompilationData compilationData)
         {
-            var fileDiagnostics = new List<DiagnosticInfo>();
-            var content = TryReadFileContent(file, fileDiagnostics, out normalizedFilePath);
-
-            if (content == null)
+            IEnumerable<SyntaxTree> syntaxTrees;
+            if (compilationData.HasSyntaxTrees)
             {
-                foreach (var info in fileDiagnostics)
-                {
-                    diagnostics.Add(MessageProvider.CreateDiagnostic(info));
-                }
-                fileDiagnostics.Clear();
-                addedDiagnostics = true;
-                return null;
+                syntaxTrees = compilationData.SourceFiles.Select(x => x.SyntaxTree);
             }
             else
             {
-                Debug.Assert(fileDiagnostics.Count == 0);
-                return ParseFile(parseOptions, scriptParseOptions, content, file);
+                var sourceFiles = compilationData.SourceFiles;
+                var parseOptions = Arguments.ParseOptions;
+                var scriptParseOptions = parseOptions.WithKind(SourceCodeKind.Script);
+
+                var trees = new SyntaxTree[compilationData.SourceFiles.Length];
+                if (compilationData.CompilationOptions.ConcurrentBuild)
+                {
+                    Parallel.For(0, sourceFiles.Length, UICultureUtilities.WithCurrentUICulture<int>(i =>
+                    {
+                        //NOTE: order of trees is important!!
+                        trees[i] = ParseFile(parseOptions, scriptParseOptions, sourceFiles[i]);
+                    }));
+                }
+                else
+                {
+                    for (int i = 0; i < sourceFiles.Length; i++)
+                    {
+                        //NOTE: order of trees is important!!
+                        trees[i] = ParseFile(parseOptions, scriptParseOptions, sourceFiles[i]);
+                    }
+                }
+
+                syntaxTrees = trees;
             }
+
+            return CSharpCompilation.Create(
+                Arguments.CompilationName,
+                syntaxTrees.WhereNotNull(),
+                compilationData.References,
+                (CSharpCompilationOptions)(compilationData.CompilationOptions));
         }
 
         private static SyntaxTree ParseFile(
             CSharpParseOptions parseOptions,
             CSharpParseOptions scriptParseOptions,
-            SourceText content,
-            CommandLineSourceFile file)
+            CommonCompilationSourceFile content)
         {
             var tree = SyntaxFactory.ParseSyntaxTree(
-                content,
-                file.IsScript ? scriptParseOptions : parseOptions,
-                file.Path);
+                content.SourceText,
+                content.IsScript ? scriptParseOptions : parseOptions,
+                content.NormalizedFilePath);
 
             // prepopulate line tables.
             // we will need line tables anyways and it is better to not wait until we are in emit
@@ -248,6 +282,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return base.GetOutputFileName(compilation, cancellationToken);
             }
+        }
+
+        public override bool TrypGetDeterministicKey(CommonCompilationData compilationData, out string key)
+        {
+            key = CSharpDeterministicKeyUtil.GenerateKey(compilationData);
+            return true;
         }
 
         internal override bool SuppressDefaultResponseFile(IEnumerable<string> args)

@@ -6,6 +6,7 @@ Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis.Collections
 Imports Microsoft.CodeAnalysis.Diagnostics
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis.Text
 
 Namespace Microsoft.CodeAnalysis.VisualBasic
 
@@ -53,9 +54,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private Function ParseFile(consoleOutput As TextWriter,
                                    parseOptions As VisualBasicParseOptions,
                                    scriptParseOptions As VisualBasicParseOptions,
+                                   delayParse As Boolean,
                                    ByRef hadErrors As Boolean,
                                    file As CommandLineSourceFile,
-                                   errorLogger As ErrorLogger) As SyntaxTree
+                                   errorLogger As ErrorLogger) As CommonCompilationSourceFile
 
             Dim fileReadDiagnostics As New List(Of DiagnosticInfo)()
             Dim content = TryReadFileContent(file, fileReadDiagnostics)
@@ -67,7 +69,21 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                 Return Nothing
             End If
 
-            Dim tree = VisualBasicSyntaxTree.ParseText(content, If(file.IsScript, scriptParseOptions, parseOptions), file.Path)
+            Dim sourceFile = New CommonCompilationSourceFile(content, Nothing, file.Path, file.IsScript)
+            If Not delayParse Then
+
+                Dim tree = ParseFile(parseOptions, scriptParseOptions, sourceFile)
+                sourceFile = sourceFile.WithSyntaxTree(tree)
+            End If
+
+            Return sourceFile
+        End Function
+
+        Private Function ParseFile(parseOptions As VisualBasicParseOptions,
+                                   scriptParseOptions As VisualBasicParseOptions,
+                                   sourceFile As CommonCompilationSourceFile) As SyntaxTree
+
+            Dim tree = VisualBasicSyntaxTree.ParseText(sourceFile.SourceText, If(sourceFile.IsScript, scriptParseOptions, parseOptions), sourceFile.NormalizedFilePath)
 
             ' prepopulate line tables.
             ' we will need line tables anyways and it is better to Not wait until we are in emit
@@ -78,7 +94,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return tree
         End Function
 
-        Public Overrides Function CreateCompilation(consoleOutput As TextWriter, touchedFilesLogger As TouchedFileLogger, errorLogger As ErrorLogger) As Compilation
+        Public Overrides Function CreateCompilationData(consoleOutput As TextWriter, touchedFilesLogger As TouchedFileLogger, errorLogger As ErrorLogger, delayParse As Boolean) As CommonCompilationData?
             Dim parseOptions = Arguments.ParseOptions
 
             ' We compute script parse options once so we don't have to do it repeatedly in
@@ -87,20 +103,20 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim hadErrors As Boolean = False
 
-            Dim sourceFiles As ImmutableArray(Of CommandLineSourceFile) = Arguments.SourceFiles
-            Dim trees(sourceFiles.Length - 1) As SyntaxTree
+            Dim commandLineFiles = Arguments.SourceFiles
+            Dim sourceFiles(commandLineFiles.Length - 1) As CommonCompilationSourceFile?
 
             If Arguments.CompilationOptions.ConcurrentBuild Then
                 Parallel.For(0, sourceFiles.Length,
                    UICultureUtilities.WithCurrentUICulture(Of Integer)(
                         Sub(i As Integer)
                             ' NOTE: order of trees is important!!
-                            trees(i) = ParseFile(consoleOutput, parseOptions, scriptParseOptions, hadErrors, sourceFiles(i), errorLogger)
+                            sourceFiles(i) = ParseFile(consoleOutput, parseOptions, scriptParseOptions, delayParse, hadErrors, commandLineFiles(i), errorLogger)
                         End Sub))
             Else
                 For i = 0 To sourceFiles.Length - 1
                     ' NOTE: order of trees is important!!
-                    trees(i) = ParseFile(consoleOutput, parseOptions, scriptParseOptions, hadErrors, sourceFiles(i), errorLogger)
+                    sourceFiles(i) = ParseFile(consoleOutput, parseOptions, scriptParseOptions, hadErrors, delayParse, commandLineFiles(i), errorLogger)
                 Next
             End If
 
@@ -111,7 +127,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             If Arguments.TouchedFilesPath IsNot Nothing Then
                 For Each file In sourceFiles
-                    touchedFilesLogger.AddRead(file.Path)
+                    touchedFilesLogger.AddRead(file.Value.NormalizedFilePath)
                 Next
             End If
 
@@ -137,16 +153,52 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
             Dim loggingFileSystem = New LoggingStrongNameFileSystem(touchedFilesLogger, _tempDirectory)
 
-            Return VisualBasicCompilation.Create(
-                 Arguments.CompilationName,
-                 trees,
-                 resolvedReferences,
-                 Arguments.CompilationOptions.
+            Return New CommonCompilationData(
+                sourceFiles.Where(Function(x) x.HasValue).Select(Function(x) x.Value).ToArray(),
+                resolvedReferences,
+                Arguments.CompilationOptions.
                      WithMetadataReferenceResolver(referenceDirectiveResolver).
                      WithAssemblyIdentityComparer(assemblyIdentityComparer).
                      WithXmlReferenceResolver(xmlFileResolver).
                      WithStrongNameProvider(Arguments.GetStrongNameProvider(loggingFileSystem)).
                      WithSourceReferenceResolver(sourceFileResolver))
+        End Function
+
+        Public Overrides Function CreateCompilation(compilationData As CommonCompilationData) As Compilation
+            Dim syntaxTrees As IEnumerable(Of SyntaxTree)
+            If compilationData.HasSyntaxTrees Then
+                syntaxTrees = compilationData.SourceFiles.Select(Function(x) x.SyntaxTree)
+            Else
+                Dim parseOptions = Arguments.ParseOptions
+                Dim scriptParseOptions = parseOptions.WithKind(SourceCodeKind.Script)
+                Dim sourceFiles = compilationData.SourceFiles
+                Dim trees(sourceFiles.Length - 1) As SyntaxTree
+                If Arguments.CompilationOptions.ConcurrentBuild Then
+                    Parallel.For(0, sourceFiles.Length,
+                       UICultureUtilities.WithCurrentUICulture(Of Integer)(
+                            Sub(i As Integer)
+                                ' NOTE: order of trees is important!!
+                                trees(i) = ParseFile(parseOptions, scriptParseOptions, sourceFiles(i))
+                            End Sub))
+                Else
+                    For i = 0 To sourceFiles.Length - 1
+                        ' NOTE: order of trees is important!!
+                        trees(i) = ParseFile(parseOptions, scriptParseOptions, sourceFiles(i))
+                    Next
+                End If
+                syntaxTrees = trees
+            End If
+
+            Return VisualBasicCompilation.Create(
+                 Arguments.CompilationName,
+                 syntaxTrees,
+                 compilationData.References,
+                 CType(compilationData.CompilationOptions, VisualBasicCompilationOptions))
+        End Function
+
+        Public Overrides Function TrypGetDeterministicKey(compilationData As CommonCompilationData, ByRef key As String) As Boolean
+            key = VisualBasicDeterministicKeyUtil.GenerateKey(compilationData)
+            Return True
         End Function
 
         Private Sub PrintReferences(resolvedReferences As List(Of MetadataReference), consoleOutput As TextWriter)

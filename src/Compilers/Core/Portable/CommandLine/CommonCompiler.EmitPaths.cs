@@ -2,7 +2,9 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
+using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
@@ -24,6 +26,5 @@ namespace Microsoft.CodeAnalysis
                 XmlFilePath = arguments.DocumentationPath;
             }
         }
-
     }
 }

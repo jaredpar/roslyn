@@ -24,5 +24,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             AppendReferences(builder, compilation.References);
             return builder.ToString();
         }
+
+        internal static string GenerateKey(CommonCompilationData compilationData)
+        {
+            var builder = new StringBuilder();
+            AppendCompilationOptions(builder, (CSharpCompilationOptions)compilationData.CompilationOptions);
+            AppendSourceFiles(builder, compilationData.SourceFiles);
+            AppendReferences(builder, compilationData.References);
+            return builder.ToString();
+        }
     }
 }
