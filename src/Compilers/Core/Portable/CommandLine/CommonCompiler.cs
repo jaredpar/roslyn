@@ -75,7 +75,9 @@ namespace Microsoft.CodeAnalysis
 
         private readonly HashSet<Diagnostic> _reportedDiagnostics = new HashSet<Diagnostic>();
 
-        public abstract Compilation CreateCompilation(TextWriter consoleOutput, TouchedFileLogger touchedFilesLogger, ErrorLogger errorLoggerOpt);
+        public abstract CommonCompilationData? CreateCompilationData(TextWriter consoleOutput, TouchedFileLogger touchedFilesLogger, ErrorLogger errorLoggerOpt, bool delayParse);
+        public abstract Compilation CreateCompilation(CommonCompilationData compilationData);
+        public abstract bool TrypGetDeterministicKey(CommonCompilationData compilationData, out string key);
         public abstract void PrintLogo(TextWriter consoleOutput);
         public abstract void PrintHelp(TextWriter consoleOutput);
         public abstract void PrintLangVersions(TextWriter consoleOutput);
@@ -559,29 +561,20 @@ namespace Microsoft.CodeAnalysis
 
             var touchedFilesLogger = (Arguments.TouchedFilesPath != null) ? new TouchedFileLogger() : null;
 
-            Compilation compilation = CreateCompilation(consoleOutput, touchedFilesLogger, errorLogger);
-            if (compilation == null)
+            var compilationData = CreateCompilationData(consoleOutput, touchedFilesLogger, errorLogger, delayParse: false);
+            if  (compilationData == null)
             {
                 return Failed;
             }
 
-            var diagnosticInfos = new List<DiagnosticInfo>();
-            ImmutableArray<DiagnosticAnalyzer> analyzers = ResolveAnalyzersFromArguments(diagnosticInfos, MessageProvider);
-            var additionalTextFiles = ResolveAdditionalFilesFromArguments(diagnosticInfos, MessageProvider, touchedFilesLogger);
-            if (ReportErrors(diagnosticInfos, consoleOutput, errorLogger))
+            Compilation compilation = null;
+            var outputName = Arguments.OutputFileName;
+            if (outputName == null)
             {
-                return Failed;
+                compilation = CreateCompilation(compilationData.Value);
+                outputName = GetOutputFileName(compilation, cancellationToken);
             }
 
-            var diagnostics = DiagnosticBag.GetInstance();
-
-            ImmutableArray<EmbeddedText> embeddedTexts = AcquireEmbeddedTexts(compilation, diagnostics);
-            if (ReportErrors(diagnostics, consoleOutput, errorLogger))
-            {
-                return Failed;
-            }
-
-            var outputName = GetOutputFileName(compilation, cancellationToken);
             var emitPaths = new EmitPaths(outputName, Arguments);
             string cacheDirectory = null;
             if (compilation.TryGetDeterministicKey(out string deterministicKey))
@@ -592,7 +585,7 @@ namespace Microsoft.CodeAnalysis
                     var keyName = Convert.ToBase64String(bytes)
                         .Replace("/", "_")
                         .Replace("=", string.Empty);
-                    cacheDirectory = Path.Combine(@"e:\temp\cache", keyName);                    
+                    cacheDirectory = Path.Combine(@"e:\temp\cache", keyName);
                 }
             }
 
@@ -616,6 +609,27 @@ namespace Microsoft.CodeAnalysis
                 copyCacheItem("cache.pdb", emitPaths.PdbFilePath);
                 copyCacheItem("cache.xml", emitPaths.XmlFilePath);
                 return Succeeded;
+            }
+
+            if (compilation == null)
+            {
+                compilation = CreateCompilation(compilationData.Value);
+            }
+
+            var diagnosticInfos = new List<DiagnosticInfo>();
+            ImmutableArray<DiagnosticAnalyzer> analyzers = ResolveAnalyzersFromArguments(diagnosticInfos, MessageProvider);
+            var additionalTextFiles = ResolveAdditionalFilesFromArguments(diagnosticInfos, MessageProvider, touchedFilesLogger);
+            if (ReportErrors(diagnosticInfos, consoleOutput, errorLogger))
+            {
+                return Failed;
+            }
+
+            var diagnostics = DiagnosticBag.GetInstance();
+
+            ImmutableArray<EmbeddedText> embeddedTexts = AcquireEmbeddedTexts(compilation, diagnostics);
+            if (ReportErrors(diagnostics, consoleOutput, errorLogger))
+            {
+                return Failed;
             }
 
             CompileAndEmit(

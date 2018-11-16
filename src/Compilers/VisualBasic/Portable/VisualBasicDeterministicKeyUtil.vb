@@ -27,6 +27,14 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Return builder.ToString()
         End Function
 
+        Friend Shared Function GenerateKey(compilationData As CommonCompilationData) As String
+            ' PROTOTYPE: must append all vb specific compilation options
+            Dim builder As New StringBuilder()
+            AppendCommonCompilationOptions(builder, CType(compilationData.CompilationOptions, VisualBasicCompilationOptions))
+            AppendSourceFiles(builder, compilationData.SourceFiles)
+            AppendReferences(builder, compilationData.References)
+            Return builder.ToString()
+        End Function
     End Class
 End Namespace
 

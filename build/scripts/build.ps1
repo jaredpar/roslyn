@@ -216,6 +216,8 @@ function Make-BootstrapBuild() {
     $packageFile = Get-ChildItem -Path $dir -Filter "$packageName.*.nupkg"    
     Unzip-File "$dir\$packageFile" $dir
 
+    # **** HACK delete me ***
+    exit 0
     Write-Host "Cleaning Bootstrap compiler artifacts"
     Run-MSBuild $projectPath "/t:Clean" -logFileName "BootstrapClean"
 
