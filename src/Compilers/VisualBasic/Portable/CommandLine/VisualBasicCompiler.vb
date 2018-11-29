@@ -196,7 +196,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                  CType(compilationData.CompilationOptions, VisualBasicCompilationOptions))
         End Function
 
-        Public Overrides Function TrypGetDeterministicKey(compilationData As CommonCompilationData, ByRef key As String) As Boolean
+        Public Overrides Function TryGetDeterministicKey(compilationData As CommonCompilationData, ByRef key As String) As Boolean
             key = VisualBasicDeterministicKeyUtil.GenerateKey(compilationData)
             Return True
         End Function

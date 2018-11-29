@@ -284,7 +284,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        public override bool TrypGetDeterministicKey(CommonCompilationData compilationData, out string key)
+        public override bool TryGetDeterministicKey(CommonCompilationData compilationData, out string key)
         {
             key = CSharpDeterministicKeyUtil.GenerateKey(compilationData);
             return true;
