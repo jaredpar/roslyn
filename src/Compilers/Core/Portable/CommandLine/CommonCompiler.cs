@@ -77,7 +77,7 @@ namespace Microsoft.CodeAnalysis
 
         public abstract CommonCompilationData? CreateCompilationData(TextWriter consoleOutput, TouchedFileLogger touchedFilesLogger, ErrorLogger errorLoggerOpt, bool delayParse);
         public abstract Compilation CreateCompilation(CommonCompilationData compilationData);
-        public abstract bool TrypGetDeterministicKey(CommonCompilationData compilationData, out string key);
+        public abstract bool TryGetDeterministicKey(CommonCompilationData compilationData, out string key);
         public abstract void PrintLogo(TextWriter consoleOutput);
         public abstract void PrintHelp(TextWriter consoleOutput);
         public abstract void PrintLangVersions(TextWriter consoleOutput);
@@ -561,8 +561,8 @@ namespace Microsoft.CodeAnalysis
 
             var touchedFilesLogger = (Arguments.TouchedFilesPath != null) ? new TouchedFileLogger() : null;
 
-            var compilationData = CreateCompilationData(consoleOutput, touchedFilesLogger, errorLogger, delayParse: false);
-            if  (compilationData == null)
+            var compilationData = CreateCompilationData(consoleOutput, touchedFilesLogger, errorLogger, delayParse: true);
+            if (compilationData == null)
             {
                 return Failed;
             }
@@ -577,7 +577,7 @@ namespace Microsoft.CodeAnalysis
 
             var emitPaths = new EmitPaths(outputName, Arguments);
             string cacheDirectory = null;
-            if (compilation.TryGetDeterministicKey(out string deterministicKey))
+            if (TryGetDeterministicKey(compilationData.Value, out string deterministicKey))
             {
                 using (var sha = SHA256.Create())
                 {

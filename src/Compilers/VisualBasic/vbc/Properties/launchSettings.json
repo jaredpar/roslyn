@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "vbc": {
+      "commandName": "Project",
+      "commandLineArgs": "e:\\temp\\hello.vb"
+    }
+  }
+}
