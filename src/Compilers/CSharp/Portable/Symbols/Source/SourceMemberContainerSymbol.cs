@@ -1885,7 +1885,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         continue;
                     }
                     var field = (FieldSymbol)member;
-                    if (field.IsStatic)
+                    if (field.IsStatic || field.HasPointerType)
                     {
                         continue;
                     }

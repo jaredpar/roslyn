@@ -79,7 +79,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 foreach (var member in type.GetMembersUnordered())
                 {
                     var field = member as FieldSymbol;
-                    if ((object)field == null || field.Type.TypeKind != TypeKind.Struct || field.IsStatic)
+                    if ((object)field == null || field.HasPointerType || field.Type.TypeKind != TypeKind.Struct || field.IsStatic)
                     {
                         continue;
                     }
