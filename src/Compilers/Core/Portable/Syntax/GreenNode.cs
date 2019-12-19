@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -102,7 +104,7 @@ namespace Microsoft.CodeAnalysis
 
         protected void AdjustFlagsAndWidth(GreenNode node)
         {
-            Debug.Assert(node != null, "PERF: caller must ensure that node!=null, we do not want to re-check that here.");
+            RoslynDebug.Assert(node != null, "PERF: caller must ensure that node!=null, we do not want to re-check that here.");
             this.flags |= (node.flags & NodeFlags.InheritMask);
             _fullWidth += node._fullWidth;
         }
@@ -740,10 +742,10 @@ namespace Microsoft.CodeAnalysis
         #region Tokens 
 
         public virtual int RawContextualKind { get { return this.RawKind; } }
-        public virtual object GetValue() { return null; }
-        public virtual string GetValueText() { return string.Empty; }
-        public virtual GreenNode GetLeadingTriviaCore() { return null; }
-        public virtual GreenNode GetTrailingTriviaCore() { return null; }
+        public virtual object? GetValue() { return null; }
+        public virtual string? GetValueText() { return string.Empty; }
+        public virtual GreenNode? GetLeadingTriviaCore() { return null; }
+        public virtual GreenNode? GetTrailingTriviaCore() { return null; }
 
         public virtual GreenNode WithLeadingTrivia(GreenNode trivia)
         {
@@ -755,13 +757,13 @@ namespace Microsoft.CodeAnalysis
             return this;
         }
 
-        internal GreenNode GetFirstTerminal()
+        internal GreenNode? GetFirstTerminal()
         {
-            GreenNode node = this;
+            GreenNode? node = this;
 
             do
             {
-                GreenNode firstChild = null;
+                GreenNode? firstChild = null;
                 for (int i = 0, n = node.SlotCount; i < n; i++)
                 {
                     var child = node.GetSlot(i);
@@ -777,13 +779,13 @@ namespace Microsoft.CodeAnalysis
             return node;
         }
 
-        internal GreenNode GetLastTerminal()
+        internal GreenNode? GetLastTerminal()
         {
-            GreenNode node = this;
+            GreenNode? node = this;
 
             do
             {
-                GreenNode lastChild = null;
+                GreenNode? lastChild = null;
                 for (int i = node.SlotCount - 1; i >= 0; i--)
                 {
                     var child = node.GetSlot(i);
@@ -894,7 +896,7 @@ namespace Microsoft.CodeAnalysis
         public abstract SyntaxToken CreateSeparator<TNode>(SyntaxNode element) where TNode : SyntaxNode;
         public abstract bool IsTriviaWithEndOfLine(); // trivia node has end of line
 
-        public virtual GreenNode CreateList(IEnumerable<GreenNode> nodes, bool alwaysCreateListNode = false)
+        public virtual GreenNode? CreateList(IEnumerable<GreenNode> nodes, bool alwaysCreateListNode = false)
         {
             if (nodes == null)
             {
@@ -930,7 +932,7 @@ namespace Microsoft.CodeAnalysis
             return CreateRed(null, 0);
         }
 
-        internal abstract SyntaxNode CreateRed(SyntaxNode parent, int position);
+        internal abstract SyntaxNode CreateRed(SyntaxNode? parent, int position);
 
         #endregion
 
