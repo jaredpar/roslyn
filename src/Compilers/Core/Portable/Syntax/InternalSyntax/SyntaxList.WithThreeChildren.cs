@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using Roslyn.Utilities;
 
@@ -61,7 +63,7 @@ namespace Microsoft.CodeAnalysis.Syntax.InternalSyntax
                 writer.WriteValue(_child2);
             }
 
-            internal override GreenNode GetSlot(int index)
+            internal override GreenNode? GetSlot(int index)
             {
                 switch (index)
                 {
@@ -83,7 +85,7 @@ namespace Microsoft.CodeAnalysis.Syntax.InternalSyntax
                 array[offset + 2].Value = _child2;
             }
 
-            internal override SyntaxNode CreateRed(SyntaxNode parent, int position)
+            internal override SyntaxNode CreateRed(SyntaxNode? parent, int position)
             {
                 return new Syntax.SyntaxList.WithThreeChildren(this, parent, position);
             }
