@@ -78,7 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification
                 return;
             }
 
-            ClassifyNode(nodeOrToken.AsNode());
+            ClassifyNode(nodeOrToken.AsNode()!);
         }
 
         private void ClassifyNode(SyntaxNode node)

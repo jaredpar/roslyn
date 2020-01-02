@@ -656,7 +656,7 @@ namespace Microsoft.CodeAnalysis
             {
                 if (nodeOrToken.IsNode)
                 {
-                    yield return nodeOrToken.AsNode();
+                    yield return nodeOrToken.AsNode()!;
                 }
             }
         }
@@ -968,7 +968,7 @@ recurse:
                     {
                         if (element.IsNode)
                         {
-                            node = element.AsNode();
+                            node = element.AsNode()!;
                             goto recurse;
                         }
                         else if (element.IsToken)
@@ -1129,7 +1129,7 @@ recurse:
         /// </summary>
         public IEnumerable<SyntaxNode> GetAnnotatedNodes(SyntaxAnnotation syntaxAnnotation)
         {
-            return this.GetAnnotatedNodesAndTokens(syntaxAnnotation).Where(n => n.IsNode).Select(n => n.AsNode());
+            return this.GetAnnotatedNodesAndTokens(syntaxAnnotation).Where(n => n.IsNode).Select(n => n.AsNode()!);
         }
 
         /// <summary>
@@ -1139,7 +1139,7 @@ recurse:
         /// <returns></returns>
         public IEnumerable<SyntaxNode> GetAnnotatedNodes(string annotationKind)
         {
-            return this.GetAnnotatedNodesAndTokens(annotationKind).Where(n => n.IsNode).Select(n => n.AsNode());
+            return this.GetAnnotatedNodesAndTokens(annotationKind).Where(n => n.IsNode).Select(n => n.AsNode()!);
         }
 
         /// <summary>
