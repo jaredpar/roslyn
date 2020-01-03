@@ -1,5 +1,9 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
+using Roslyn.Utilities;
+
 namespace Microsoft.CodeAnalysis.Syntax
 {
     internal static class CommonSyntaxNodeRemover
@@ -29,6 +33,7 @@ namespace Microsoft.CodeAnalysis.Syntax
             // in the list that needs to be fixed up.
 
             var node = nodesAndSeparators[nodeIndex].AsNode();
+            RoslynDebug.Assert(node is object);
 
             nextTokenIsSeparator =
                 nodeIndex + 1 < nodesAndSeparators.Count &&

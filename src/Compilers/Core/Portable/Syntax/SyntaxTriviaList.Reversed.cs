@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -67,12 +69,12 @@ namespace Microsoft.CodeAnalysis
             public struct Enumerator
             {
                 private readonly SyntaxToken _token;
-                private readonly GreenNode _singleNodeOrList;
+                private readonly GreenNode? _singleNodeOrList;
                 private readonly int _baseIndex;
                 private readonly int _count;
 
                 private int _index;
-                private GreenNode _current;
+                private GreenNode? _current;
                 private int _position;
 
                 internal Enumerator(in SyntaxTriviaList list)
@@ -103,7 +105,9 @@ namespace Microsoft.CodeAnalysis
 
                     _index--;
 
+                    RoslynDebug.Assert(_singleNodeOrList is object);
                     _current = GetGreenNodeAt(_singleNodeOrList, _index);
+                    RoslynDebug.Assert(_current is object);
                     _position -= _current.FullWidth;
 
                     return true;

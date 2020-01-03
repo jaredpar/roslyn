@@ -1,8 +1,12 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Syntax
 {
@@ -55,7 +59,7 @@ namespace Microsoft.CodeAnalysis.Syntax
         /// </summary>
         private WarningStateMapEntry GetEntryAtOrBeforePosition(int position)
         {
-            Debug.Assert(_warningStateMapEntries != null && _warningStateMapEntries.Length > 0);
+            RoslynDebug.Assert(_warningStateMapEntries != null && _warningStateMapEntries.Length > 0);
             int r = Array.BinarySearch(_warningStateMapEntries, new WarningStateMapEntry(position));
             return _warningStateMapEntries[r >= 0 ? r : ((~r) - 1)];
         }
@@ -69,6 +73,7 @@ namespace Microsoft.CodeAnalysis.Syntax
             public readonly int Position;
 
             // the general option applicable to all warnings, accumulated of all #pragma up to the current Line.
+            [MaybeNull]
             public readonly WarningState GeneralWarningOption;
 
             // the mapping of the specific warning to the option, accumulated of all #pragma up to the current Line.
@@ -77,7 +82,7 @@ namespace Microsoft.CodeAnalysis.Syntax
             public WarningStateMapEntry(int position)
             {
                 this.Position = position;
-                this.GeneralWarningOption = default;
+                this.GeneralWarningOption = default!;
                 this.SpecificWarningOption = ImmutableDictionary.Create<string, WarningState>();
             }
 

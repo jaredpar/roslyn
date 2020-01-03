@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -88,7 +90,7 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         internal static SyntaxNodeOrToken ItemInternal(SyntaxNode node, int index)
         {
-            GreenNode greenChild;
+            GreenNode? greenChild;
             var green = node.Green;
             var idx = index;
             var slotIndex = 0;
@@ -173,7 +175,7 @@ namespace Microsoft.CodeAnalysis
             // The targetPosition must already be within this node
             Debug.Assert(node.FullSpan.Contains(targetPosition));
 
-            var green = node.Green;
+            GreenNode? green = node.Green;
             var position = node.Position;
             var index = 0;
 
@@ -186,7 +188,7 @@ namespace Microsoft.CodeAnalysis
             int slot;
             for (slot = 0; ; slot++)
             {
-                GreenNode greenChild = green.GetSlot(slot);
+                GreenNode? greenChild = green.GetSlot(slot);
                 if (greenChild != null)
                 {
                     var endPosition = position + greenChild.FullWidth;
@@ -249,9 +251,9 @@ namespace Microsoft.CodeAnalysis
         /// internal indexer that does not verify index.
         /// Used when caller has already ensured that index is within bounds.
         /// </summary>
-        internal static SyntaxNode ItemInternalAsNode(SyntaxNode node, int index)
+        internal static SyntaxNode? ItemInternalAsNode(SyntaxNode node, int index)
         {
-            GreenNode greenChild;
+            GreenNode? greenChild;
             var green = node.Green;
             var idx = index;
             var slotIndex = 0;

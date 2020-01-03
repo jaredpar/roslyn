@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +37,7 @@ namespace Microsoft.CodeAnalysis
             // Accumulate all the directives, in source code order
             var syntaxRoot = (SyntaxNodeOrToken)syntaxTree.GetRoot();
             IList<TDirective> directives = syntaxRoot.GetDirectives<TDirective>(filter: ShouldAddDirective);
-            Debug.Assert(directives != null);
+            RoslynDebug.Assert(directives != null);
 
             // Create the entry map.
             this.Entries = CreateEntryMap(syntaxTree, directives);

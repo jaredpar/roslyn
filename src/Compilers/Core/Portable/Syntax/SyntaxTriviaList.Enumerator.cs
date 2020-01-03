@@ -1,9 +1,12 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -13,12 +16,12 @@ namespace Microsoft.CodeAnalysis
         public struct Enumerator
         {
             private SyntaxToken _token;
-            private GreenNode _singleNodeOrList;
+            private GreenNode? _singleNodeOrList;
             private int _baseIndex;
             private int _count;
 
             private int _index;
-            private GreenNode _current;
+            private GreenNode? _current;
             private int _position;
 
             internal Enumerator(in SyntaxTriviaList list)
@@ -51,7 +54,8 @@ namespace Microsoft.CodeAnalysis
             // by ref since it's a non-trivial struct
             internal void InitializeFromLeadingTrivia(in SyntaxToken token)
             {
-                InitializeFrom(in token, token.Node.GetLeadingTriviaCore(), 0, token.Position);
+                RoslynDebug.Assert(token.Node is object);
+                InitializeFrom(in token, token.Node.GetLeadingTriviaCore()!, 0, token.Position);
             }
 
             // PERF: Used to initialize an enumerator for trailing trivia directly from a token.
@@ -59,6 +63,7 @@ namespace Microsoft.CodeAnalysis
             // by ref since it's a non-trivial struct
             internal void InitializeFromTrailingTrivia(in SyntaxToken token)
             {
+                RoslynDebug.Assert(token.Node is object);
                 var leading = token.Node.GetLeadingTriviaCore();
                 int index = 0;
                 if (leading != null)
@@ -66,14 +71,14 @@ namespace Microsoft.CodeAnalysis
                     index = leading.IsList ? leading.SlotCount : 1;
                 }
 
-                var trailingGreen = token.Node.GetTrailingTriviaCore();
+                var trailingGreen = token.Node.GetTrailingTriviaCore()!;
                 int trailingPosition = token.Position + token.FullWidth;
                 if (trailingGreen != null)
                 {
                     trailingPosition -= trailingGreen.FullWidth;
                 }
 
-                InitializeFrom(in token, trailingGreen, index, trailingPosition);
+                InitializeFrom(in token, trailingGreen!, index, trailingPosition);
             }
 
             public bool MoveNext()
@@ -93,6 +98,7 @@ namespace Microsoft.CodeAnalysis
                     _position += _current.FullWidth;
                 }
 
+                RoslynDebug.Assert(_singleNodeOrList is object);
                 _current = GetGreenNodeAt(_singleNodeOrList, newIndex);
                 return true;
             }

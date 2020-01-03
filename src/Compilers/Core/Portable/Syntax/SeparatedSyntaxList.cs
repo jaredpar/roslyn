@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,12 +50,12 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        internal SeparatedSyntaxList(SyntaxNode node, int index)
+        internal SeparatedSyntaxList(SyntaxNode? node, int index)
             : this(new SyntaxNodeOrTokenList(node, index))
         {
         }
 
-        internal SyntaxNode Node
+        internal SyntaxNode? Node
         {
             get
             {
@@ -95,7 +97,7 @@ namespace Microsoft.CodeAnalysis
                     {
                         if (unchecked((uint)index < (uint)_count))
                         {
-                            return (TNode)node.GetNodeSlot(index << 1);
+                            return (TNode)node.GetRequiredNodeSlot(index << 1);
                         }
                     }
                 }
@@ -118,7 +120,7 @@ namespace Microsoft.CodeAnalysis
                 if (unchecked((uint)index < (uint)_separatorCount))
                 {
                     index = (index << 1) + 1;
-                    var green = node.Green.GetSlot(index);
+                    var green = node.Green.GetRequiredSlot(index);
                     Debug.Assert(green.IsToken);
                     return new SyntaxToken(node.Parent, green, node.GetChildPosition(index), _list.index + index);
                 }
@@ -182,7 +184,7 @@ namespace Microsoft.CodeAnalysis
             return this[0];
         }
 
-        public TNode FirstOrDefault()
+        public TNode? FirstOrDefault()
         {
             if (this.Any())
             {
@@ -197,7 +199,7 @@ namespace Microsoft.CodeAnalysis
             return this[this.Count - 1];
         }
 
-        public TNode LastOrDefault()
+        public TNode? LastOrDefault()
         {
             if (this.Any())
             {
@@ -407,7 +409,7 @@ namespace Microsoft.CodeAnalysis
             // if item after last inserted node is a node, add separator
             if (insertionIndex < nodesWithSeps.Count && nodesWithSeps[insertionIndex].IsNode)
             {
-                var node = nodesWithSeps[insertionIndex].AsNode();
+                var node = nodesWithSeps[insertionIndex].AsNode()!;
                 nodesToInsertWithSeparators.Add(node.Green.CreateSeparator<TNode>(node)); // separator
             }
 

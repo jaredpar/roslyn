@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -69,7 +71,7 @@ namespace Microsoft.CodeAnalysis.Syntax
 
         public SyntaxTriviaListBuilder Add(SyntaxTrivia item)
         {
-            if (_nodes == null || _count >= _nodes.Length)
+            if (_count >= _nodes.Length)
             {
                 this.Grow(_count == 0 ? 8 : _nodes.Length * 2);
             }
@@ -85,7 +87,7 @@ namespace Microsoft.CodeAnalysis.Syntax
 
         public void Add(SyntaxTrivia[] items, int offset, int length)
         {
-            if (_nodes == null || _count + length > _nodes.Length)
+            if (_count + length > _nodes.Length)
             {
                 this.Grow(_count + length);
             }
@@ -101,7 +103,7 @@ namespace Microsoft.CodeAnalysis.Syntax
 
         public void Add(in SyntaxTriviaList list, int offset, int length)
         {
-            if (_nodes == null || _count + length > _nodes.Length)
+            if (_count + length > _nodes.Length)
             {
                 this.Grow(_count + length);
             }
@@ -133,21 +135,21 @@ namespace Microsoft.CodeAnalysis.Syntax
                     case 2:
                         return new SyntaxTriviaList(default(SyntaxToken),
                             InternalSyntax.SyntaxList.List(
-                            _nodes[0].UnderlyingNode,
-                            _nodes[1].UnderlyingNode), position: 0, index: 0);
+                            _nodes[0].UnderlyingNode!,
+                            _nodes[1].UnderlyingNode!), position: 0, index: 0);
                     case 3:
                         return new SyntaxTriviaList(default(SyntaxToken),
                             InternalSyntax.SyntaxList.List(
-                                _nodes[0].UnderlyingNode,
-                                _nodes[1].UnderlyingNode,
-                                _nodes[2].UnderlyingNode),
+                                _nodes[0].UnderlyingNode!,
+                                _nodes[1].UnderlyingNode!,
+                                _nodes[2].UnderlyingNode!),
                             position: 0, index: 0);
                     default:
                         {
                             var tmp = new ArrayElement<GreenNode>[_count];
                             for (int i = 0; i < _count; i++)
                             {
-                                tmp[i].Value = _nodes[i].UnderlyingNode;
+                                tmp[i].Value = _nodes[i].UnderlyingNode!;
                             }
 
                             return new SyntaxTriviaList(default(SyntaxToken),

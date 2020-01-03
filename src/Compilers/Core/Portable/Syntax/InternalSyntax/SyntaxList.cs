@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.Syntax.InternalSyntax
         {
         }
 
-        internal SyntaxList(DiagnosticInfo[] diagnostics, SyntaxAnnotation[] annotations)
+        internal SyntaxList(DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations)
             : base(GreenNode.ListKind, diagnostics, annotations)
         {
         }

@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,7 +23,7 @@ namespace Microsoft.CodeAnalysis
     {
         public static SyntaxTriviaList Empty => default(SyntaxTriviaList);
 
-        internal SyntaxTriviaList(in SyntaxToken token, GreenNode node, int position, int index = 0)
+        internal SyntaxTriviaList(in SyntaxToken token, GreenNode? node, int position, int index = 0)
         {
             Token = token;
             Node = node;
@@ -29,7 +31,7 @@ namespace Microsoft.CodeAnalysis
             Index = index;
         }
 
-        internal SyntaxTriviaList(in SyntaxToken token, GreenNode node)
+        internal SyntaxTriviaList(in SyntaxToken token, GreenNode? node)
         {
             Token = token;
             Node = node;
@@ -49,7 +51,7 @@ namespace Microsoft.CodeAnalysis
         /// Creates a list of trivia.
         /// </summary>
         /// <param name="trivias">An array of trivia.</param>
-        public SyntaxTriviaList(params SyntaxTrivia[] trivias)
+        public SyntaxTriviaList(params SyntaxTrivia[]? trivias)
             : this(default, CreateNode(trivias), 0, 0)
         {
         }
@@ -63,7 +65,7 @@ namespace Microsoft.CodeAnalysis
         {
         }
 
-        private static GreenNode CreateNode(SyntaxTrivia[] trivias)
+        private static GreenNode? CreateNode(SyntaxTrivia[]? trivias)
         {
             if (trivias == null)
             {
@@ -77,7 +79,7 @@ namespace Microsoft.CodeAnalysis
 
         internal SyntaxToken Token { get; }
 
-        internal GreenNode Node { get; }
+        internal GreenNode? Node { get; }
 
         internal int Position { get; }
 
@@ -342,6 +344,8 @@ namespace Microsoft.CodeAnalysis
         /// <param name="index">The index identifying the element to remove.</param>
         public SyntaxTriviaList RemoveAt(int index)
         {
+            RoslynDebug.Assert(Node is object);
+
             if (index < 0 || index >= this.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
@@ -349,7 +353,7 @@ namespace Microsoft.CodeAnalysis
 
             var list = this.ToList();
             list.RemoveAt(index);
-            return new SyntaxTriviaList(default(SyntaxToken), Node.CreateList(list.Select(n => n.UnderlyingNode)), 0, 0);
+            return new SyntaxTriviaList(default(SyntaxToken), Node.CreateList(list.Select(n => n.UnderlyingNode!)), 0, 0);
         }
 
         /// <summary>
@@ -392,10 +396,11 @@ namespace Microsoft.CodeAnalysis
             var index = this.IndexOf(triviaInList);
             if (index >= 0 && index < this.Count)
             {
+                RoslynDebug.Assert(Node is object);
                 var list = this.ToList();
                 list.RemoveAt(index);
                 list.InsertRange(index, newTrivia);
-                return new SyntaxTriviaList(default(SyntaxToken), Node.CreateList(list.Select(n => n.UnderlyingNode)), 0, 0);
+                return new SyntaxTriviaList(default(SyntaxToken), Node.CreateList(list.Select(n => n.UnderlyingNode!)), 0, 0);
             }
 
             throw new ArgumentOutOfRangeException(nameof(triviaInList));
@@ -427,14 +432,15 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// get the green node at the specific slot
         /// </summary>
-        private GreenNode GetGreenNodeAt(int i)
+        private GreenNode? GetGreenNodeAt(int i)
         {
+            RoslynDebug.Assert(Node is object);
             return GetGreenNodeAt(Node, i);
         }
 
-        private static GreenNode GetGreenNodeAt(GreenNode node, int i)
+        private static GreenNode? GetGreenNodeAt(GreenNode node, int i)
         {
-            Debug.Assert(node.IsList || (i == 0 && !node.IsList));
+            RoslynDebug.Assert(node.IsList || (i == 0 && !node.IsList));
             return node.IsList ? node.GetSlot(i) : node;
         }
 
@@ -453,9 +459,9 @@ namespace Microsoft.CodeAnalysis
             return !left.Equals(right);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            return (obj is SyntaxTriviaList) && Equals((SyntaxTriviaList)obj);
+            return (obj is SyntaxTriviaList list) && Equals(list);
         }
 
         public override int GetHashCode()

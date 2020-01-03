@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +23,7 @@ namespace Microsoft.CodeAnalysis
     {
         internal static readonly Func<SyntaxTrivia, bool> Any = t => true;
 
-        internal SyntaxTrivia(in SyntaxToken token, GreenNode triviaNode, int position, int index)
+        internal SyntaxTrivia(in SyntaxToken token, GreenNode? triviaNode, int position, int index)
         {
             Token = token;
             UnderlyingNode = triviaNode;
@@ -51,7 +53,7 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         public SyntaxToken Token { get; }
 
-        internal GreenNode UnderlyingNode { get; }
+        internal GreenNode? UnderlyingNode { get; }
 
         internal int Position { get; }
 
@@ -192,9 +194,9 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         /// <returns>The child non-terminal node representing the syntax tree structure under this structured
         /// trivia.</returns>
-        public SyntaxNode GetStructure()
+        public SyntaxNode? GetStructure()
         {
-            return HasStructure ? UnderlyingNode.GetStructure(this) : null;
+            return HasStructure ? UnderlyingNode!.GetStructure(this) : null;
         }
 
         /// <summary> 
@@ -377,7 +379,7 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// SyntaxTree which contains current SyntaxTrivia.
         /// </summary>
-        public SyntaxTree SyntaxTree
+        public SyntaxTree? SyntaxTree
         {
             get
             {
@@ -390,7 +392,7 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         public Location GetLocation()
         {
-            return this.SyntaxTree.GetLocation(this.Span);
+            return this.SyntaxTree!.GetLocation(this.Span);
         }
 
         /// <summary>
@@ -400,7 +402,7 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         public IEnumerable<Diagnostic> GetDiagnostics()
         {
-            return this.SyntaxTree.GetDiagnostics(this);
+            return this.SyntaxTree!.GetDiagnostics(this);
         }
 
         /// <summary>
