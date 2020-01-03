@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
@@ -174,6 +175,25 @@ namespace Microsoft.CodeAnalysis
             }
 
             return _nodeOrParent;
+        }
+
+        internal bool AsNode([NotNullWhen(true)] out SyntaxNode? node)
+        {
+            if (IsNode)
+            {
+                node = AsNode();
+                return true;
+            }
+
+            node = null;
+            return false;
+        }
+
+        internal SyntaxNode AsRequiredNode()
+        {
+            var node = AsNode();
+            RoslynDebug.Assert(node is object);
+            return node;
         }
 
         /// <summary>

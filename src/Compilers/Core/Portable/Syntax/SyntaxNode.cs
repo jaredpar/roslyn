@@ -654,9 +654,9 @@ namespace Microsoft.CodeAnalysis
         {
             foreach (var nodeOrToken in this.ChildNodesAndTokens())
             {
-                if (nodeOrToken.IsNode)
+                if (nodeOrToken.AsNode(out var node))
                 {
-                    yield return nodeOrToken.AsNode()!;
+                    yield return node;
                 }
             }
         }
@@ -966,9 +966,9 @@ recurse:
                     var fullWidth = element.FullWidth;
                     if (textOffset < fullWidth)
                     {
-                        if (element.IsNode)
+                        if (element.AsNode(out var elementNode))
                         {
-                            node = element.AsNode()!;
+                            node = elementNode;
                             goto recurse;
                         }
                         else if (element.IsToken)
@@ -1129,7 +1129,7 @@ recurse:
         /// </summary>
         public IEnumerable<SyntaxNode> GetAnnotatedNodes(SyntaxAnnotation syntaxAnnotation)
         {
-            return this.GetAnnotatedNodesAndTokens(syntaxAnnotation).Where(n => n.IsNode).Select(n => n.AsNode()!);
+            return this.GetAnnotatedNodesAndTokens(syntaxAnnotation).Where(n => n.IsNode).Select(n => n.AsRequiredNode());
         }
 
         /// <summary>
@@ -1139,7 +1139,7 @@ recurse:
         /// <returns></returns>
         public IEnumerable<SyntaxNode> GetAnnotatedNodes(string annotationKind)
         {
-            return this.GetAnnotatedNodesAndTokens(annotationKind).Where(n => n.IsNode).Select(n => n.AsNode()!);
+            return this.GetAnnotatedNodesAndTokens(annotationKind).Where(n => n.IsNode).Select(n => n.AsRequiredNode());
         }
 
         /// <summary>
