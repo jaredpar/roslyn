@@ -14,6 +14,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols.Metadata
 
@@ -158,7 +159,7 @@ End Namespace
                     </file></compilation>
             _eventLibRef = CreateEmptyCompilationWithReferences(
                 eventLibSrc,
-                references:={MscorlibRef_v4_0_30316_17626, SystemCoreRef_v4_0_30319_17929},
+                references:={MscorlibRef_v4_0_30316_17626, Net451.SystemCore},
                 options:=TestOptions.ReleaseWinMD).EmitToImageReference()
         End Sub
 
@@ -217,7 +218,7 @@ End Class
                 src,
                 allReferences:={
                     MscorlibRef_v4_0_30316_17626,
-                    SystemCoreRef_v4_0_30319_17929,
+                    Net451.SystemCore,
                     CSharpRef,
                     _eventLibRef,
                     dynamicCommonRef})
@@ -584,7 +585,7 @@ Public Partial Class A
                 src,
                 allReferences:={
                     MscorlibRef_v4_0_30316_17626,
-                    SystemCoreRef_v4_0_30319_17929,
+                    Net451.SystemCore,
                     _eventLibRef})
             verifier.VerifyDiagnostics()
             verifier.VerifyIL("A.Scenario1", <![CDATA[

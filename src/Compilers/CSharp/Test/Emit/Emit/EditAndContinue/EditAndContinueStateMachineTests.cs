@@ -2124,7 +2124,7 @@ class C
             var source1 = MarkedSource(template.Replace("<<VALUE>>", "1"));
             var source2 = MarkedSource(template.Replace("<<VALUE>>", "2"));
 
-            var compilation0 = CreateCompilationWithMscorlib45(new[] { source0.Tree }, new[] { SystemCoreRef, CSharpRef }, options: ComSafeDebugDll);
+            var compilation0 = CreateCompilationWithMscorlib45(new[] { source0.Tree }, new[] { Net451.SystemCore, CSharpRef }, options: ComSafeDebugDll);
             var compilation1 = compilation0.WithSource(source1.Tree);
             var compilation2 = compilation1.WithSource(source2.Tree);
 
@@ -2334,7 +2334,7 @@ class C
     }
 }
 ");
-            var compilation0 = CreateCompilationWithMscorlib45(new[] { source0.Tree }, new[] { SystemCoreRef, CSharpRef }, options: ComSafeDebugDll);
+            var compilation0 = CreateCompilationWithMscorlib45(new[] { source0.Tree }, new[] { Net451.SystemCore, CSharpRef }, options: ComSafeDebugDll);
             var compilation1 = compilation0.WithSource(source1.Tree);
             var compilation2 = compilation0.WithSource(source2.Tree);
 
@@ -3829,7 +3829,7 @@ class C
             var source4 = source0;
             var source5 = source1;
 
-            var compilation0 = CreateCompilationWithMscorlib45(new[] { source0.Tree }, new[] { SystemCoreRef }, options: ComSafeDebugDll);
+            var compilation0 = CreateCompilationWithMscorlib45(new[] { source0.Tree }, new[] { Net451.SystemCore }, options: ComSafeDebugDll);
             var compilation1 = compilation0.WithSource(source1.Tree);
             var compilation2 = compilation0.WithSource(source2.Tree);
             var compilation3 = compilation0.WithSource(source3.Tree);
@@ -4066,7 +4066,7 @@ class Program
     }
 }
 ");
-            var compilation0 = CreateCompilationWithMscorlib45(new[] { source0.Tree }, new[] { SystemCoreRef, CSharpRef }, options: ComSafeDebugDll);
+            var compilation0 = CreateCompilationWithMscorlib45(new[] { source0.Tree }, new[] { Net451.SystemCore, CSharpRef }, options: ComSafeDebugDll);
             var compilation1 = compilation0.WithSource(source1.Tree);
             var compilation2 = compilation1.WithSource(source2.Tree);
 

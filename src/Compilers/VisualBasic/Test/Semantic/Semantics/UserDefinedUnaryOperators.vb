@@ -726,7 +726,7 @@ Module Program
     ]]></file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, references:={SystemCoreRef}, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, references:={TestMetadata.Net451.SystemCore}, options:=TestOptions.ReleaseExe)
 
             CompileAndVerify(compilation,
                              expectedOutput:=

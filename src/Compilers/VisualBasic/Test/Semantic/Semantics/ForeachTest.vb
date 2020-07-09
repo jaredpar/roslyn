@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports VB = Microsoft.CodeAnalysis.VisualBasic
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
@@ -427,7 +428,7 @@ Class C
     End Sub
 End Class
     </file>
-</compilation>, references:={TestBase.LinqAssemblyRef})
+</compilation>, references:={TestMetadata.Net451.SystemCore})
 
             SemanticInfoTypeTestForeach(compilation1, 1, "System.Collections.Generic.IEnumerable(Of String)", "System.Collections.Generic.IEnumerable(Of String)")
 
@@ -898,7 +899,7 @@ End Class
         Public Structure S
         End Structure
     </file>
-    </compilation>, references:={TestBase.LinqAssemblyRef})
+    </compilation>, references:={TestMetadata.Net451.SystemCore})
 
             SemanticInfoTypeTestForeach(compilation1, 1, "System.Collections.Generic.IEnumerable(Of Char)", "System.Collections.Generic.IEnumerable(Of Char)")
             GetDeclareSymbolTestForeach(compilation1, Nothing)

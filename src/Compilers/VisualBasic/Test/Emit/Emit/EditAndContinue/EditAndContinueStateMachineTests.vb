@@ -4330,7 +4330,7 @@ End Class
             Dim source4 = source0
             Dim source5 = source1
 
-            Dim compilation0 = CreateCompilationWithMscorlib45AndVBRuntime({source0.Tree}, {SystemCoreRef}, options:=ComSafeDebugDll)
+            Dim compilation0 = CreateCompilationWithMscorlib45AndVBRuntime({source0.Tree}, {TestMetadata.Net451.SystemCore}, options:=ComSafeDebugDll)
             Dim compilation1 = compilation0.WithSource(source1.Tree)
             Dim compilation2 = compilation0.WithSource(source2.Tree)
             Dim compilation3 = compilation0.WithSource(source3.Tree)

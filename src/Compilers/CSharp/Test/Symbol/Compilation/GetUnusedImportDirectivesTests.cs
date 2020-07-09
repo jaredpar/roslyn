@@ -140,7 +140,7 @@ class Program
                 Diagnostic(ErrorCode.HDN_UnusedUsingDirective, "using System.Threading.Tasks;")
                 );
 
-            comp = comp.WithReferences(comp.References.Concat(SystemCoreRef));
+            comp = comp.WithReferences(comp.References.Concat(TestMetadata.Net451.SystemCore));
             comp.VerifyDiagnostics(
                 // (2,1): info CS8019: Unnecessary using directive.
                 // using System;

@@ -16,6 +16,7 @@ Imports Microsoft.VisualStudio.Debugger.Clr
 Imports Microsoft.VisualStudio.Debugger.Evaluation
 Imports Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports Xunit
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.UnitTests
@@ -304,7 +305,7 @@ class C
 End Class"
             Dim comp = CreateCompilationWithMscorlib40({source}, references:={SystemRuntimeFacadeRef, ValueTupleRef}, options:=TestOptions.DebugDll)
             WithRuntimeInstance(comp,
-                {MscorlibRef, SystemCoreRef, SystemRuntimeFacadeRef, ValueTupleRef},
+                {MscorlibRef, Net451.SystemCore, SystemRuntimeFacadeRef, ValueTupleRef},
                 Sub(runtime)
                     Dim context = CreateMethodContext(runtime, "C.M")
                     Dim errorMessage As String = Nothing
@@ -341,7 +342,7 @@ End Class"
 End Class"
             Dim comp = CreateCompilationWithMscorlib40({source}, references:={SystemRuntimeFacadeRef, ValueTupleRef}, options:=TestOptions.DebugDll)
             WithRuntimeInstance(comp,
-                {MscorlibRef, SystemCoreRef, SystemRuntimeFacadeRef, ValueTupleRef},
+                {MscorlibRef, Net451.SystemCore, SystemRuntimeFacadeRef, ValueTupleRef},
                 Sub(runtime)
                     Dim context = CreateMethodContext(runtime, "C.M")
                     Dim errorMessage As String = Nothing
@@ -495,7 +496,7 @@ End Class"
 End Class"
             Dim comp = CreateCompilationWithMscorlib40({source}, references:={SystemRuntimeFacadeRef, ValueTupleRef}, options:=TestOptions.DebugDll)
             WithRuntimeInstance(comp,
-                {MscorlibRef, SystemCoreRef, SystemRuntimeFacadeRef, ValueTupleRef},
+                {MscorlibRef, Net451.SystemCore, SystemRuntimeFacadeRef, ValueTupleRef},
                 Sub(runtime)
                     Dim context = CreateMethodContext(runtime, "C.M")
                     Dim [alias] = New [Alias](

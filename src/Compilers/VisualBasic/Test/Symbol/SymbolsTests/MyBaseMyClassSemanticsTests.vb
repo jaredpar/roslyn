@@ -13,6 +13,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.ExtensionMethods
 
@@ -117,7 +118,7 @@ End Module
             Dim spans As New List(Of TextSpan)
             ExtractTextIntervals(text, spans)
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(text, {SystemRef, SystemCoreRef, MsvbRef})
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(text, {SystemRef, Net451.SystemCore, MsvbRef})
             If errors Is Nothing Then
                 CompilationUtils.AssertNoErrors(compilation)
             Else

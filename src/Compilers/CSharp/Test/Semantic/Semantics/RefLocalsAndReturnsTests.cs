@@ -1802,7 +1802,7 @@ public class Test
     }
 
 }";
-            var comp = CreateCompilation(text, targetFramework: TargetFramework.Empty, references: new[] { MscorlibRef, SystemCoreRef });
+            var comp = CreateCompilation(text, targetFramework: TargetFramework.Empty, references: new[] { MscorlibRef, TestMetadata.Net451.SystemCore });
             comp.VerifyDiagnostics(
                 // (16,34): error CS8159: Cannot return the range variable 'ch' by reference
                 //             select(D1)(() => ref ch);

@@ -1003,7 +1003,7 @@ class C
 
         private void VerifyNoThis(string source, string methodName)
         {
-            var comp = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugDll);
+            var comp = CreateCompilationWithMscorlib45(source, new[] { TestMetadata.Net451.SystemCore }, options: TestOptions.DebugDll);
             WithRuntimeInstance(comp, runtime => VerifyNoThis(CreateMethodContext(runtime, methodName)));
         }
 

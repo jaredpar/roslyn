@@ -7834,7 +7834,7 @@ var r11 = from x1 in new[] { 1 is var y11 ? y11 : 0}
             select x1 + y11;
 ";
             {
-                var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.ReleaseExe.WithScriptClassName("Script"), parseOptions: TestOptions.Script);
+                var compilation = CreateCompilationWithMscorlib45(source, new[] { TestMetadata.Net451.SystemCore }, options: TestOptions.ReleaseExe.WithScriptClassName("Script"), parseOptions: TestOptions.Script);
                 compilation.VerifyDiagnostics(
                 // (14,21): error CS0103: The name 'z2' does not exist in the current context
                 //                     z2;
@@ -8086,7 +8086,7 @@ var r11 = from x1 in new[] { 1 is var y11 ? y11 : 0}
             }
 
             {
-                var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.ReleaseExe, parseOptions: TestOptions.RegularPreview);
+                var compilation = CreateCompilationWithMscorlib45(source, new[] { TestMetadata.Net451.SystemCore }, options: TestOptions.ReleaseExe, parseOptions: TestOptions.RegularPreview);
 
                 compilation.VerifyDiagnostics(
                 // (14,21): error CS0103: The name 'z2' does not exist in the current context
@@ -8363,7 +8363,7 @@ static bool Print(object x)
     return true;
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.ReleaseExe.WithScriptClassName("Script"), parseOptions: TestOptions.Script);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { TestMetadata.Net451.SystemCore }, options: TestOptions.ReleaseExe.WithScriptClassName("Script"), parseOptions: TestOptions.Script);
 
             CompileAndVerify(compilation, expectedOutput:
 @"1

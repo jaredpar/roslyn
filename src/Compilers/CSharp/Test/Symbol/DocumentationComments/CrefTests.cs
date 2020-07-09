@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
 using SymbolExtensions = Microsoft.CodeAnalysis.Test.Extensions.SymbolExtensions;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -4959,7 +4960,7 @@ class G<T> { }
 class Other { }
 ";
 
-            var compilation = (Compilation)CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { SystemCoreRef });
+            var compilation = (Compilation)CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { Net451.SystemCore });
             compilation.VerifyDiagnostics(
                 // (6,22): warning CS1574: XML comment has cref attribute 'G()' that could not be resolved
                 // /// Error <see cref="G()"/>.
@@ -4994,7 +4995,7 @@ class Outer<T>
 }
 ";
 
-            var compilation = CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { SystemCoreRef });
+            var compilation = CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { Net451.SystemCore });
             compilation.VerifyDiagnostics(
                 // (6,24): warning CS1574: XML comment has cref attribute 'Outer()' that could not be resolved
                 //         /// <see cref="Outer()"/>
@@ -5031,7 +5032,7 @@ class Outer<T>
 }
 ";
 
-            var compilation = (Compilation)CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { SystemCoreRef });
+            var compilation = (Compilation)CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { Net451.SystemCore });
             compilation.VerifyDiagnostics(
                 // (2,16): warning CS1574: XML comment has cref attribute 'Outer{T}.Outer' that could not be resolved
                 // /// <see cref="Outer{T}.Outer"/>
@@ -5125,7 +5126,7 @@ class C
 }
 ";
 
-            var compilation = CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { SystemCoreRef });
+            var compilation = CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { Net451.SystemCore });
             compilation.VerifyDiagnostics(
                 // (2,16): warning CS1574: XML comment has cref attribute 'dynamic' that could not be resolved
                 // /// <see cref="dynamic"/>
@@ -5147,7 +5148,7 @@ class C
 }
 ";
 
-            var compilation = CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { SystemCoreRef });
+            var compilation = CreateCompilationWithMscorlib40AndDocumentationComments(source, new[] { Net451.SystemCore });
             compilation.VerifyDiagnostics(
                 // (2,16): warning CS1574: XML comment has cref attribute 'dynamic()' that could not be resolved
                 // /// <see cref="dynamic()"/>

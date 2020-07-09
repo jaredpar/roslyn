@@ -42,7 +42,7 @@ lab1:
     End Function
 End Class
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {TestMetadata.Net451.SystemCore})
 
             AssertTheseDiagnostics(compilation,
 <expected>
@@ -68,7 +68,7 @@ Module Module1
     End Sub
 End Module
     </file>
-</compilation>, {MsvbRef, SystemCoreRef}).AssertTheseDiagnostics(<expected>
+</compilation>, {MsvbRef, TestMetadata.Net451.SystemCore}).AssertTheseDiagnostics(<expected>
 BC30518: Overload resolution failed because no accessible 'Where' can be called with these arguments:
         lists.Where(Function(ByVal item) GoTo lab1)
               ~~~~~

@@ -5,6 +5,7 @@
 Imports System.Xml.Linq
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -497,7 +498,7 @@ End Namespace
             {
                 MscorlibRef_v4_0_30316_17626,
                 SystemRef_v4_0_30319_17929,
-                SystemCoreRef_v4_0_30319_17929,
+                Net451.SystemCore,
                 CSharpRef,
                 SystemXmlRef,
                 SystemXmlLinqRef,
@@ -631,7 +632,7 @@ End Namespace
             {
                 MscorlibRef_v4_0_30316_17626,
                 SystemRef_v4_0_30319_17929,
-                SystemCoreRef_v4_0_30319_17929,
+                Net451.SystemCore,
                 CSharpRef,
                 SystemXmlRef,
                 SystemXmlLinqRef,

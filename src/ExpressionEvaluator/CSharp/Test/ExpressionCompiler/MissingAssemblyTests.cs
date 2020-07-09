@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.Debugger.Evaluation;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.UnitTests
 {
@@ -737,12 +738,12 @@ class UseLinq
     bool b = Enumerable.Any<int>(null);
 }";
 
-            var compilation = CreateEmptyCompilation(source, new[] { MscorlibRef, SystemCoreRef });
+            var compilation = CreateEmptyCompilation(source, new[] { MscorlibRef, Net451.SystemCore });
             WithRuntimeInstance(compilation, new[] { MscorlibRef }, runtime =>
             {
                 var context = CreateMethodContext(runtime, "C.M");
 
-                var systemCore = SystemCoreRef.ToModuleInstance();
+                var systemCore = Net451.SystemCore.ToModuleInstance();
                 var fakeSystemLinq = CreateCompilationWithMscorlib45("", assemblyName: "System.Linq").
                     EmitToImageReference().ToModuleInstance();
 

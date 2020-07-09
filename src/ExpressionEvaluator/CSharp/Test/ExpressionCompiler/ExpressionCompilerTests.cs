@@ -6312,7 +6312,7 @@ class C
             var compilation0 = CreateCompilationWithMscorlib45(
                 source,
                 options: TestOptions.DebugDll,
-                references: new[] { SystemCoreRef });
+                references: new[] { TestMetadata.Net451.SystemCore });
 
             WithRuntimeInstance(compilation0, runtime =>
             {

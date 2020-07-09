@@ -11,6 +11,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Partial Public Class GetExtendedSemanticInfoTests
@@ -668,7 +669,7 @@ Module M
 
 End Module
     </file>
-    </compilation>, references:={SystemCoreRef})
+    </compilation>, references:={Net451.SystemCore})
 
             Dim tree = compilation.SyntaxTrees(0)
             Dim model = compilation.GetSemanticModel(tree)
@@ -712,7 +713,7 @@ End Module
             End Class
         End Module
     ]]></file>
-        </compilation>, {SystemCoreRef})
+        </compilation>, {Net451.SystemCore})
 
             AssertTheseDiagnostics(compilation,
 <expected>

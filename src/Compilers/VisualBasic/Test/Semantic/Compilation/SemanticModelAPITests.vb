@@ -4098,7 +4098,7 @@ End Class
                     ]]></file>
                 </compilation>
 
-            Dim comp = CreateCompilationWithMscorlib40AndReferences(source, {SystemCoreRef})
+            Dim comp = CreateCompilationWithMscorlib40AndReferences(source, {TestMetadata.Net451.SystemCore})
             comp.VerifyDiagnostics()
 
             Dim tree = comp.SyntaxTrees.Single()

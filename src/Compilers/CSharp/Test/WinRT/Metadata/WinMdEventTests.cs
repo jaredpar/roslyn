@@ -12,6 +12,7 @@ using Roslyn.Test.Utilities;
 using System;
 using System.Linq;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -235,7 +236,7 @@ public partial class B : I
 }";
             _eventLibRef = CreateEmptyCompilation(
                 eventLibSrc,
-                references: new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef_v4_0_30319_17929 },
+                references: new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore },
                 options:
                     new CSharpCompilationOptions(
                         OutputKind.WindowsRuntimeMetadata,
@@ -331,7 +332,7 @@ class C
                 targetFramework: TargetFramework.Empty,
                 references: new[] {
                     MscorlibRef_v4_0_30316_17626,
-                    SystemCoreRef_v4_0_30319_17929,
+                    Net451.SystemCore,
                     CSharpRef,
                     _eventLibRef,
                     dynamicCommonRef
@@ -2444,7 +2445,7 @@ public partial class A : I
                 targetFramework: TargetFramework.Empty,
                 references: new[] {
                     MscorlibRef_v4_0_30316_17626,
-                    SystemCoreRef_v4_0_30319_17929,
+                    Net451.SystemCore,
                     _eventLibRef,
                 },
                 verify: OSVersion.IsWin8 ? Verification.Passes : Verification.Fails);

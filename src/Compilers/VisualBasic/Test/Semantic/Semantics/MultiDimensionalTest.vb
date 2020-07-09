@@ -2709,7 +2709,7 @@ End Class
 </compilation>
 
             Dim compilation = CreateCompilationWithCustomILSource(source, ilSource, includeVbRuntime:=True,
-                                                                  additionalReferences:={SystemCoreRef}, options:=TestOptions.ReleaseExe)
+                                                                  additionalReferences:={TestMetadata.Net451.SystemCore}, options:=TestOptions.ReleaseExe)
 
             Dim p = compilation.GetTypeByMetadataName("Program")
             Dim a1 = DirectCast(p.GetMember(Of MethodSymbol)("Test1").GetAttributes().Single().ConstructorArguments.Single().Value, ArrayTypeSymbol)

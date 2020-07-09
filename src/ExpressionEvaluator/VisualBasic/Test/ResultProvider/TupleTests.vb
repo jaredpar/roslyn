@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests
 Imports Microsoft.VisualStudio.Debugger.Clr
 Imports Microsoft.VisualStudio.Debugger.Evaluation
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports System.Collections.Immutable
 Imports Xunit
 
@@ -107,7 +108,7 @@ End Class"
 }"
             Dim assembly0 = GenerateTupleAssembly()
             Dim reference0 = AssemblyMetadata.CreateFromImage(assembly0).GetReference()
-            Dim compilation1 = CreateCSharpCompilation(source, references:={TestBase.MscorlibRef, TestBase.SystemCoreRef, reference0})
+            Dim compilation1 = CreateCSharpCompilation(source, references:={TestMetadata.Net451.mscorlib, TestMetadata.Net451.SystemCore, reference0})
             Dim assembly1 = compilation1.EmitToArray()
             Dim runtime = New DkmClrRuntimeInstance(ReflectionUtilities.GetMscorlib(ReflectionUtilities.Load(assembly0), ReflectionUtilities.Load(assembly1)))
             Using runtime.Load()
@@ -147,7 +148,7 @@ class C
 }"
             Dim assembly0 = GenerateTupleAssembly()
             Dim reference0 = AssemblyMetadata.CreateFromImage(assembly0).GetReference()
-            Dim compilation1 = CreateCSharpCompilation(source, references:={TestBase.MscorlibRef, TestBase.SystemCoreRef, reference0})
+            Dim compilation1 = CreateCSharpCompilation(source, references:={TestMetadata.Net451.mscorlib, TestMetadata.Net451.SystemCore, reference0})
             Dim assembly1 = compilation1.EmitToArray()
             Dim runtime = New DkmClrRuntimeInstance(ReflectionUtilities.GetMscorlib(ReflectionUtilities.Load(assembly0), ReflectionUtilities.Load(assembly1)))
             Using runtime.Load()

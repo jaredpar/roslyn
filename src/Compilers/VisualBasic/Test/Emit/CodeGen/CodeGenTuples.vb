@@ -26,7 +26,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
                                                                                                 SystemRuntimeFacadeRef,
                                                                                                 MscorlibRef,
                                                                                                 SystemRef,
-                                                                                                SystemCoreRef,
+                                                                                                Net451.SystemCore,
                                                                                                 MsvbRef}
 
         ReadOnly s_trivial2uple As String = "
@@ -6383,7 +6383,7 @@ Class C
 End Class
     </file>
 </compilation>,
-                references:={ValueTupleRef, SystemRuntimeFacadeRef, LinqAssemblyRef},
+                references:={ValueTupleRef, SystemRuntimeFacadeRef, Net451.SystemCore},
                 parseOptions:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.VisualBasic15_3),
                 sourceSymbolValidator:=
                     Sub(m As ModuleSymbol)
@@ -6417,7 +6417,7 @@ Class C
 End Class
     </file>
 </compilation>,
-                references:={ValueTupleRef, SystemRuntimeFacadeRef, LinqAssemblyRef},
+                references:={ValueTupleRef, SystemRuntimeFacadeRef, Net451.SystemCore},
                 parseOptions:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.VisualBasic15_3),
                 expectedOutput:="1")
 
@@ -6477,7 +6477,7 @@ End Class
     </file>
                          </compilation>
             Dim comp = CreateCompilationWithMscorlib40AndVBRuntime(source,
-                additionalRefs:={ValueTupleRef, SystemRuntimeFacadeRef, SystemCoreRef},
+                additionalRefs:={ValueTupleRef, SystemRuntimeFacadeRef, Net451.SystemCore},
                 parseOptions:=TestOptions.Regular.WithLanguageVersion(LanguageVersion.VisualBasic15))
             comp.AssertTheseEmitDiagnostics(<errors/>)
         End Sub

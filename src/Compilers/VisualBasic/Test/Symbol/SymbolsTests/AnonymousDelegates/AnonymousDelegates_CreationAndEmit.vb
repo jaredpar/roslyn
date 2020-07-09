@@ -152,7 +152,7 @@ End Module
     </file>
 </compilation>
 
-            CompileAndVerify(compilationDef, options:=TestOptions.ReleaseExe, references:={SystemCoreRef},
+            CompileAndVerify(compilationDef, options:=TestOptions.ReleaseExe, references:={TestMetadata.Net451.SystemCore},
                              expectedOutput:=
             <![CDATA[
 1
@@ -293,7 +293,7 @@ End Module
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {SystemCoreRef}, TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {TestMetadata.Net451.SystemCore}, TestOptions.ReleaseExe)
 
             Dim tree As SyntaxTree = (From t In compilation.SyntaxTrees Where t.FilePath = "a.vb").Single()
 

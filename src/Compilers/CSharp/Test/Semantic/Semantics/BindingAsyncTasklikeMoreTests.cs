@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Semantics
 {
@@ -464,7 +465,7 @@ class MyTaskMethodBuilder<T>
 
 namespace System.Runtime.CompilerServices { class AsyncMethodBuilderAttribute : System.Attribute { public AsyncMethodBuilderAttribute(System.Type t) { } } }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, SystemCoreRef });
+            var compilation = CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, Net451.SystemCore });
             var verifier = CompileAndVerify(
                 compilation,
                 expectedSignatures: new[]

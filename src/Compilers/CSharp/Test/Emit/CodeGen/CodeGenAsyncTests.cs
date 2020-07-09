@@ -1958,7 +1958,7 @@ class Driver
         t.Run(6);
     }
 }";
-            CompileAndVerifyWithMscorlib40(source, new[] { CSharpRef, SystemCoreRef });
+            CompileAndVerifyWithMscorlib40(source, new[] { CSharpRef, Net451.SystemCore });
         }
 
         [Fact]
@@ -4324,7 +4324,7 @@ System.Console.WriteLine(x);";
         [Fact]
         public void AwaitInInteractiveExpression()
         {
-            var references = new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef };
+            var references = new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore };
             var source0 =
 @"static async System.Threading.Tasks.Task<int> F()
 {
@@ -4340,7 +4340,7 @@ System.Console.WriteLine(x);";
         [Fact]
         public void AwaitInInteractiveGlobalStatement()
         {
-            var references = new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef };
+            var references = new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore };
             var source0 =
 @"await System.Threading.Tasks.Task.FromResult(5);";
             var s0 = CSharpCompilation.CreateScriptCompilation("s0.dll", SyntaxFactory.ParseSyntaxTree(source0, options: TestOptions.Script), references);

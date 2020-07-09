@@ -25,6 +25,7 @@ using Roslyn.Test.PdbUtilities;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.UnitTests
 {
@@ -877,7 +878,7 @@ public class B
             var compilationB = CreateCompilationWithMscorlib40AndSystemCore(sourceB, options: TestOptions.DebugDll, references: new[] { moduleA.GetReference() });
             var moduleB = compilationB.ToModuleInstance();
 
-            var runtime = CreateRuntimeInstance(new[] { MscorlibRef.ToModuleInstance(), SystemCoreRef.ToModuleInstance(), moduleA, moduleB });
+            var runtime = CreateRuntimeInstance(new[] { MscorlibRef.ToModuleInstance(), Net451.SystemCore.ToModuleInstance(), moduleA, moduleB });
             ImmutableArray<MetadataBlock> blocks;
             Guid moduleVersionId;
             ISymUnmanagedReader symReader;
@@ -1173,7 +1174,7 @@ public class B
             var runtime = CreateRuntimeInstance(new[]
             {
                 MscorlibRef.ToModuleInstance(),
-                SystemCoreRef.ToModuleInstance(),
+                Net451.SystemCore.ToModuleInstance(),
                 moduleA,
                 moduleB,
                 ExpressionCompilerTestHelpers.IntrinsicAssemblyReference.ToModuleInstance()

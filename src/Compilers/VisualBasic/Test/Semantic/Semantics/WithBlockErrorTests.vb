@@ -6,6 +6,7 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -574,7 +575,7 @@ Structure Clazz
     End Sub
 End Structure
     </file>
-    </compilation>, {SystemCoreRef})
+    </compilation>, {Net451.SystemCore})
             CompilationUtils.AssertTheseDiagnostics(compilation,
 <expected>
 BC36535: Instance members and 'Me' cannot be used within query expressions in structures.
@@ -980,7 +981,7 @@ Class Clazz
 End Class
 
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
             CompilationUtils.AssertTheseDiagnostics(compilation,
 <errors>
 BC30068: Expression is a value and therefore cannot be the target of an assignment.

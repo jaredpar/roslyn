@@ -4076,7 +4076,7 @@ static class Extension
     }
 }";
             var comp = CreateEmptyCompilation(source, parseOptions: TestOptions.Regular.WithLanguageVersion(LanguageVersion.CSharp7),
-                references: new[] { MscorlibRef, ValueTupleRef, SystemRuntimeFacadeRef, SystemCoreRef });
+                references: new[] { MscorlibRef, ValueTupleRef, SystemRuntimeFacadeRef, Net451.SystemCore });
             comp.VerifyEmitDiagnostics();
         }
 
@@ -19307,7 +19307,7 @@ public class Derived : Base
     public override (dynamic notA, dynamic) M6() { return (1, 2); }
 }
 ";
-            var comp = CreateCompilationWithMscorlib40(source, references: new[] { ValueTupleRef, SystemRuntimeFacadeRef, CSharpRef, SystemCoreRef });
+            var comp = CreateCompilationWithMscorlib40(source, references: new[] { ValueTupleRef, SystemRuntimeFacadeRef, CSharpRef, Net451.SystemCore });
             comp.VerifyDiagnostics(
                 // (14,42): error CS8139: 'Derived.M2()': cannot change tuple element names when overriding inherited member 'Base.M2()'
                 //     public override (int notA, int notB) M2() { return (1, 2); }

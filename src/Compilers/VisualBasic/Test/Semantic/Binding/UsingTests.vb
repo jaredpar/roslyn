@@ -1407,7 +1407,7 @@ Class Program
             End Sub
         End Class
         </file>
-    </compilation>, {SystemCoreRef})
+    </compilation>, {TestMetadata.Net451.SystemCore})
             VerifyDiagnostics(compilation1)
         End Sub
 
@@ -1443,7 +1443,7 @@ Public Class MyManagedClass
     End Sub
 End Class
         </file>
-    </compilation>, {SystemCoreRef})
+    </compilation>, {TestMetadata.Net451.SystemCore})
             VerifyDiagnostics(compilation1, Diagnostic(ERRID.ERR_ExpectedExpression, ""),
     Diagnostic(ERRID.ERR_InvalidEndFunction, "End Function"),
     Diagnostic(ERRID.ERR_StrictDisallowImplicitObjectLambda, "x"),

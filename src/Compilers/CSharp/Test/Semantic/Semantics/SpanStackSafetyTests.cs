@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -1202,7 +1203,7 @@ namespace System
 }";
             var reference = CreateEmptyCompilation(
                 spanSource,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef },
                 options: TestOptions.ReleaseDll);
 
             reference.VerifyDiagnostics();
@@ -1219,7 +1220,7 @@ class Program
 ";
             var comp = CreateEmptyCompilation(
                 text,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef, reference.EmitToImageReference() },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef, reference.EmitToImageReference() },
                 options: TestOptions.ReleaseExe);
 
             comp.VerifyDiagnostics();
@@ -1236,7 +1237,7 @@ namespace System
 }";
             var reference = CreateEmptyCompilation(
                 spanSource,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef },
                 options: TestOptions.ReleaseDll);
 
             reference.VerifyDiagnostics();
@@ -1253,7 +1254,7 @@ class Program
 ";
             var comp = CreateEmptyCompilation(
                 text,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef, reference.EmitToImageReference() },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef, reference.EmitToImageReference() },
                 options: TestOptions.ReleaseExe);
 
             comp.VerifyDiagnostics(
@@ -1280,7 +1281,7 @@ namespace System
 }";
             var reference = CreateEmptyCompilation(
                 spanSource,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef },
                 options: TestOptions.UnsafeReleaseDll);
 
             reference.VerifyDiagnostics();
@@ -1297,7 +1298,7 @@ class Program
 ";
             var comp = CreateEmptyCompilation(
                 text,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef, reference.EmitToImageReference() },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef, reference.EmitToImageReference() },
                 options: TestOptions.ReleaseExe);
 
             comp.VerifyDiagnostics(
@@ -1321,7 +1322,7 @@ namespace System
 }";
             var reference = CreateEmptyCompilation(
                 spanSource,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef },
                 options: TestOptions.UnsafeReleaseDll);
 
             reference.VerifyDiagnostics();
@@ -1338,7 +1339,7 @@ class Program
 ";
             var comp = CreateEmptyCompilation(
                 text,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef, reference.EmitToImageReference() },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef, reference.EmitToImageReference() },
                 options: TestOptions.ReleaseExe);
 
             comp.VerifyDiagnostics(

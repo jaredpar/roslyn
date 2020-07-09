@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.Metadata.Tools;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.PDB
 {
@@ -529,7 +530,7 @@ class TestCase
             var compilation = CreateCompilationWithMscorlib45(
                     text,
                     options: TestOptions.DebugDll,
-                    references: new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929, CSharpRef })
+                    references: new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore, CSharpRef })
                 .VerifyDiagnostics();
 
             compilation.VerifyPdb(@"
@@ -1340,7 +1341,7 @@ class C
     }
 }
 ");
-            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef, CSharpRef }, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
+            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore, CSharpRef }, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
             {
                 Assert.Equal(new[]
                 {
@@ -1435,7 +1436,7 @@ class C
     }
 }
 ";
-            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef, CSharpRef }, options: TestOptions.ReleaseDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
+            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore, CSharpRef }, options: TestOptions.ReleaseDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
             {
                 Assert.Equal(new[]
                 {
@@ -1521,7 +1522,7 @@ class C
     }
 }
 ");
-            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef, CSharpRef }, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
+            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore, CSharpRef }, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
             {
                 Assert.Equal(new[]
                 {
@@ -1662,7 +1663,7 @@ class C
         return x;
     }
 }");
-            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef, CSharpRef }, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
+            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore, CSharpRef }, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
             {
                 Assert.Equal(new[]
                 {
@@ -1913,7 +1914,7 @@ class C
     static int H(ref int a, int b, ref int c, int d) => 1;
     static int F(int a) => a;
 }");
-            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef, CSharpRef }, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
+            var v = CompileAndVerify(CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore, CSharpRef }, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All)), symbolValidator: module =>
             {
                 Assert.Equal(new[]
                 {

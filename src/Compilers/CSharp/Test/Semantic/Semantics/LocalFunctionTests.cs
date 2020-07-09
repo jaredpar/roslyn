@@ -4770,7 +4770,7 @@ class C
         L(m => L(d => d, m), null);
     }
 }";
-            var comp = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef, CSharpRef });
+            var comp = CreateCompilationWithMscorlib45(source, references: new[] { TestMetadata.Net451.SystemCore, TestMetadata.Net451.MicrosoftCSharp });
             comp.VerifyEmitDiagnostics(
                 // (8,18): error CS1977: Cannot use a lambda expression as an argument to a dynamically dispatched operation without first casting it to a delegate or expression tree type.
                 //         L(m => L(d => d, m), null);
@@ -4795,7 +4795,7 @@ class C
             => await L(async m => L(async d => await d, m), p);
     }
 }";
-            var comp = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef, CSharpRef });
+            var comp = CreateCompilationWithMscorlib45(source, references: new[] { TestMetadata.Net451.SystemCore, CSharpRef });
             comp.VerifyEmitDiagnostics(
                 // (8,37): error CS1977: Cannot use a lambda expression as an argument to a dynamically dispatched operation without first casting it to a delegate or expression tree type.
                 //             => await L(async m => L(async d => await d, m), p);

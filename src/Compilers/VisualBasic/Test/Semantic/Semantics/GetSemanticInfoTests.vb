@@ -3768,7 +3768,7 @@ Module M
     End Sub
 End Module
 ]]></file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
             compilation.AssertTheseDiagnostics(<errors><![CDATA[
 BC30124: Property without a 'ReadOnly' or 'WriteOnly' specifier must provide both a 'Get' and a 'Set'.
     Property P As Object
@@ -5602,7 +5602,7 @@ Module M
     End Sub
 End Module
     ]]></file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
 
             CompileAndVerify(compilation)
 

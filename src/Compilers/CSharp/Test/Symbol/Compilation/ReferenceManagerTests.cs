@@ -1340,7 +1340,7 @@ public class A
         {
             var c1 = CSharpCompilation.Create("goo",
                 syntaxTrees: new[] { Parse("class C {}") },
-                references: new[] { MscorlibRef, SystemCoreRef, SystemRef });
+                references: new[] { MscorlibRef, Net451.SystemCore, SystemRef });
 
             var a1 = c1.SourceAssembly;
 

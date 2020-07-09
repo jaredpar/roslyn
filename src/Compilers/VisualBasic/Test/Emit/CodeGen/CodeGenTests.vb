@@ -12539,7 +12539,7 @@ End Module
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.ReleaseExe)
 
             Dim verifier = CompileAndVerify(compilation,
             <![CDATA[

@@ -5276,7 +5276,7 @@ End Module
     </file>
 </compilation>
 
-            CompileAndVerify(compilationDef, references:={LinqAssemblyRef},
+            CompileAndVerify(compilationDef, references:={Net451.SystemCore},
                                 expectedOutput:=
             <![CDATA[
 { s = 1, t = 2 }
@@ -5565,7 +5565,7 @@ End Module
     </file>
 </compilation>
 
-            CompileAndVerify(compilationDef, references:={LinqAssemblyRef},
+            CompileAndVerify(compilationDef, references:={Net451.SystemCore},
                                 expectedOutput:=
             <![CDATA[
 { s1 = 1, s2 = 2 }
@@ -6626,7 +6626,7 @@ End Module
     </file>
 </compilation>
 
-            CompileAndVerify(compilationDef, references:={LinqAssemblyRef},
+            CompileAndVerify(compilationDef, references:={Net451.SystemCore},
                                 expectedOutput:=
             <![CDATA[
 { s1 = 1, s2 = 2 }
@@ -7421,7 +7421,7 @@ End Module
     </file>
 </compilation>
 
-            CompileAndVerify(compilationDef, references:={LinqAssemblyRef},
+            CompileAndVerify(compilationDef, references:={Net451.SystemCore},
                                 expectedOutput:=
             <![CDATA[
 { s1 = 3, s2 = 3 }
@@ -8782,7 +8782,7 @@ End Module
     </file>
 </compilation>
 
-            CompileAndVerify(compilationDef, references:={LinqAssemblyRef},
+            CompileAndVerify(compilationDef, references:={Net451.SystemCore},
                                 expectedOutput:=
             <![CDATA[
 { s1 = 1, Group = System.Int32[] }
@@ -9969,7 +9969,7 @@ End Module
     </file>
 </compilation>
 
-            CompileAndVerify(compilationDef, references:={LinqAssemblyRef},
+            CompileAndVerify(compilationDef, references:={Net451.SystemCore},
                                 expectedOutput:=
             <![CDATA[
 { s1 = 1, Group = System.Int32[] }
@@ -11613,7 +11613,7 @@ End Module
     </file>
 </compilation>
 
-            CompileAndVerify(compilationDef, references:={LinqAssemblyRef},
+            CompileAndVerify(compilationDef, references:={Net451.SystemCore},
                                 expectedOutput:=
             <![CDATA[
 2

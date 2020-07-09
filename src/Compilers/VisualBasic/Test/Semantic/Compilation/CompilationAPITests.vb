@@ -2098,16 +2098,16 @@ End Class
             Dim c2 = c1.WithReferences({MscorlibRef})
             Assert.False(c1.ReferenceManagerEquals(c2))
 
-            Dim c3 = c2.WithReferences({MscorlibRef, SystemCoreRef})
+            Dim c3 = c2.WithReferences({MscorlibRef, Net451.SystemCore})
             Assert.False(c3.ReferenceManagerEquals(c2))
 
-            c3 = c2.AddReferences(SystemCoreRef)
+            c3 = c2.AddReferences(Net451.SystemCore)
             Assert.False(c3.ReferenceManagerEquals(c2))
 
             c3 = c2.RemoveAllReferences()
             Assert.False(c3.ReferenceManagerEquals(c2))
 
-            c3 = c2.ReplaceReference(MscorlibRef, SystemCoreRef)
+            c3 = c2.ReplaceReference(MscorlibRef, Net451.SystemCore)
             Assert.False(c3.ReferenceManagerEquals(c2))
 
             c3 = c2.RemoveReferences(MscorlibRef)

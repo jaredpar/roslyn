@@ -5,6 +5,7 @@
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Roslyn.Test.Utilities
 Imports System.Xml.Linq
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.PDB
     Public Class PDBLambdaTests
@@ -573,7 +574,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.VerifyDiagnostics()
 
@@ -729,7 +730,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.VerifyDiagnostics()
 
@@ -810,7 +811,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.VerifyDiagnostics()
 
@@ -919,7 +920,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -1009,7 +1010,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -1108,7 +1109,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.VerifyDiagnostics()
 
@@ -1198,7 +1199,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -1288,7 +1289,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -1379,7 +1380,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -1490,7 +1491,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -1612,7 +1613,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -1725,7 +1726,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -1899,7 +1900,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2020,7 +2021,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2120,7 +2121,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2220,7 +2221,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2320,7 +2321,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2398,7 +2399,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2477,7 +2478,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2579,7 +2580,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2699,7 +2700,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2821,7 +2822,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -2930,7 +2931,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -3050,7 +3051,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -3168,7 +3169,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -3279,7 +3280,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -3409,7 +3410,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -3549,7 +3550,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -3669,7 +3670,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -3808,7 +3809,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -3951,7 +3952,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -4044,7 +4045,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 
@@ -4144,7 +4145,7 @@ Module Module1
 End Module
 ]]></file>
 </compilation>
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, TestOptions.DebugDll)
 
             compilation.AssertTheseDiagnostics(<expected></expected>)
 

@@ -13396,7 +13396,7 @@ Imports System.Runtime.CompilerServices
 <Assembly: InternalsVisibleTo("Test, CuLTure=EN")>                   ' error
 <Assembly: InternalsVisibleTo("Test, PublicKeyToken=null")>          ' ok
         ]]></file>
-    </compilation>, {SystemCoreRef})
+    </compilation>, {Net451.SystemCore})
 
             ' Tested against Dev12
             compilation.VerifyDiagnostics(
@@ -13425,7 +13425,7 @@ Imports System.Runtime.CompilerServices
 <Assembly: InternalsVisibleTo("Test, Bar")>                                 
 <Assembly: InternalsVisibleTo("Test, Version")>                           
 ]]></file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
 
             ' Tested against Dev12
             compilation.VerifyDiagnostics(
@@ -23814,7 +23814,7 @@ Friend MustOverride ReadOnly Property P
 ]]>
             Dim comp = CreateCompilationWithMscorlib45(
                 {VisualBasicSyntaxTree.ParseText(source.Value, TestOptions.Script)},
-                references:={SystemCoreRef})
+                references:={Net451.SystemCore})
             comp.AssertTheseDiagnostics(<expected>
 BC30607: 'NotInheritable' classes cannot have members declared 'MustOverride'.
 Friend MustOverride Function F() As Object
@@ -23834,7 +23834,7 @@ Friend MustOverride ReadOnly Property P
             Dim submission = VisualBasicCompilation.CreateScriptCompilation(
                 "s0.dll",
                 syntaxTree:=Parse(source.Value, TestOptions.Script),
-                references:={MscorlibRef, SystemCoreRef})
+                references:={MscorlibRef, Net451.SystemCore})
             submission.AssertTheseDiagnostics(<expected>
 BC30607: 'NotInheritable' classes cannot have members declared 'MustOverride'.
 Friend MustOverride Function F() As Object

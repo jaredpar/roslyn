@@ -1978,7 +1978,7 @@ namespace System.Runtime.CompilerServices
             var textWitSpan = new string[] { text, SpanSource };
             var comp = CreateEmptyCompilation(
                 textWitSpan,
-                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, SystemCoreRef, CSharpRef },
+                references: new List<MetadataReference>() { MscorlibRef_v4_0_30316_17626, Net451.SystemCore, CSharpRef },
                 options: options ?? TestOptions.UnsafeReleaseDll,
                 parseOptions: parseOptions);
 

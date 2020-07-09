@@ -18,6 +18,7 @@ using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
 using static Roslyn.Test.Utilities.SigningTestHelpers;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -1905,7 +1906,7 @@ public class C : B
             comp2.VerifyDiagnostics();
             var ref2 = new CSharpCompilationReference(comp2);
 
-            var comp3 = CreateCompilationWithMscorlib45(source3, new[] { SystemCoreRef, ref1, ref2 }, options: TestOptions.SigningReleaseDll, assemblyName: "asm3", parseOptions: parseOptions);
+            var comp3 = CreateCompilationWithMscorlib45(source3, new[] { (MetadataReference)Net451.SystemCore, ref1, ref2 }, options: TestOptions.SigningReleaseDll, assemblyName: "asm3", parseOptions: parseOptions);
             comp3.VerifyDiagnostics();
 
             // Note: calls B.M, not A.M, since asm1 is not accessible.
@@ -2027,7 +2028,7 @@ public class D : C
             comp3.VerifyDiagnostics();
             var ref3 = new CSharpCompilationReference(comp3);
 
-            var comp4 = CreateCompilationWithMscorlib45(source4, new[] { SystemCoreRef, ref1, ref2, ref3 }, options: TestOptions.SigningReleaseDll, assemblyName: "asm4", parseOptions: parseOptions);
+            var comp4 = CreateCompilationWithMscorlib45(source4, new[] { (MetadataReference)Net451.SystemCore, ref1, ref2, ref3 }, options: TestOptions.SigningReleaseDll, assemblyName: "asm4", parseOptions: parseOptions);
             comp4.VerifyDiagnostics();
 
             // Note: calls C.M, not A.M, since asm2 is not accessible (stops search).

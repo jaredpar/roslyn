@@ -12,6 +12,7 @@ Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
 
@@ -329,7 +330,7 @@ End Class
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                references:={SystemCoreRef, MsvbRef},
+                references:={Net451.SystemCore, MsvbRef},
                 options:=TestOptions.ReleaseDll)
 
             Dim MyTemplate = MyTemplateTests.GetMyTemplateTree(compilation)
@@ -381,7 +382,7 @@ End Namespace
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                references:={SystemCoreRef, MsvbRef},
+                references:={Net451.SystemCore, MsvbRef},
                 options:=TestOptions.ReleaseDll)
 
             compilation.VerifyDiagnostics()
@@ -426,7 +427,7 @@ End Class
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                references:={SystemCoreRef, MsvbRef},
+                references:={Net451.SystemCore, MsvbRef},
                 options:=TestOptions.ReleaseDll)
 
             compilation.VerifyDiagnostics()
@@ -448,7 +449,7 @@ End Class
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                references:={SystemCoreRef, MsvbRef},
+                references:={Net451.SystemCore, MsvbRef},
                 options:=TestOptions.ReleaseDll)
 
             compilation.VerifyDiagnostics()
@@ -523,7 +524,7 @@ End Enum
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                    references:={SystemCoreRef, MsvbRef},
+                    references:={Net451.SystemCore, MsvbRef},
                     options:=TestOptions.ReleaseDll)
 
             compilation.VerifyDiagnostics()
@@ -545,7 +546,7 @@ End Class
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                    references:={SystemCoreRef, MsvbRef},
+                    references:={Net451.SystemCore, MsvbRef},
                     options:=TestOptions.ReleaseDll)
 
             compilation.VerifyDiagnostics()
@@ -591,7 +592,7 @@ End Class
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                    references:={SystemCoreRef, MsvbRef},
+                    references:={Net451.SystemCore, MsvbRef},
                     options:=TestOptions.ReleaseDll)
 
             compilation.VerifyDiagnostics()
@@ -615,7 +616,7 @@ End Namespace
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                    references:={SystemCoreRef, MsvbRef},
+                    references:={Net451.SystemCore, MsvbRef},
                     options:=TestOptions.ReleaseDll)
 
             compilation.VerifyDiagnostics()
@@ -648,7 +649,7 @@ End Class
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                    references:={SystemCoreRef, MsvbRef},
+                    references:={Net451.SystemCore, MsvbRef},
                     options:=TestOptions.ReleaseDll)
 
             compilation.VerifyDiagnostics()
@@ -670,7 +671,7 @@ End Class
             ' Verify, not configurable enabled diagnostic is always reported and disabled diagnostic is never reported..
             Dim options = TestOptions.ReleaseDll
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                    references:={SystemCoreRef, MsvbRef},
+                    references:={Net451.SystemCore, MsvbRef},
                     options:=options)
 
             compilation.VerifyDiagnostics()
@@ -683,7 +684,7 @@ End Class
             options = TestOptions.ReleaseDll.WithSpecificDiagnosticOptions(specificDiagOptions)
 
             compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                    references:={SystemCoreRef, MsvbRef},
+                    references:={Net451.SystemCore, MsvbRef},
                     options:=options)
 
             compilation.VerifyDiagnostics()
@@ -696,7 +697,7 @@ End Class
             options = TestOptions.ReleaseDll.WithSpecificDiagnosticOptions(specificDiagOptions)
 
             compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                    references:={SystemCoreRef, MsvbRef},
+                    references:={Net451.SystemCore, MsvbRef},
                     options:=options)
 
             compilation.VerifyDiagnostics()
@@ -717,7 +718,7 @@ End Class
                               </file>
                           </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources, references:={SystemCoreRef, MsvbRef})
+            Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources, references:={Net451.SystemCore, MsvbRef})
 
             compilation.VerifyDiagnostics()
             compilation.VerifyAnalyzerDiagnostics({analyzer}, Nothing, Nothing,
@@ -739,7 +740,7 @@ End Class
                               </file>
                           </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources, references:={SystemCoreRef, MsvbRef})
+            Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources, references:={Net451.SystemCore, MsvbRef})
 
             compilation.VerifyDiagnostics()
             compilation.VerifyAnalyzerDiagnostics({analyzer}, Nothing, Nothing,

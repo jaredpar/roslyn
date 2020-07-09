@@ -17,6 +17,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics.OverloadResolutionTestHelpers
 
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
 
@@ -90,7 +91,7 @@ End Class
                 syntaxTrees:={VisualBasicSyntaxTree.ParseText(SemanticResourceUtil.OverloadResolutionTestSource),
                               optionStrictOnTree,
                               optionStrictOffTree},
-                references:={MscorlibRef, SystemCoreRef})
+                references:={MscorlibRef, Net451.SystemCore})
 
             Dim sourceModule = DirectCast(c1.Assembly.Modules(0), SourceModuleSymbol)
             Dim optionStrictOnContext = DirectCast(sourceModule.GlobalNamespace.GetTypeMembers("OptionStrictOn").Single().GetMembers("Context").Single(), SourceMethodSymbol)
@@ -5200,7 +5201,7 @@ End Class
 ]]></file>
 </compilation>
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {SystemCoreRef}, TestOptions.ReleaseExe)
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {Net451.SystemCore}, TestOptions.ReleaseExe)
 
             CompileAndVerify(compilation, expectedOutput:="A.Test")
         End Sub
@@ -5605,7 +5606,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib45AndVBRuntime(compilationDef, references:={SystemCoreRef}, options:=TestOptions.ReleaseExe)
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib45AndVBRuntime(compilationDef, references:={Net451.SystemCore}, options:=TestOptions.ReleaseExe)
 
             CompilationUtils.AssertTheseDiagnostics(compilation,
 <expected><![CDATA[
@@ -5718,7 +5719,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib45AndVBRuntime(compilationDef, references:={SystemCoreRef}, options:=TestOptions.ReleaseExe)
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib45AndVBRuntime(compilationDef, references:={Net451.SystemCore}, options:=TestOptions.ReleaseExe)
 
             CompilationUtils.AssertTheseDiagnostics(compilation,
 <expected><![CDATA[

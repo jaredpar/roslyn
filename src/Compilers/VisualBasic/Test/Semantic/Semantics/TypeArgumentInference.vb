@@ -1813,7 +1813,7 @@ End Module
     ]]></file>
 </compilation>
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {SystemCoreRef}, TestOptions.ReleaseExe.WithOptionStrict(OptionStrict.Custom))
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {TestMetadata.Net451.SystemCore}, TestOptions.ReleaseExe.WithOptionStrict(OptionStrict.Custom))
 
             CompileAndVerify(compilation)
 

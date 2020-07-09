@@ -463,7 +463,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
             var comparer = CommonReferenceManager<CS.CSharpCompilation, IAssemblySymbolInternal>.MetadataReferenceEqualityComparer.Instance;
 
             var f1 = MscorlibRef;
-            var f2 = SystemCoreRef;
+            var f2 = Net451.SystemCore;
 
             var i1 = AssemblyMetadata.CreateFromImage(ResourcesNet451.mscorlib).GetReference(display: "i1");
             var i2 = AssemblyMetadata.CreateFromImage(ResourcesNet451.mscorlib).GetReference(display: "i2");
@@ -508,7 +508,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
             var comparer = CommonReferenceManager<CS.CSharpCompilation, IAssemblySymbolInternal>.MetadataReferenceEqualityComparer.Instance;
 
             var f1 = MscorlibRef;
-            var f2 = SystemCoreRef;
+            var f2 = Net451.SystemCore;
 
             var m1a = new MyReference2(@"c:\a\goo.dll", display: "m1a");
             Assert.Equal(@"c:\a\goo.dll", m1a.Display);

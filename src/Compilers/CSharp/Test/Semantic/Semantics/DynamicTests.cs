@@ -12,6 +12,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Test.Extensions;
 using Microsoft.CodeAnalysis.Test.Utilities;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -2881,7 +2882,7 @@ public class Class1
         var result = await GetResponse();
     }
 }";
-            CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugDll).VerifyEmitDiagnostics(
+            CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugDll).VerifyEmitDiagnostics(
                 // (10,28): error CS0656: Missing compiler required member 'Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo.Create'
                 //         var result = await GetResponse();
                 Diagnostic(ErrorCode.ERR_MissingPredefinedMember, "GetResponse()").WithArguments("Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo", "Create").WithLocation(10, 28)
@@ -3777,7 +3778,7 @@ class Program
 
 } // end of class Generic`2
 ";
-            var comp = CreateCompilationWithILAndMscorlib40("", il, references: new[] { SystemCoreRef }, appendDefaultHeader: false);
+            var comp = CreateCompilationWithILAndMscorlib40("", il, references: new[] { Net451.SystemCore }, appendDefaultHeader: false);
             var global = comp.GlobalNamespace;
             var typeD = global.GetMember<NamedTypeSymbol>("D");
             var typeG = global.GetMember<NamedTypeSymbol>("Generic");

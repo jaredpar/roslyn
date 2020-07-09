@@ -162,7 +162,7 @@ End Module
         Public Function CreateHelperLibrary(source As String) As MetadataReference
             Dim libraryCompilation = VisualBasicCompilation.Create("library",
                                                         {VisualBasicSyntaxTree.ParseText(source)},
-                                                        {MsvbRef, MscorlibRef, SystemCoreRef},
+                                                        {TestMetadata.Net451.MicrosoftVisualBasic, TestMetadata.Net451.mscorlib, TestMetadata.Net451.SystemCore},
                                                         TestOptions.ReleaseDll)
 
             Return MetadataReference.CreateFromImage(libraryCompilation.EmitToArray())

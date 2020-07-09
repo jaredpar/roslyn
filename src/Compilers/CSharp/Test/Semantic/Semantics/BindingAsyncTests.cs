@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Semantics
 {
@@ -388,7 +389,7 @@ class C
         Infer_T(async () => { return await Task.Factory.StartNew(() => { }); });
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { LinqAssemblyRef, SystemRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { Net451.SystemCore, SystemRef }).VerifyDiagnostics(
     // (13,33): error CS8029: Anonymous function converted to a void returning delegate cannot return a value
     //         InferVoid(async () => { return await Task.Factory.StartNew(() => { }); });
     Diagnostic(ErrorCode.ERR_RetNoObjectRequiredLambda, "return").WithLocation(13, 33),
@@ -425,7 +426,7 @@ class C
         InferTask_T(async () => { return await Task.Factory.StartNew(() => 1); });
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { LinqAssemblyRef, SystemRef }).VerifyDiagnostics();
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { Net451.SystemCore, SystemRef }).VerifyDiagnostics();
         }
 
         [Fact]
@@ -455,7 +456,7 @@ class C
         });
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { LinqAssemblyRef, SystemRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { Net451.SystemCore, SystemRef }).VerifyDiagnostics(
                 // (19,17): error CS0126: An object of a type convertible to 'int' is required
                 //                 return;
                 Diagnostic(ErrorCode.ERR_RetObjectRequired, "return").WithArguments("int"));
@@ -488,7 +489,7 @@ class C
         });
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { LinqAssemblyRef, SystemRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { Net451.SystemCore, SystemRef }).VerifyDiagnostics(
     // (16,17): error CS8029: Anonymous function converted to a void returning delegate cannot return a value
     //                 return 1;
     Diagnostic(ErrorCode.ERR_RetNoObjectRequiredLambda, "return").WithLocation(16, 17)
@@ -522,7 +523,7 @@ class C
         });
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { LinqAssemblyRef, SystemRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { Net451.SystemCore, SystemRef }).VerifyDiagnostics(
     // (16,17): error CS8030: Async lambda expression converted to a 'Task' returning delegate cannot return a value. Did you intend to return 'Task<T>'?
     //                 return 1;
     Diagnostic(ErrorCode.ERR_TaskRetNoObjectRequiredLambda, "return").WithLocation(16, 17)
@@ -556,7 +557,7 @@ class C
         });
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { LinqAssemblyRef, SystemRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { Net451.SystemCore, SystemRef }).VerifyDiagnostics(
                 // (19,17): error CS0126: An object of a type convertible to 'int' is required
                 //                 return;
                 Diagnostic(ErrorCode.ERR_RetObjectRequired, "return").WithArguments("int"));
@@ -1268,7 +1269,7 @@ class Test
         var xs = from l in await F1() where l > 1 select l;
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, LinqAssemblyRef }).VerifyDiagnostics();
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, Net451.SystemCore }).VerifyDiagnostics();
         }
 
         [Fact]
@@ -1297,7 +1298,7 @@ class Test
                  where l > 1 select l;
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, LinqAssemblyRef }).VerifyDiagnostics();
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, Net451.SystemCore }).VerifyDiagnostics();
         }
 
         [Fact]
@@ -1325,7 +1326,7 @@ class Test
                  where l > 1 select await F1();
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, LinqAssemblyRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (20,37): error CS1995: The 'await' operator may only be used in a query expression within the first collection expression of the initial 'from' clause or within the collection expression of a 'join' clause
                 //                  where l > 1 select await F1();
                 Diagnostic(ErrorCode.ERR_BadAwaitInQuery, "await F1()"));
@@ -1357,7 +1358,7 @@ class Test
                  select (from l2 in await F1() where l2 > 1 select l2);
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, LinqAssemblyRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (21,37): error CS1995: The 'await' operator may only be used in a query expression within the first collection expression of the initial 'from' clause or within the collection expression of a 'join' clause
                 //                  select (from l2 in await F1() where l2 > 1 select l2);
                 Diagnostic(ErrorCode.ERR_BadAwaitInQuery, "await F1()"));
@@ -1392,7 +1393,7 @@ class Test
                          select l2);
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, LinqAssemblyRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (22,37): error CS1995: The 'await' operator may only be used in a query expression within the first collection expression of the initial 'from' clause or within the collection expression of a 'join' clause
                 //                          join l3 in await F1() on l2 equals l3
                 Diagnostic(ErrorCode.ERR_BadAwaitInQuery, "await F1()"));
@@ -1430,7 +1431,7 @@ class Test
 }";
             var c = CreateCompilationWithMscorlib45(
                 source,
-                new MetadataReference[] { SystemRef, LinqAssemblyRef },
+                new MetadataReference[] { SystemRef, Net451.SystemCore },
                 TestOptions.UnsafeReleaseDll);
 
             c.VerifyDiagnostics(
@@ -1471,7 +1472,7 @@ class Test
 }";
             CreateCompilationWithMscorlib45(
                 source,
-                new MetadataReference[] { SystemRef, LinqAssemblyRef },
+                new MetadataReference[] { SystemRef, Net451.SystemCore },
                 TestOptions.ReleaseDll).VerifyDiagnostics(
 
                 // (22,41): error CS1995: The 'await' operator may only be used in a query expression within the first collection expression of the initial 'from' clause or within the collection expression of a 'join' clause
@@ -1503,7 +1504,7 @@ class Test
                     select l;
     }
 }";
-            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, LinqAssemblyRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, new MetadataReference[] { SystemRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (17,28): error CS4033: The 'await' operator can only be used within an async method. Consider marking this method with the 'async' modifier and changing its return type to 'Task'.
                 //         var xs = from l in await F1()
                 Diagnostic(ErrorCode.ERR_BadAwaitWithoutVoidAsyncMethod, "await F1()"));
@@ -1668,7 +1669,7 @@ class Test
         return 0;
     }
 }";
-            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, SystemCoreRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (19,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 //         Goo();
                 Diagnostic(ErrorCode.WRN_UnobservedAwaitableExpression, "Goo()"),
@@ -1828,7 +1829,7 @@ class Test
         return 0;
     }
 }";
-            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, SystemCoreRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (20,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
                 //     static async Task<dynamic> Meth1()
                 Diagnostic(ErrorCode.WRN_AsyncLacksAwaits, "Meth1"),
@@ -1883,7 +1884,7 @@ class Test
         return 0;
     }
 }";
-            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, SystemCoreRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (22,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 //         Goo();
                 Diagnostic(ErrorCode.WRN_UnobservedAwaitableExpression, "Goo()"),
@@ -2269,7 +2270,7 @@ class Test
         return 0;
     }
 }";
-            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, SystemCoreRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (30,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 //             Meth(1);
                 Diagnostic(ErrorCode.WRN_UnobservedAwaitableExpression, "Meth(1)"),
@@ -2458,7 +2459,7 @@ class Test
     }
 }";
 
-            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, SystemCoreRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (41,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 //         Meth(1); //warning CS4014
                 Diagnostic(ErrorCode.WRN_UnobservedAwaitableExpression, "Meth(1)"),
@@ -2816,7 +2817,7 @@ class Test
         return 0;
     }
 }";
-            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, SystemCoreRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, references: new MetadataReference[] { CSharpRef, Net451.SystemCore }).VerifyDiagnostics(
                 // (27,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 //                 del(y);
                 Diagnostic(ErrorCode.WRN_UnobservedAwaitableExpression, "del(y)"));

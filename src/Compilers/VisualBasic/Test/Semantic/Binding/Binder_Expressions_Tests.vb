@@ -2693,7 +2693,7 @@ End Class
     </file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, options:=TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {TestMetadata.Net451.SystemCore}, options:=TestOptions.ReleaseExe)
             AssertTheseDiagnostics(compilation, <expected></expected>)
 
             CompileAndVerify(compilation, expectedOutput:="42")

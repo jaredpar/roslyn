@@ -2390,7 +2390,7 @@ switch (1)
     case 2:
         Console.WriteLine(2);
 }";
-            CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef }, parseOptions: TestOptions.Script).VerifyDiagnostics(
+            CreateCompilationWithMscorlib45(source, references: new[] { TestMetadata.Net451.SystemCore }, parseOptions: TestOptions.Script).VerifyDiagnostics(
                 // (4,5): error CS0163: Control cannot fall through from one case label ('default:') to another
                 //     default:
                 Diagnostic(ErrorCode.ERR_SwitchFallThrough, "default:").WithArguments("default:").WithLocation(4, 5),
@@ -2415,7 +2415,7 @@ switch (1)
             var submission = CSharpCompilation.CreateScriptCompilation(
                 "s0.dll",
                 syntaxTree: SyntaxFactory.ParseSyntaxTree(source, options: TestOptions.Script),
-                references: new[] { MscorlibRef, SystemCoreRef });
+                references: new[] { TestMetadata.Net451.mscorlib, TestMetadata.Net451.SystemCore });
             submission.VerifyDiagnostics(
                 // (4,5): error CS0163: Control cannot fall through from one case label ('case 1:') to another
                 //     case 1:

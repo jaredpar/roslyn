@@ -556,7 +556,7 @@ namespace System
             {
                 MscorlibRef_v4_0_30316_17626,
                 SystemRef_v4_0_30319_17929,
-                SystemCoreRef_v4_0_30319_17929,
+                Net451.SystemCore,
                 MsvbRef_v4_0_30319_17929,
                 CSharpRef,
                 SystemXmlRef,
@@ -883,7 +883,7 @@ namespace System
             {
                 MscorlibRef_v4_0_30316_17626,
                 SystemRef_v4_0_30319_17929,
-                SystemCoreRef_v4_0_30319_17929,
+                Net451.SystemCore,
                 MsvbRef_v4_0_30319_17929,
                 CSharpDesktopRef,
                 SystemXmlRef,
@@ -1511,7 +1511,7 @@ class Class1
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef });
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore });
             compilation.MakeMemberMissing(SpecialMember.System_String__ConcatObjectObject);
             compilation.VerifyEmitDiagnostics(
                 // (9,51): error CS0656: Missing compiler required member 'System.String.Concat'
@@ -2322,7 +2322,7 @@ class Test
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef });
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore });
             compilation.MakeMemberMissing(SpecialMember.System_String__ConcatStringString);
             compilation.VerifyEmitDiagnostics(
                 // (10,71): error CS0656: Missing compiler required member 'System.String.Concat'
@@ -2415,7 +2415,7 @@ public class Test
         Expression<Func<SampStruct?, decimal, decimal>> testExpr = (x, y) => x ?? y;
     }
 }";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef });
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore });
             compilation.MakeMemberMissing(SpecialMember.System_Decimal__op_Implicit_FromInt32);
             compilation.VerifyEmitDiagnostics(
                 // (16,78): error CS0656: Missing compiler required member 'System.Decimal.op_Implicit'

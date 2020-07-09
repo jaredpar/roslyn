@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.CodeGen
 {
@@ -19,12 +20,6 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.CodeGen
             CSharpCompilationOptions options = null,
             CSharpParseOptions parseOptions = null,
             Verification verify = Verification.Passes) => CompileAndVerify(source, references, targetFramework: TargetFramework.Standard, expectedOutput: expectedOutput, options: options, parseOptions: parseOptions, verify: verify);
-
-        /// <summary>
-        /// Reference to an assembly that defines Expression Trees.
-        /// </summary>
-        protected static MetadataReference ExpressionAssemblyRef => SystemCoreRef_v46;
-
 
         #region A string containing expression-tree dumping utilities
         private const string ExpressionTestLibrary = @"
@@ -858,7 +853,7 @@ class Program : TestBase
         Console.Write('k');
     }
 }";
-            CreateCompilationWithMscorlib46(new[] { Parse(source), Parse(ExpressionTestLibrary) }, new[] { ExpressionAssemblyRef }).VerifyDiagnostics(
+            CreateCompilationWithMscorlib46(new[] { Parse(source), Parse(ExpressionTestLibrary) }, new[] { Net461.SystemCore }).VerifyDiagnostics(
                 // (10,13): error CS1989: Async lambda expressions cannot be converted to expression trees
                 //             async x => (await x), "");
                 Diagnostic(ErrorCode.ERR_BadAsyncExpressionTree, "async x => (await x)").WithLocation(10, 13)
@@ -2437,7 +2432,7 @@ public class Test
 
             var comp45 = CreateCompilationWithMscorlib45(
                 new[] { text, ExpressionTestLibrary },
-                new[] { ExpressionAssemblyRef },
+                new[] { Net451.SystemCore },
                 options: TestOptions.ReleaseExe);
 
             // no use Array.Empty here since it is not available
@@ -3496,7 +3491,7 @@ class Program
 
             var comp45 = CreateCompilationWithMscorlib45(
                 new[] { source, ExpressionTestLibrary },
-                new[] { ExpressionAssemblyRef },
+                new[] { Net451.SystemCore },
                 TestOptions.ReleaseExe);
 
             CompileAndVerify(comp45, expectedOutput: expectedOutput45);

@@ -3,6 +3,7 @@
 ' See the LICENSE file in the project root for more information.
 
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Public Class CodeGenForeach
@@ -915,7 +916,7 @@ Class C
     End Sub
 End Class
     </file>
-</compilation>, options:=TestOptions.ReleaseExe.WithModuleName("MODULE"), references:={LinqAssemblyRef}, expectedOutput:=<![CDATA[
+</compilation>, options:=TestOptions.ReleaseExe.WithModuleName("MODULE"), references:={Net451.SystemCore}, expectedOutput:=<![CDATA[
 1
 2
 3
@@ -2522,7 +2523,7 @@ Module Program
 End Module
 </file>
 </compilation>,
-            references:={LinqAssemblyRef},
+            references:={Net451.SystemCore},
             expectedOutput:="123")
 
         End Sub

@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.CodeGen
 {
@@ -10480,7 +10481,7 @@ public class Test
 }";
             CompileAndVerifyWithMscorlib40(
                 source,
-                references: new[] { SystemCoreRef },
+                references: new[] { Net451.SystemCore },
                 expectedOutput: @"Success");
         }
 
@@ -14175,7 +14176,7 @@ public class Test
 }
 ";
 
-            CompileAndVerifyWithMscorlib40(source, references: new[] { SystemCoreRef, CSharpRef }, expectedOutput: @"0");
+            CompileAndVerifyWithMscorlib40(source, references: new[] { Net451.SystemCore, CSharpRef }, expectedOutput: @"0");
         }
 
 
@@ -15527,7 +15528,7 @@ class M
 }
 ";
 
-            var compilation = CompileAndVerifyWithMscorlib40(source, new[] { SystemCoreRef, CSharpRef }, expectedOutput: "2");
+            var compilation = CompileAndVerifyWithMscorlib40(source, new[] { Net451.SystemCore, CSharpRef }, expectedOutput: "2");
 
             // the main point of this test is to have it PEVerify/run correctly, although checking IL too can't hurt.
             compilation.VerifyIL("M..ctor",
@@ -15596,7 +15597,7 @@ class M
 }
 ";
 
-            var compilation = CompileAndVerifyWithMscorlib40(source, new[] { SystemCoreRef, CSharpRef }, expectedOutput: "2");
+            var compilation = CompileAndVerifyWithMscorlib40(source, new[] { Net451.SystemCore, CSharpRef }, expectedOutput: "2");
 
             compilation.VerifyIL("M..ctor",
 @"{
@@ -15709,7 +15710,7 @@ class M
 }
 ";
 
-            var compilation = CompileAndVerifyWithMscorlib40(source, new[] { SystemCoreRef, CSharpRef }, expectedOutput: "long.ex caught");
+            var compilation = CompileAndVerifyWithMscorlib40(source, new[] { Net451.SystemCore, CSharpRef }, expectedOutput: "long.ex caught");
         }
 
         [WorkItem(10463, "https://github.com/dotnet/roslyn/issues/10463")]
@@ -16155,7 +16156,7 @@ class Program
     }
 }
 ";
-            CompileAndVerifyWithMscorlib40(source, references: new[] { SystemRef, SystemCoreRef },
+            CompileAndVerifyWithMscorlib40(source, references: new[] { SystemRef, Net451.SystemCore },
                 expectedOutput: "0");
         }
 

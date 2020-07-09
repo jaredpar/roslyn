@@ -169,7 +169,7 @@ Friend Module CompilationUtils
         Return CreateCompilationWithMscorlib40AndVBRuntime(source, Nothing, options, parseOptions:=If(options Is Nothing, Nothing, options.ParseOptions))
     End Function
 
-    Public ReadOnly XmlReferences As MetadataReference() = {SystemRef, SystemCoreRef, SystemXmlRef, SystemXmlLinqRef}
+    Public ReadOnly XmlReferences As MetadataReference() = {SystemRef, Net451.SystemCore, SystemXmlRef, SystemXmlLinqRef}
 
     Public ReadOnly Net40XmlReferences As MetadataReference() = {Net40.SystemCore, Net40.SystemXml, Net40.SystemXmlLinq}
 
@@ -331,7 +331,7 @@ Friend Module CompilationUtils
             references.Add(MsvbRef)
         End If
         If includeSystemCore Then
-            references.Add(SystemCoreRef)
+            references.Add(Net451.SystemCore)
         End If
 
         If ilSource Is Nothing Then

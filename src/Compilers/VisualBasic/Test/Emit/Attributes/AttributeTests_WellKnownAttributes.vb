@@ -15,6 +15,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
     Public Class AttributeTests_WellKnownAttributes
@@ -2395,7 +2396,7 @@ End Class
 </compilation>
 
             Dim c = CompilationUtils.CreateEmptyCompilationWithReferences(source,
-                                                                     references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                     references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                      options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
             CompileAndVerify(c, validator:=
                 Sub(assembly)

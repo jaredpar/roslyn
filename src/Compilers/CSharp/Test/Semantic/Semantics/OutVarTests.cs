@@ -11590,7 +11590,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics(
                 // (25,26): error CS0103: The name 'z2' does not exist in the current context
                 //                          z2;
@@ -11904,7 +11904,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics(
                 // (18,35): error CS0103: The name 'v4' does not exist in the current context
                 //                                   v4 
@@ -12046,7 +12046,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics(
                 // (16,62): error CS0128: A local variable or function named 'y1' is already defined in this scope
                 //         var res = from x1 in new[] { TakeOutParam(1, out var y1) ? y1 : 0}
@@ -12056,7 +12056,7 @@ public class X
                 Diagnostic(ErrorCode.ERR_LocalDuplicate, "y3").WithArguments("y3").WithLocation(18, 62)
                 );
 
-            compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular7_3);
+            compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular7_3);
             compilation.VerifyDiagnostics(
                 // (16,62): error CS0128: A local variable or function named 'y1' is already defined in this scope
                 //         var res = from x1 in new[] { TakeOutParam(1, out var y1) ? y1 : 0}
@@ -12196,7 +12196,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics(
                 // (26,62): error CS0128: A local variable or function named 'y1' is already defined in this scope
                 //                   from x1 in new[] { TakeOutParam(1, out var y1) ? y1 : 0}
@@ -12206,7 +12206,7 @@ public class X
                 Diagnostic(ErrorCode.ERR_LocalDuplicate, "y3").WithArguments("y3").WithLocation(28, 62)
                 );
 
-            compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular7_3);
+            compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular7_3);
             compilation.VerifyDiagnostics(
                 // (26,62): error CS0128: A local variable or function named 'y1' is already defined in this scope
                 //                   from x1 in new[] { TakeOutParam(1, out var y1) ? y1 : 0}
@@ -12316,7 +12316,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics(
                 // (18,62): error CS0128: A local variable named 'y3' is already defined in this scope
                 //                   join x3 in new[] { TakeOutParam(3, out var y3) ? y3 : 0}
@@ -12376,7 +12376,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics(
                 // (19,24): error CS1931: The range variable 'y1' conflicts with a previous declaration of 'y1'
                 //                   from y1 in new[] { 1 }
@@ -12449,7 +12449,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics(
                 // (14,24): error CS1931: The range variable 'y1' conflicts with a previous declaration of 'y1'
                 //         var res = from y1 in new[] { 0 }
@@ -12594,7 +12594,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
 
             // error CS0412 is misleading and reported due to preexisting bug https://github.com/dotnet/roslyn/issues/12052
             compilation.VerifyDiagnostics(
@@ -12721,7 +12721,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics(
                 // (26,60): error CS0128: A local variable or function named 'y2' is already defined in this scope
                 //                               TakeOutParam(x1 + 1, out var y2))
@@ -12737,7 +12737,7 @@ public class X
                 Diagnostic(ErrorCode.ERR_UseDefViolation, "y4").WithArguments("y4").WithLocation(40, 50)
                 );
 
-            compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular7_3);
+            compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular7_3);
             compilation.VerifyDiagnostics(
                 // (17,62): error CS0136: A local or parameter named 'y1' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter
                 //                               where TakeOutParam(x1, out var y1)
@@ -12825,7 +12825,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
             compilation.VerifyDiagnostics();
 
             CompileAndVerify(compilation, expectedOutput:
@@ -12892,7 +12892,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
 
             CompileAndVerify(compilation, expectedOutput:
 @"1
@@ -12932,7 +12932,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
 
             compilation.VerifyDiagnostics(
                 // (13,62): error CS0165: Use of unassigned local variable 'x1'
@@ -12990,7 +12990,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
 
             CompileAndVerify(compilation, expectedOutput:
 @"2
@@ -13030,7 +13030,7 @@ public class X
     }
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.DebugExe, parseOptions: TestOptions.Regular);
 
             compilation.VerifyDiagnostics(
                 // (13,46): error CS8198: An expression tree may not contain an out argument variable declaration.
@@ -24557,7 +24557,7 @@ static bool TakeOutParam<T>(T y, out T x)
 }
 ";
             {
-                var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.ReleaseExe.WithScriptClassName("Script"), parseOptions: TestOptions.Script);
+                var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.ReleaseExe.WithScriptClassName("Script"), parseOptions: TestOptions.Script);
                 compilation.VerifyDiagnostics(
                 // (14,21): error CS0103: The name 'z2' does not exist in the current context
                 //                     z2;
@@ -24809,7 +24809,7 @@ static bool TakeOutParam<T>(T y, out T x)
             }
 
             {
-                var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.ReleaseExe, parseOptions: TestOptions.RegularPreview);
+                var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.ReleaseExe, parseOptions: TestOptions.RegularPreview);
 
                 compilation.VerifyDiagnostics(
                     // (14,21): error CS0103: The name 'z2' does not exist in the current context
@@ -25092,7 +25092,7 @@ static bool Print(object x)
     return true;
 }
 ";
-            var compilation = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef }, options: TestOptions.ReleaseExe.WithScriptClassName("Script"), parseOptions: TestOptions.Script);
+            var compilation = CreateCompilationWithMscorlib45(source, new[] { Net451.SystemCore }, options: TestOptions.ReleaseExe.WithScriptClassName("Script"), parseOptions: TestOptions.Script);
 
             CompileAndVerify(compilation, expectedOutput:
 @"1

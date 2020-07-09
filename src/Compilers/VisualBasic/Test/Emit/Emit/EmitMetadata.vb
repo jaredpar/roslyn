@@ -22,7 +22,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
         <Fact, WorkItem(547015, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547015")>
         Public Sub IncorrectCustomAssemblyTableSize_TooManyMethodSpecs()
             Dim source = TestResources.MetadataTests.Invalid.ManyMethodSpecs
-            CompileAndVerify(VisualBasicCompilation.Create("Goo", syntaxTrees:={Parse(source)}, references:={MscorlibRef, SystemCoreRef, MsvbRef}))
+            CompileAndVerify(VisualBasicCompilation.Create("Goo", syntaxTrees:={Parse(source)}, references:={MscorlibRef, Net451.SystemCore, MsvbRef}))
         End Sub
 
         <Fact>

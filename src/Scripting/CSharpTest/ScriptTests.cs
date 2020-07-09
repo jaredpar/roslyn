@@ -17,6 +17,7 @@ using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
 using KeyValuePairUtil = Roslyn.Utilities.KeyValuePairUtil;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.Scripting.UnitTests
 {
@@ -191,7 +192,7 @@ class SomeClass
 }
 dynamic d = new SomeClass();
 d.Do();"
-, ScriptOptions.Default.WithReferences(MscorlibRef, SystemRef, SystemCoreRef, CSharpRef));
+, ScriptOptions.Default.WithReferences(MscorlibRef, SystemRef, Net451.SystemCore, CSharpRef));
         }
 
         [Fact(Skip = "https://github.com/dotnet/roslyn/issues/170")]
@@ -206,7 +207,7 @@ class SomeClass
 }
 dynamic d = new SomeClass();
 d.Do()"
-, ScriptOptions.Default.WithReferences(MscorlibRef, SystemRef, SystemCoreRef, CSharpRef));
+, ScriptOptions.Default.WithReferences(MscorlibRef, SystemRef, Net451.SystemCore, CSharpRef));
         }
 
         [WorkItem(6676, "https://github.com/dotnet/roslyn/issues/6676")]

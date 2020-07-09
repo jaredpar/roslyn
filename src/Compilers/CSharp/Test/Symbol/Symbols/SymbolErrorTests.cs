@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -14330,7 +14331,7 @@ class Goo1
     public void Test<T>(this System.String s) { } //CS1105
 }
 ";
-            var reference = SystemCoreRef;
+            var reference = Net451.SystemCore;
             var comp = DiagnosticsUtils.VerifyErrorsAndGetCompilationWithMscorlib(text,
                 new List<MetadataReference> { reference },
                 new ErrorDescription { Code = (int)ErrorCode.ERR_BadExtensionAgg, Line = 1, Column = 14 });
@@ -19921,12 +19922,12 @@ internal abstract event System.EventHandler E;";
         [Fact]
         public void AbstractInSubmission()
         {
-            var references = new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef };
+            var references = new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore };
             var source =
 @"internal abstract void M();
 internal abstract object P { get; }
 internal abstract event System.EventHandler E;";
-            var submission = CSharpCompilation.CreateScriptCompilation("s0.dll", SyntaxFactory.ParseSyntaxTree(source, options: TestOptions.Script), new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef });
+            var submission = CSharpCompilation.CreateScriptCompilation("s0.dll", SyntaxFactory.ParseSyntaxTree(source, options: TestOptions.Script), new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore });
             submission.VerifyDiagnostics(
                 // (1,24): error CS0513: 'M()' is abstract but it is contained in non-abstract class 'Script'
                 // internal abstract void M();

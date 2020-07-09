@@ -12,6 +12,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports Xunit
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
@@ -68,7 +69,7 @@ Label:
     End Sub
 End Module
         </file>
-    </compilation>, {SystemCoreRef})
+    </compilation>, {Net451.SystemCore})
             Dim executableStream = New MemoryStream()
             Dim pdbStream = New MemoryStream()
             Dim result = comp1.Emit(executableStream, pdbStream)
@@ -414,7 +415,7 @@ Module M1
 End Module
         </file>
     </compilation>)
-            comp1 = comp1.AddReferences(LinqAssemblyRef)
+            comp1 = comp1.AddReferences(Net451.SystemCore)
             CompileAndVerify(comp1)
         End Sub
 
@@ -566,7 +567,7 @@ Class C
     End Sub
 End Class
         ]]></file>
-    </compilation>, {SystemCoreRef})
+    </compilation>, {Net451.SystemCore})
 
             AssertTheseEmitDiagnostics(compilation,
 <expected><![CDATA[

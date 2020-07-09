@@ -3,6 +3,7 @@
 ' See the LICENSE file in the project root for more information.
 
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Public Class MeMyBaseMyClassTests
@@ -620,7 +621,7 @@ Module Module1
     End Class
 End Module
     </file>
-</compilation>, references:={SystemCoreRef}).VerifyIL("Module1.Class2.TEST", <![CDATA[
+</compilation>, references:={Net451.SystemCore}).VerifyIL("Module1.Class2.TEST", <![CDATA[
 {
   // Code size       26 (0x1a)
   .maxstack  3
@@ -1127,7 +1128,7 @@ Module Module1
     End Class
 End Module
     </file>
-</compilation>, references:={SystemCoreRef}).VerifyIL("Module1.Class2.TEST", <![CDATA[
+</compilation>, references:={Net451.SystemCore}).VerifyIL("Module1.Class2.TEST", <![CDATA[
 {
   // Code size       50 (0x32)
   .maxstack  3

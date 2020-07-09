@@ -18,14 +18,14 @@ Function F(e As System.Linq.Expressions.Expression(Of System.Func(Of Object))) A
     Return e.Compile()()
 End Function"
 
-            Dim c0 = CreateSubmission(source0, {SystemCoreRef})
+            Dim c0 = CreateSubmission(source0, {TestMetadata.Net451.SystemCore})
 
             Dim source1 = "
 F(Function()
     Return Nothing
   End Function)
 "
-            Dim c1 = CreateSubmission(source1, {SystemCoreRef}, previous:=c0)
+            Dim c1 = CreateSubmission(source1, {TestMetadata.Net451.SystemCore}, previous:=c0)
 
             AssertTheseDiagnostics(c1,
 <errors>

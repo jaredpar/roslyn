@@ -159,7 +159,7 @@ new System.Data.DataSet()
             var options = ScriptOptions.Default.
                 WithMetadataResolver(new TestMetadataReferenceResolver(
                     pathResolver: new VirtualizedRelativePathResolver(existingFullPaths: new[] { @"C:\dir\x.dll" }, baseDirectory: @"C:\goo\bar"),
-                    files: new Dictionary<string, PortableExecutableReference> { { @"C:\dir\x.dll", (PortableExecutableReference)SystemCoreRef } }));
+                    files: new Dictionary<string, PortableExecutableReference> { { @"C:\dir\x.dll", (PortableExecutableReference)Net451.SystemCore } }));
 
             var script = CSharpScript.Create(@"
 #r ""x.dll""

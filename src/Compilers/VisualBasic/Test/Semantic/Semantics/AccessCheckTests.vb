@@ -13,6 +13,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.OverloadResolution
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
     Public Class AccessCheckTests
@@ -562,7 +563,7 @@ Friend Class C
 End Class
 ]]>
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
 
             other.VerifyDiagnostics()
 
@@ -593,7 +594,7 @@ Friend Class C
 End Class
 ]]>
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
             CompilationUtils.AssertNoErrors(other)
 
             Dim c As VisualBasicCompilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(
@@ -627,7 +628,7 @@ Friend Class C
 End Class
 ]]>
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
 
             Dim c As VisualBasicCompilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(
 <compilation name="AccessCheckCrossAssemblyParameterProtectedMethod2">

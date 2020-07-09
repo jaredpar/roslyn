@@ -13,6 +13,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.ExtensionMethods
 
@@ -66,7 +67,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`3")
                                                   Assert.NotNull(type)
@@ -92,7 +93,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim types = m.ContainingAssembly.GlobalNamespace.GetTypeMembers()
                                                   Dim list = types.Where(Function(t) t.Name.StartsWith("VB$AnonymousType_", StringComparison.Ordinal)).ToList()
@@ -134,7 +135,7 @@ End Structure
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim types = m.ContainingAssembly.GlobalNamespace.GetTypeMembers()
                                                   Dim list = types.Where(Function(t) t.Name.StartsWith("VB$AnonymousType", StringComparison.Ordinal)).ToList()
@@ -179,7 +180,7 @@ End Class
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim types = m.ContainingAssembly.GlobalNamespace.GetTypeMembers()
                                                   Dim list = types.Where(Function(t) t.Name.StartsWith("VB$AnonymousType", StringComparison.Ordinal)).ToList()
@@ -227,7 +228,7 @@ End Class
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef, TestReferences.SymbolsTests.CustomModifiers.Modifiers.dll})
+                             references:={Net451.SystemCore, TestReferences.SymbolsTests.CustomModifiers.Modifiers.dll})
         End Sub
 
         <Fact>
@@ -294,7 +295,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`1")
                                                   Assert.NotNull(type)
@@ -338,7 +339,7 @@ End Module
             ' Cycle to hopefully get different order of files
             For i = 0 To 50
                 CompileAndVerify(compilationDef,
-                                 references:={SystemCoreRef},
+                                 references:={Net451.SystemCore},
                                  symbolValidator:=Sub(m As ModuleSymbol)
                                                       Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`1")
                                                       Assert.NotNull(type)
@@ -367,7 +368,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`3")
                                                   Assert.NotNull(type)
@@ -404,7 +405,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`3")
                                                   Assert.NotNull(type)
@@ -435,7 +436,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`3")
                                                   Assert.NotNull(type)
@@ -462,7 +463,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`3")
                                                   Assert.NotNull(type)
@@ -501,7 +502,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`3")
                                                   Assert.NotNull(type)
@@ -532,7 +533,7 @@ End Module
     </compilation>
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              symbolValidator:=Sub(m As ModuleSymbol)
                                                   Dim type = m.ContainingAssembly.GetTypeByMetadataName("VB$AnonymousType_0`3")
                                                   Assert.NotNull(type)
@@ -576,7 +577,7 @@ End Module
             Dim position = compilationDef.<file>.Value.IndexOf("'POSITION", StringComparison.Ordinal)
 
             CompileAndVerify(compilationDef,
-                             references:={SystemCoreRef},
+                             references:={Net451.SystemCore},
                              sourceSymbolValidator:=Sub(m As ModuleSymbol)
                                                         Dim compilation = m.DeclaringCompilation
                                                         Dim tree = compilation.SyntaxTrees(0)

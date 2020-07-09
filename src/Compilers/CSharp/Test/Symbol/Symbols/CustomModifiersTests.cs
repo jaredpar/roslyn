@@ -1826,7 +1826,7 @@ class CL3 : CL2
         }
     }
 ";
-            var compilation = CreateCompilationWithILAndMscorlib40(source, ilSource, options: TestOptions.ReleaseExe, targetFramework: TargetFramework.Mscorlib40, references: new[] { SystemCoreRef });
+            var compilation = CreateCompilationWithILAndMscorlib40(source, ilSource, options: TestOptions.ReleaseExe, targetFramework: TargetFramework.Mscorlib40, references: new[] { TestMetadata.Net451.SystemCore });
 
             System.Action<ModuleSymbol> validator = (m) =>
             {

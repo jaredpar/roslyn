@@ -43,7 +43,7 @@ End Class"
             Dim comp = CreateCompilationWithMscorlib45AndVBRuntime(
                 {VisualBasicSyntaxTree.ParseText(source)},
                 options:=TestOptions.DebugDll,
-                references:={SystemCoreRef})
+                references:={TestMetadata.Net451.SystemCore})
             Dim testData As CompilationTestData
             WithRuntimeInstance(comp,
                 Sub(runtime)
@@ -78,7 +78,7 @@ End Class"
             comp = CreateCompilationWithMscorlib45AndVBRuntime(
                 {VisualBasicSyntaxTree.ParseText(source)},
                 options:=TestOptions.ReleaseDll,
-                references:={SystemCoreRef})
+                references:={TestMetadata.Net451.SystemCore})
             ' Note from MoveNext() below that local $VB$Closure_0 should not be
             ' used in the compiled expression to access the display class since that
             ' local is only set the first time through MoveNext() (see loc.1 below).

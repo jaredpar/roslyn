@@ -24219,7 +24219,7 @@ End Namespace
 </compilation>
 
             Dim c = CompilationUtils.CreateEmptyCompilationWithReferences(source,
-                                                                     references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                     references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                      options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True)).VerifyDiagnostics(Diagnostic(ERRID.ERR_TypeClashesWithVbCoreType4, "HideModuleNameAttribute").WithArguments("class", "HideModuleNameAttribute", "class", "HideModuleNameAttribute"),
                                                                                                                                          Diagnostic(ERRID.ERR_UndefinedType1, "Attribute").WithArguments("Attribute"),
                                                                                                                                          Diagnostic(ERRID.ERR_OverrideNotNeeded3, "TypeId").WithArguments("property", "TypeId"))

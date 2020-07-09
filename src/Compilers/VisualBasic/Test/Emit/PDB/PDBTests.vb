@@ -12,6 +12,7 @@ Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.PDB
     Public Class PDBTests
@@ -4452,7 +4453,7 @@ End Class
     </file>
 </compilation>
 
-            Dim c = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {SystemCoreRef}, options:=TestOptions.DebugDll.WithEmbedVbCoreRuntime(True))
+            Dim c = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {Net451.SystemCore}, options:=TestOptions.DebugDll.WithEmbedVbCoreRuntime(True))
 
             c.VerifyPdb("C`1.F",
 <symbols>
@@ -4511,7 +4512,7 @@ Class C
         c.Select(Function(i) i)
     End Function
 End Class"
-            Dim c = CreateCompilationWithMscorlib45AndVBRuntime({Parse(source)}, options:=TestOptions.DebugDll, references:={SystemCoreRef})
+            Dim c = CreateCompilationWithMscorlib45AndVBRuntime({Parse(source)}, options:=TestOptions.DebugDll, references:={Net451.SystemCore})
             c.VerifyPdb("C+VB$StateMachine_1_F.MoveNext",
 <symbols>
     <files>
@@ -4564,7 +4565,7 @@ Class C
             End Sub
     End Sub
 End Class"
-            Dim c = CreateCompilationWithMscorlib45AndVBRuntime({Parse(source)}, options:=TestOptions.DebugDll, references:={SystemCoreRef})
+            Dim c = CreateCompilationWithMscorlib45AndVBRuntime({Parse(source)}, options:=TestOptions.DebugDll, references:={Net451.SystemCore})
             c.VerifyPdb("C+_Closure$__+VB$StateMachine___Lambda$__1-0.MoveNext",
 <symbols>
     <files>

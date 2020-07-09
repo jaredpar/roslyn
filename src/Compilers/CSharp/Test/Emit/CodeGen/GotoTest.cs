@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.CodeGen
 {
@@ -818,7 +819,7 @@ L0: ;
             string expectedOutput =
 @"True
 False";
-            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
+            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { Net451.SystemCore }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
             CompileAndVerify(compilation, expectedOutput: expectedOutput, verify: Verification.Passes);
         }
 
@@ -833,7 +834,7 @@ False";
 {
     L1: ;
 }";
-            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
+            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { Net451.SystemCore }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
             compilation.VerifyDiagnostics(
                 // (1,6): error CS0159: No such label 'L0' within the scope of the goto statement
                 // goto L0;
@@ -869,14 +870,14 @@ if (Q < 4) goto L;";
 @"2: P
 3: F
 4: Q";
-            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
+            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { Net451.SystemCore }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
             CompileAndVerify(compilation, expectedOutput: expectedOutput, verify: Verification.Fails);
         }
 
         [Fact]
         public void AcrossSubmissions()
         {
-            var references = new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef };
+            var references = new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore };
             var source0 =
 @"bool b = false;
 L: ;
@@ -905,7 +906,7 @@ if (b)
 }
 L:
 F(true);";
-            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef }, parseOptions: TestOptions.Script);
+            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { Net451.SystemCore }, parseOptions: TestOptions.Script);
             compilation.VerifyDiagnostics(
                 // (5,1): warning CS0164: This label has not been referenced
                 // L:
@@ -925,7 +926,7 @@ L:
     return;
 }
 goto L;";
-            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef }, parseOptions: TestOptions.Script);
+            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { Net451.SystemCore }, parseOptions: TestOptions.Script);
             compilation.VerifyDiagnostics(
                 // (6,6): error CS0159: No such label 'L' within the scope of the goto statement
                 // goto L;
@@ -952,7 +953,7 @@ default:
 }";
             string expectedOutput =
 @"3";
-            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
+            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { Net451.SystemCore }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
             CompileAndVerify(compilation, expectedOutput: expectedOutput, verify: Verification.Passes);
         }
 
@@ -972,7 +973,7 @@ else
     if (b) goto L;
 L: ;
 }";
-            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { SystemCoreRef }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
+            var compilation = CreateCompilationWithMscorlib45(source, references: new[] { Net451.SystemCore }, parseOptions: TestOptions.Script, options: TestOptions.DebugExe);
             compilation.VerifyDiagnostics(
                 // (11,1): error CS0158: The label 'L' shadows another label by the same name in a contained scope
                 // L: ;
@@ -982,7 +983,7 @@ L: ;
         [Fact]
         public void DuplicateLabelInSeparateSubmissions()
         {
-            var references = new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef };
+            var references = new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore };
             var source0 =
 @"bool b = false;
 L: ;

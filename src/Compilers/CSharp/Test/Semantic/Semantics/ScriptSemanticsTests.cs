@@ -1055,7 +1055,7 @@ System.TypedReference c;
         {
             var source = "(System.Linq.Expressions.Expression<System.Func<object>>)(() => null ?? new object())";
 
-            var c0 = CreateSubmission(source, new[] { SystemCoreRef });
+            var c0 = CreateSubmission(source, new[] { TestMetadata.Net451.SystemCore });
 
             c0.VerifyDiagnostics(
                 // (1,65): error CS0845: An expression tree lambda may not contain a coalescing operator with a null literal left-hand side

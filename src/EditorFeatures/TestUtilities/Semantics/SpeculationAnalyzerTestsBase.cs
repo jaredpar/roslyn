@@ -18,10 +18,10 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Semantics
 
         protected readonly MetadataReference[] References = new[]
         {
-            MscorlibRef,
-            SystemRef,
-            SystemCoreRef,
-            MsvbRef
+            TestMetadata.Net451.mscorlib,
+            TestMetadata.Net451.System,
+            TestMetadata.Net451.System,
+            TestMetadata.Net451.MicrosoftVisualBasic
         };
 
         protected void Test(string code, string replacementExpression, bool semanticChanges, string expressionToAnalyze = null, bool isBrokenCode = false)

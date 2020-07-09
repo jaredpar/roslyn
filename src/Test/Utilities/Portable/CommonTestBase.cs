@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis.Operations;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.Test.Utilities
 {
@@ -306,12 +307,12 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             var references = new List<MetadataReference>();
             if (referencedAssemblies == null)
             {
-                references.Add(MscorlibRef);
-                references.Add(SystemRef);
-                references.Add(SystemCoreRef);
+                references.Add(Net451.mscorlib);
+                references.Add(Net451.System);
+                references.Add(Net451.SystemCore);
                 //TODO: references.Add(MsCSRef);
-                references.Add(SystemXmlRef);
-                references.Add(SystemXmlLinqRef);
+                references.Add(Net451.SystemXml);
+                references.Add(Net451.SystemXmlLinq);
             }
             else
             {
@@ -361,12 +362,12 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             var references = new List<MetadataReference>();
             if (referencedAssemblies == null)
             {
-                references.Add(MscorlibRef);
-                references.Add(SystemRef);
-                references.Add(SystemCoreRef);
-                references.Add(MsvbRef);
-                references.Add(SystemXmlRef);
-                references.Add(SystemXmlLinqRef);
+                references.Add(Net451.mscorlib);
+                references.Add(Net451.System);
+                references.Add(Net451.SystemCore);
+                references.Add(Net451.MicrosoftVisualBasic);
+                references.Add(Net451.SystemXml);
+                references.Add(Net451.SystemXmlLinq);
             }
             else
             {

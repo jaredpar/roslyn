@@ -80,7 +80,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
         Protected Function CompileAndGetModelAndSpan(program As XElement, startNodes As List(Of VisualBasicSyntaxNode), endNodes As List(Of VisualBasicSyntaxNode), ilSource As XCData, errors As XElement, Optional parseOptions As VisualBasicParseOptions = Nothing) As VisualBasicCompilation
             Debug.Assert(program.<file>.Count = 1, "Only one file can be in the compilation.")
 
-            Dim references = {MscorlibRef, MsvbRef, SystemCoreRef}
+            Dim references = {CType(TestMetadata.Net451.mscorlib, MetadataReference), TestMetadata.Net451.MicrosoftVisualBasic, TestMetadata.Net451.SystemCore}
             If ilSource IsNot Nothing Then
                 Dim ilImage As ImmutableArray(Of Byte) = Nothing
                 references = references.Concat(CreateReferenceFromIlCode(ilSource?.Value, appendDefaultHeader:=True, ilImage:=ilImage)).ToArray()

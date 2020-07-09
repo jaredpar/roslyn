@@ -15,6 +15,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
     Public Class AttributeTests
@@ -3042,7 +3043,7 @@ Public Delegate Function D(<C>a As Integer, <C>ByRef b As Integer) As <B> Intege
             Dim compWithAAttribute = VisualBasicCompilation.Create(
                 "library.dll",
                 {VisualBasicSyntaxTree.ParseText(sourceWithAAttribute.Value)},
-                {MsvbRef, MscorlibRef, SystemCoreRef},
+                {MsvbRef, MscorlibRef, Net451.SystemCore},
                 TestOptions.ReleaseDll)
 
             Dim comp = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, {compWithAAttribute.ToMetadataReference()})
@@ -3669,7 +3670,7 @@ End Module
                     </file>
                 </compilation>
 
-            Dim comp = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, references:={SystemCoreRef})
+            Dim comp = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, references:={Net451.SystemCore})
             comp.VerifyDiagnostics(Diagnostic(ERRID.ERR_UndefinedType1, "A").WithArguments("A"),
                                    Diagnostic(ERRID.ERR_NameNotDeclared1, "Mid").WithArguments("Mid"),
                                    Diagnostic(ERRID.ERR_PropertyOrFieldNotDefined1, "F").WithArguments("F"),
@@ -3767,7 +3768,7 @@ End Structure
             Dim compWithAttribute = VisualBasicCompilation.Create(
                 "library.dll",
                 {VisualBasicSyntaxTree.ParseText(sourceWithAttribute.Value)},
-                {MsvbRef, MscorlibRef, SystemCoreRef},
+                {MsvbRef, MscorlibRef, Net451.SystemCore},
                 TestOptions.ReleaseDll)
 
             Dim sourceLibRef = compWithAttribute.ToMetadataReference()

@@ -2679,7 +2679,7 @@ Module M
     End Sub
 End Module
 ]]></file>
-</compilation>, {SystemCoreRef})
+</compilation>, {TestMetadata.Net451.SystemCore})
             Dim tree = compilation.SyntaxTrees(0)
             Dim model = compilation.GetSemanticModel(tree)
             Dim text = "Function(function(Function(func"

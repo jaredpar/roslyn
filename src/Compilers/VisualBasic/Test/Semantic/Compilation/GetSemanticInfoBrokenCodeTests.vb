@@ -25,7 +25,7 @@ Module M
     End Sub
 End Module
 ]]></file>
-</compilation>, {SystemCoreRef})
+</compilation>, {TestMetadata.Net451.SystemCore})
             Dim tree = compilation.SyntaxTrees(0)
             Dim model = compilation.GetSemanticModel(tree)
             VisitAllExpressions(model, tree.GetCompilationUnitRoot())
@@ -46,7 +46,7 @@ Module M
     End Function
 End Module
 ]]></file>
-</compilation>, {SystemCoreRef})
+</compilation>, {TestMetadata.Net451.SystemCore})
             Dim tree = compilation.SyntaxTrees(0)
             Dim model = compilation.GetSemanticModel(tree)
             VisitAllExpressions(model, tree.GetCompilationUnitRoot())
@@ -85,7 +85,7 @@ Module M
     End Sub
 End Module
 ]]></file>
-</compilation>, {SystemCoreRef})
+</compilation>, {TestMetadata.Net451.SystemCore})
             Dim tree = compilation.SyntaxTrees(0)
             Dim model = compilation.GetSemanticModel(tree)
             For Each node In GetAllExpressions(tree.GetCompilationUnitRoot())

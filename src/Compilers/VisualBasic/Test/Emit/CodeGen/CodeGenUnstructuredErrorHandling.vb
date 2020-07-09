@@ -2,6 +2,7 @@
 ' The .NET Foundation licenses this file to you under the MIT license.
 ' See the LICENSE file in the project root for more information.
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Public Class CodeGenUnstructuredErrorHandling
@@ -1402,7 +1403,7 @@ End Module
     </compilation>
 
             Dim compilation = CompilationUtils.CreateEmptyCompilationWithReferences(source,
-                                                                            references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                            references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                             options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True)).VerifyDiagnostics(Diagnostic(ERRID.ERR_NameNotDeclared1, "Err").WithArguments("Err"),
                                                                                                                                                 Diagnostic(ERRID.ERR_NameNotDeclared1, "err").WithArguments("err"),
                                                                                                                                                 Diagnostic(ERRID.ERR_NameNotDeclared1, "err").WithArguments("err"))

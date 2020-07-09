@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.Test.Extensions;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -99,7 +100,7 @@ public delegate dynamic[] MyDelegate(dynamic[] x);
         [Fact]
         public void TestCompileDynamicAttributes()
         {
-            var comp = CreateCompilationWithMscorlib40(s_dynamicTestSource, options: TestOptions.UnsafeReleaseDll, references: new[] { SystemCoreRef, ValueTupleRef, SystemRuntimeFacadeRef });
+            var comp = CreateCompilationWithMscorlib40(s_dynamicTestSource, options: TestOptions.UnsafeReleaseDll, references: new[] { Net451.SystemCore, ValueTupleRef, SystemRuntimeFacadeRef });
 
             CompileAndVerify(comp, verify: Verification.Passes, symbolValidator: module =>
             {
@@ -819,7 +820,7 @@ dynamic x = 0;
                 source: source,
                 parseOptions: TestOptions.Script,
                 options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All),
-                references: new[] { SystemCoreRef, CSharpDesktopRef });
+                references: new[] { Net451.SystemCore, CSharpDesktopRef });
 
             CompileAndVerify(comp, symbolValidator: module =>
             {
@@ -851,7 +852,7 @@ Gen<dynamic> x = null;";
                 source: source,
                 options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All),
                 parseOptions: TestOptions.Script,
-                references: new[] { SystemCoreRef });
+                references: new[] { Net451.SystemCore });
 
             CompileAndVerify(comp, symbolValidator: module =>
             {
@@ -885,7 +886,7 @@ Gen<dynamic> x = null;";
                 source: source,
                 options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All),
                 parseOptions: TestOptions.Script,
-                references: new[] { SystemCoreRef });
+                references: new[] { Net451.SystemCore });
 
             CompileAndVerify(comp, symbolValidator: module =>
             {
@@ -1150,7 +1151,7 @@ class C
             var comp = CreateEmptyCompilation(source0);
             comp.VerifyDiagnostics();
             var ref0 = comp.EmitToImageReference();
-            comp = CreateEmptyCompilation(source1, references: new[] { ref0, SystemCoreRef });
+            comp = CreateEmptyCompilation(source1, references: new[] { ref0, Net451.SystemCore });
             comp.VerifyDiagnostics();
             // Make sure we emit without errors when System.Boolean is missing.
             CompileAndVerify(comp, verify: Verification.Fails);
@@ -1184,7 +1185,7 @@ class C
             var comp = CreateEmptyCompilation(source0);
             comp.VerifyDiagnostics();
             var ref0 = comp.EmitToImageReference();
-            comp = CreateEmptyCompilation(source1, references: new[] { ref0, SystemCoreRef });
+            comp = CreateEmptyCompilation(source1, references: new[] { ref0, Net451.SystemCore });
             comp.VerifyDiagnostics();
             // Make sure we emit without errors when System.Boolean is missing.
             CompileAndVerify(comp, verify: Verification.Fails);

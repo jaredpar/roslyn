@@ -535,7 +535,7 @@ class C
 }");
                 });
             // Release build.
-            comp = CreateCompilationWithMscorlib45(source, options: TestOptions.ReleaseDll, references: new[] { SystemCoreRef });
+            comp = CreateCompilationWithMscorlib45(source, options: TestOptions.ReleaseDll, references: new[] { TestMetadata.Net451.SystemCore });
             {
                 // Note from MoveNext() below that local CS$<>8__locals0 should not be
                 // used in the compiled expression to access the display class since that

@@ -74,7 +74,7 @@ End Class
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                references:={SystemCoreRef},
+                references:={TestMetadata.Net451.SystemCore},
                 options:=TestOptions.ReleaseDll)
 
             Dim MyTemplate = GetMyTemplateTree(compilation)
@@ -98,7 +98,7 @@ End Class
                           </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndReferences(sources,
-                references:={SystemCoreRef, MsvbRef},
+                references:={TestMetadata.Net451.SystemCore, TestMetadata.Net451.MicrosoftVisualBasic},
                 options:=TestOptions.ReleaseDll)
 
             Dim MyTemplate = GetMyTemplateTree(compilation)

@@ -3590,7 +3590,7 @@ Module Program
 End Module
                 </file>
                 </compilation>
-            Dim comp = CreateCompilationWithMscorlib40AndVBRuntime(compilationDef, options:=TestOptions.DebugExe, additionalRefs:={LinqAssemblyRef})
+            Dim comp = CreateCompilationWithMscorlib40AndVBRuntime(compilationDef, options:=TestOptions.DebugExe, additionalRefs:={TestMetadata.Net451.SystemCore})
             CompileAndVerify(comp, expectedOutput:="xxx").VerifyDiagnostics()
         End Sub
 

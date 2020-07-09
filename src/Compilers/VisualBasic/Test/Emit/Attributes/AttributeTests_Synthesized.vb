@@ -11,6 +11,7 @@ Imports Microsoft.CodeAnalysis.Test.Extensions
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
 
@@ -467,7 +468,7 @@ End Class
 </compilation>
 
             Dim comp = CreateCompilationWithMscorlib40AndReferences(source,
-                                                                  references:={SystemCoreRef},
+                                                                  references:={Net451.SystemCore},
                                                                   options:=New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optimizationLevel:=optimizationLevel))
 
             ' Dev11 emits DebuggerStepThrough, we emit DebuggerHidden and only in /debug:full mode
@@ -497,7 +498,7 @@ End Class
 </compilation>
 
             Dim comp = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source,
-                                                                  references:={SystemCoreRef},
+                                                                  references:={Net451.SystemCore},
                                                                   options:=New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optimizationLevel:=optimizationLevel))
 
             ' Dev11 emits DebuggerStepThrough, we emit DebuggerHidden and only in /debug:full mode

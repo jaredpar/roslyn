@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -97,7 +98,7 @@ public class Derived<T> : Outer<(int e1, (int e2, int e3) e4)>.Inner<
 
         private static MetadataReference[] s_attributeRefs =
         {
-            ValueTupleRef, SystemRuntimeFacadeRef, SystemCoreRef, CSharpRef
+            ValueTupleRef, SystemRuntimeFacadeRef, Net451.SystemCore, CSharpRef
         };
 
         [Fact]
@@ -137,7 +138,7 @@ namespace System.Runtime.CompilerServices
         public TupleElementNamesAttribute(string[] transformNames) { }
     }
 }",
-                references: new[] { SystemCoreRef },
+                references: new[] { Net451.SystemCore },
                 options: TestOptions.ReleaseDll);
             comp.VerifyDiagnostics();
 
@@ -648,7 +649,7 @@ class C
         {
             var comp = CreateCompilationWithMscorlib40(
                 s_tuplesTestSource + TestResources.NetFX.ValueTuple.tuplelib_cs,
-                references: new[] { SystemCoreRef },
+                references: new[] { Net451.SystemCore },
                 options: TestOptions.ReleaseDll);
             comp.VerifyDiagnostics(
                 // (8,31): error CS8137: Cannot define a class or member that utilizes tuples because the compiler required type 'System.Runtime.CompilerServices.TupleElementNamesAttribute' cannot be found. Are you missing a reference?

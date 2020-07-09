@@ -103,8 +103,8 @@ using F = System.IO;
                 targetFramework: TargetFramework.Mscorlib40,
                 references: new[]
                 {
-                    SystemCoreRef.WithAliases(new[] { "A" }),
-                    SystemDataRef.WithAliases(new[] { "B" }),
+                    TestMetadata.Net451.SystemCore.WithAliases(new[] { "A" }),
+                    TestMetadata.Net451.SystemData.WithAliases(new[] { "B" }),
                 });
 
             var tree = comp.SyntaxTrees.Single();
@@ -143,7 +143,7 @@ using F = System.IO;
             var compilationUnits = trees.Select(tree => (CompilationUnitSyntax)tree.GetRoot());
             var externAliases = compilationUnits.SelectMany(cu => cu.Externs).Select(e => e.Identifier.ValueText).Distinct();
 
-            var comp = CreateCompilation(trees, targetFramework: TargetFramework.Mscorlib40, references: new[] { SystemCoreRef.WithAliases(externAliases) });
+            var comp = CreateCompilation(trees, targetFramework: TargetFramework.Mscorlib40, references: new[] { TestMetadata.Net451.SystemCore.WithAliases(externAliases) });
             comp.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).Verify();
 
             var factories = trees.Select(tree => comp.GetBinderFactory(tree));

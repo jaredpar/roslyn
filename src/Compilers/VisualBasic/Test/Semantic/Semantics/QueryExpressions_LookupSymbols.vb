@@ -6,6 +6,7 @@ Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Test.Extensions
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Roslyn.Test.Utilities
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -933,7 +934,7 @@ Module Program
     End Sub
 End Module
     ]]></file>
-</compilation>, references:={SystemCoreRef})
+</compilation>, references:={TestMetadata.Net451.SystemCore})
 
             Dim tree As SyntaxTree = (From t In compilation.SyntaxTrees Where t.FilePath = "a.vb").Single()
             Dim semanticModel = compilation.GetSemanticModel(tree)

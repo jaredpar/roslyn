@@ -953,7 +953,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
                 ((bool?)net45).HasValue &&
                 ((bool?)net45).Value)
             {
-                references = new List<MetadataReference> { TestBase.MscorlibRef_v4_0_30316_17626, TestBase.SystemRef_v4_0_30319_17929, TestBase.SystemCoreRef_v4_0_30319_17929 };
+                references = new List<MetadataReference> { TestBase.MscorlibRef_v4_0_30316_17626, TestBase.SystemRef_v4_0_30319_17929, TestMetadata.Net451.SystemCore };
                 if (GetLanguage(workspace, element) == LanguageNames.VisualBasic)
                 {
                     references.Add(TestBase.MsvbRef);
@@ -967,7 +967,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
                 ((bool?)commonReferencesAttribute).HasValue &&
                 ((bool?)commonReferencesAttribute).Value)
             {
-                references = new List<MetadataReference> { TestBase.MscorlibRef_v46, TestBase.SystemRef_v46, TestBase.SystemCoreRef_v46, TestBase.ValueTupleRef, TestBase.SystemRuntimeFacadeRef };
+                references = new List<MetadataReference> { TestBase.MscorlibRef_v46, TestBase.SystemRef_v46, TestMetadata.Net461.SystemCore, TestBase.ValueTupleRef, TestBase.SystemRuntimeFacadeRef };
                 if (GetLanguage(workspace, element) == LanguageNames.VisualBasic)
                 {
                     references.Add(TestBase.MsvbRef_v4_0_30319_17929);
@@ -981,7 +981,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces
                 ((bool?)commonReferencesWithoutValueTupleAttribute).HasValue &&
                 ((bool?)commonReferencesWithoutValueTupleAttribute).Value)
             {
-                references = new List<MetadataReference> { TestBase.MscorlibRef_v46, TestBase.SystemRef_v46, TestBase.SystemCoreRef_v46 };
+                references = new List<MetadataReference> { TestBase.MscorlibRef_v46, TestBase.SystemRef_v46, TestMetadata.Net461.SystemCore };
             }
 
             var winRT = element.Attribute(CommonReferencesWinRTAttributeName);

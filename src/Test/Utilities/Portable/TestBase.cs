@@ -126,32 +126,6 @@ namespace Roslyn.Test.Utilities
             LazyThreadSafetyMode.PublicationOnly);
         public static MetadataReference[] PortableRefsMinimal => s_portableRefsMinimal.Value;
 
-        /// <summary>
-        /// Reference to an assembly that defines LINQ operators.
-        /// </summary>
-        public static MetadataReference LinqAssemblyRef => SystemCoreRef;
-
-        /// <summary>
-        /// Reference to an assembly that defines ExtensionAttribute.
-        /// </summary>
-        public static MetadataReference ExtensionAssemblyRef => SystemCoreRef;
-
-        private static readonly Lazy<MetadataReference> s_systemCoreRef =
-            new Lazy<MetadataReference>(
-                () => AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore).GetReference(display: "System.Core.v4_0_30319.dll"),
-                LazyThreadSafetyMode.PublicationOnly);
-        public static MetadataReference SystemCoreRef => s_systemCoreRef.Value;
-
-        private static readonly Lazy<MetadataReference> s_systemCoreRef_v4_0_30319_17929 = new Lazy<MetadataReference>(
-            () => AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore).GetReference(display: "System.Core.v4_0_30319_17929.dll"),
-            LazyThreadSafetyMode.PublicationOnly);
-        public static MetadataReference SystemCoreRef_v4_0_30319_17929 => s_systemCoreRef_v4_0_30319_17929.Value;
-
-        private static readonly Lazy<MetadataReference> s_systemCoreRef_v46 = new Lazy<MetadataReference>(
-            () => AssemblyMetadata.CreateFromImage(ResourcesNet461.SystemCore).GetReference(display: "System.Core.v4_6_1038_0.dll"),
-            LazyThreadSafetyMode.PublicationOnly);
-        public static MetadataReference SystemCoreRef_v46 => s_systemCoreRef_v4_0_30319_17929.Value;
-
         private static readonly Lazy<MetadataReference> s_systemWindowsFormsRef = new Lazy<MetadataReference>(
             () => AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemWindowsForms).GetReference(display: "System.Windows.Forms.v4_0_30319.dll"),
             LazyThreadSafetyMode.PublicationOnly);

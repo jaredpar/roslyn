@@ -12383,7 +12383,7 @@ public class Myclass
     }
 }
 ";
-            DiagnosticsUtils.VerifyErrorsAndGetCompilationWithMscorlib(text, new[] { LinqAssemblyRef },
+            DiagnosticsUtils.VerifyErrorsAndGetCompilationWithMscorlib(text, new[] { Net451.SystemCore },
                 new ErrorDescription[] { new ErrorDescription { Code = (int)ErrorCode.ERR_ExpressionTreeMustHaveDelegate, Line = 8, Column = 29 } });
         }
 
@@ -24038,7 +24038,7 @@ class Program
 }
 ";
             CreateCompilationWithMscorlib45(text,
-                new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929, CSharpRef },
+                new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore, CSharpRef },
                 parseOptions: TestOptions.Regular.WithLanguageVersion(LanguageVersion.CSharp5)).VerifyDiagnostics(
     // (8,46): error CS8026: Feature 'dictionary initializer' is not available in C# 5. Please use language version 6 or greater.
     //         var s = new Dictionary<int, int> () {[1] = 2};
@@ -24073,7 +24073,7 @@ class Program
 }
 ";
             CreateCompilationWithMscorlib45(text,
-                new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929, CSharpRef },
+                new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore, CSharpRef },
                 parseOptions: TestOptions.Regular).VerifyDiagnostics(
     // (9,47): error CS0165: Use of unassigned local variable 'i'
     //         var s = new Dictionary<int, int> () {[i] = 2};

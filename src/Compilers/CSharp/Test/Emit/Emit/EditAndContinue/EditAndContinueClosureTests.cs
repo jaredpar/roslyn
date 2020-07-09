@@ -3617,7 +3617,7 @@ class C
             var source1 = MarkedSource(template.Replace("<<CALL>>", "d.F(out x, new { y })"));
             var source2 = MarkedSource(template.Replace("<<CALL>>", "d.F(new { y }, out x)"));
 
-            var compilation0 = CreateCompilationWithMscorlib40(new[] { source0.Tree }, references: new[] { SystemCoreRef, CSharpRef }, options: ComSafeDebugDll);
+            var compilation0 = CreateCompilationWithMscorlib40(new[] { source0.Tree }, references: new[] { TestMetadata.Net451.SystemCore, CSharpRef }, options: ComSafeDebugDll);
             var compilation1 = compilation0.WithSource(source1.Tree);
             var compilation2 = compilation1.WithSource(source2.Tree);
 

@@ -19,6 +19,7 @@ Imports Microsoft.VisualStudio.Debugger.Evaluation
 Imports Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation
 Imports Roslyn.Test.PdbUtilities
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports Xunit
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.UnitTests
@@ -1925,7 +1926,7 @@ End Class"
 End Class"
             Dim compilation0 = CreateCompilationWithMscorlib40(
                 {source},
-                references:={SystemCoreRef},
+                references:={Net451.SystemCore},
                 options:=TestOptions.DebugDll,
                 assemblyName:=ExpressionCompilerUtilities.GenerateUniqueName())
 
@@ -2267,7 +2268,7 @@ End Class"
 End Class"
             Dim compilation0 = CreateCompilationWithMscorlib40(
                 {source},
-                references:={SystemCoreRef},
+                references:={Net451.SystemCore},
                 options:=TestOptions.DebugDll.WithModuleName("MODULE"),
                 assemblyName:=ExpressionCompilerUtilities.GenerateUniqueName())
 
@@ -2307,7 +2308,7 @@ Class C
 End Class"
             Dim compilation0 = CreateCompilationWithMscorlib40(
                 {source},
-                references:={SystemCoreRef},
+                references:={Net451.SystemCore},
                 options:=TestOptions.DebugDll,
                 assemblyName:=ExpressionCompilerUtilities.GenerateUniqueName())
 
@@ -2366,7 +2367,7 @@ Class C
 End Class"
             Dim compilation0 = CreateCompilationWithMscorlib40(
                 {source},
-                references:={SystemCoreRef},
+                references:={Net451.SystemCore},
                 options:=TestOptions.DebugDll,
                 assemblyName:=ExpressionCompilerUtilities.GenerateUniqueName())
 
@@ -4236,7 +4237,7 @@ Class C
 End Class"
             Dim compilation0 = CreateCompilationWithMscorlib40(
                 {source},
-                references:={SystemCoreRef},
+                references:={Net451.SystemCore},
                 options:=TestOptions.DebugDll,
                 assemblyName:=ExpressionCompilerUtilities.GenerateUniqueName())
 
@@ -4719,7 +4720,7 @@ Class C
             End Sub
     End Sub
 End Class"
-            Dim compilation0 = CreateCompilationWithMscorlib45AndVBRuntime({Parse(source)}, options:=TestOptions.DebugDll, references:={SystemCoreRef})
+            Dim compilation0 = CreateCompilationWithMscorlib45AndVBRuntime({Parse(source)}, options:=TestOptions.DebugDll, references:={Net451.SystemCore})
             WithRuntimeInstance(compilation0,
                 Sub(runtime)
                     Dim context = CreateMethodContext(runtime, "C._Closure$__.VB$StateMachine___Lambda$__1-0.MoveNext")

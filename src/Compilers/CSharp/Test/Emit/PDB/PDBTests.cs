@@ -18,6 +18,7 @@ using Microsoft.CodeAnalysis.Text;
 using Roslyn.Test.PdbUtilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.PDB
 {
@@ -8076,7 +8077,7 @@ class C
         f();
     }
 }");
-            var c = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll, references: new[] { SystemCoreRef });
+            var c = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll, references: new[] { Net451.SystemCore });
             c.VerifyPdb("C+<>c.<M>b__0_0",
 @"<symbols>
   <files>
@@ -8121,7 +8122,7 @@ class C
         }
     }
 }");
-            var c = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll, references: new[] { SystemCoreRef });
+            var c = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll, references: new[] { Net451.SystemCore });
             c.VerifyPdb("C+<F>d__0.MoveNext",
 @"<symbols>
   <files>
@@ -8176,7 +8177,7 @@ class C
         c.Select(i => i);
     }
 }");
-            var c = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll, references: new[] { SystemCoreRef });
+            var c = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll, references: new[] { Net451.SystemCore });
             c.VerifyPdb("C+<F>d__0.MoveNext",
 @"<symbols>
   <files>
@@ -8228,7 +8229,7 @@ class C
         };
     }
 }");
-            var c = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll, references: new[] { SystemCoreRef });
+            var c = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll, references: new[] { Net451.SystemCore });
             c.VerifyPdb("C+<>c.<M>b__0_0",
 @"<symbols>
   <files>

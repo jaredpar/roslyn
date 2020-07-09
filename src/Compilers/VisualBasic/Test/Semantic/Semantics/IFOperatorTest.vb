@@ -7,6 +7,7 @@ Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports VB = Microsoft.CodeAnalysis.VisualBasic
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
@@ -352,7 +353,7 @@ Module Program
     End Sub
 End Module
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
 
             '1
             Dim semanticInfos = GetSemanticInfos(compilation1, 1)
@@ -394,7 +395,7 @@ End Sub, Y + 1)
     End Sub
 End Module 
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
 
             '1
             Dim semanticInfos = GetSemanticInfos(compilation1, 1)
@@ -440,7 +441,7 @@ Module Program
     End Sub
 End Module
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {Net451.SystemCore})
 
             '1
             Dim semanticInfos = GetSemanticInfos(compilation1, 1)

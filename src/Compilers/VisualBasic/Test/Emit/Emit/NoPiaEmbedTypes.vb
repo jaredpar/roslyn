@@ -1603,13 +1603,13 @@ End Interface
             Dim compilation1 = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(
                 sources1,
                 options:=TestOptions.DebugDll,
-                references:={New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True), SystemCoreRef})
+                references:={New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True), Net451.SystemCore})
             verifier = CompileAndVerify(compilation1, symbolValidator:=validator, verify:=Verification.Fails)
             AssertTheseDiagnostics(verifier, (<errors/>))
             compilation1 = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(
                 sources1,
                 options:=TestOptions.DebugDll,
-                references:={compilation0.EmitToImageReference(embedInteropTypes:=True), SystemCoreRef})
+                references:={compilation0.EmitToImageReference(embedInteropTypes:=True), Net451.SystemCore})
             verifier = CompileAndVerify(compilation1, symbolValidator:=validator, verify:=Verification.Fails)
             AssertTheseDiagnostics(verifier, (<errors/>))
         End Sub
@@ -2054,7 +2054,7 @@ End Class
             Dim compilation1 = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(
                 sources1,
                 options:=TestOptions.DebugDll,
-                references:={New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True), SystemCoreRef})
+                references:={New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True), Net451.SystemCore})
             verifier = CompileAndVerify(compilation1, symbolValidator:=validator)
             AssertTheseDiagnostics(verifier, (<errors/>))
             verifier.VerifyIL("C.Add", expectedAdd)
@@ -2062,7 +2062,7 @@ End Class
             compilation1 = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(
                 sources1,
                 options:=TestOptions.DebugDll,
-                references:={compilation0.EmitToImageReference(embedInteropTypes:=True), SystemCoreRef})
+                references:={compilation0.EmitToImageReference(embedInteropTypes:=True), Net451.SystemCore})
             verifier = CompileAndVerify(compilation1, symbolValidator:=validator)
             AssertTheseDiagnostics(verifier, (<errors/>))
             verifier.VerifyIL("C.Add", expectedAdd)
@@ -2208,12 +2208,12 @@ BC31556: Interface 'I4' has an invalid source interface which is required to emb
             compilation0.AssertTheseDiagnostics()
             Dim compilation1 = CreateCompilationWithMscorlib40AndReferences(
                 sources1,
-                references:={New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True), SystemCoreRef})
+                references:={New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True), Net451.SystemCore})
             VerifyEmitDiagnostics(compilation1, errors)
             VerifyEmitMetadataOnlyDiagnostics(compilation1, <errors/>)
             compilation1 = CreateCompilationWithMscorlib40AndReferences(
                 sources1,
-                references:={compilation0.EmitToImageReference(embedInteropTypes:=True), SystemCoreRef})
+                references:={compilation0.EmitToImageReference(embedInteropTypes:=True), Net451.SystemCore})
             VerifyEmitDiagnostics(compilation1, errors)
             VerifyEmitMetadataOnlyDiagnostics(compilation1, <errors/>)
         End Sub
@@ -2260,12 +2260,12 @@ BC31557: Source interface 'IE' is missing method 'E', which is required to embed
             compilation0.AssertTheseDiagnostics()
             Dim compilation1 = CreateCompilationWithMscorlib40AndReferences(
                 sources1,
-                references:={New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True), SystemCoreRef})
+                references:={New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True), Net451.SystemCore})
             VerifyEmitDiagnostics(compilation1, errors)
             VerifyEmitMetadataOnlyDiagnostics(compilation1, <errors/>)
             compilation1 = CreateCompilationWithMscorlib40AndReferences(
                 sources1,
-                references:={compilation0.EmitToImageReference(embedInteropTypes:=True), SystemCoreRef})
+                references:={compilation0.EmitToImageReference(embedInteropTypes:=True), Net451.SystemCore})
             VerifyEmitDiagnostics(compilation1, errors)
             VerifyEmitMetadataOnlyDiagnostics(compilation1, <errors/>)
         End Sub

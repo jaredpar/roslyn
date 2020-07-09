@@ -15,6 +15,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.ExtensionMethods
 
@@ -99,7 +100,7 @@ End Module
     </compilation>
             Dim text As String = compilationDef.Value.Replace(vbLf, vbCrLf)
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(compilationDef, {SystemRef, SystemCoreRef, MsvbRef})
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(compilationDef, {SystemRef, Net451.SystemCore, MsvbRef})
             CompilationUtils.AssertNoDiagnostics(compilation)
 
             Dim tree As SyntaxTree = compilation.SyntaxTrees(0)
@@ -221,7 +222,7 @@ End Module
     </compilation>
             Dim text As String = compilationDef.Value.Replace(vbLf, vbCrLf)
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(compilationDef, {SystemRef, SystemCoreRef, MsvbRef})
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(compilationDef, {SystemRef, Net451.SystemCore, MsvbRef})
             CompilationUtils.AssertNoDiagnostics(compilation)
 
             Dim tree As SyntaxTree = compilation.SyntaxTrees(0)
@@ -294,7 +295,7 @@ End Module
     </compilation>
             Dim text As String = compilationDef.Value.Replace(vbLf, vbCrLf)
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(compilationDef, {SystemRef, SystemCoreRef, MsvbRef})
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(compilationDef, {SystemRef, Net451.SystemCore, MsvbRef})
             CompilationUtils.AssertNoDiagnostics(compilation)
 
             Dim tree As SyntaxTree = compilation.SyntaxTrees(0)
@@ -363,7 +364,7 @@ End Module
     </compilation>
             Dim text As String = compilationDef.Value.Replace(vbLf, vbCrLf)
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(compilationDef, {SystemRef, SystemCoreRef, MsvbRef})
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndReferences(compilationDef, {SystemRef, Net451.SystemCore, MsvbRef})
             CompilationUtils.AssertNoDiagnostics(compilation)
 
             Dim tree As SyntaxTree = compilation.SyntaxTrees(0)

@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Emit
         {
             var options = (optimize ? TestOptions.ReleaseExe : TestOptions.DebugExe).WithPlatform(platform).WithDeterministic(true);
 
-            var compilation = CreateEmptyCompilation(source, assemblyName: "DeterminismTest", references: new[] { MscorlibRef, SystemCoreRef, CSharpRef }, options: options);
+            var compilation = CreateEmptyCompilation(source, assemblyName: "DeterminismTest", references: new[] { MscorlibRef, TestMetadata.Net451.SystemCore, CSharpRef }, options: options);
 
             // The resolution of the PE header time date stamp is seconds, and we want to make sure that has an opportunity to change
             // between calls to Emit.

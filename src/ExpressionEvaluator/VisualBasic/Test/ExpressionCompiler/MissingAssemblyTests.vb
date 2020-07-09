@@ -14,6 +14,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests
 Imports Microsoft.DiaSymReader
 Imports Microsoft.VisualStudio.Debugger.Evaluation
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports Roslyn.Utilities
 Imports Xunit
 
@@ -184,7 +185,7 @@ Public Class C
     End Sub
 End Class
 "
-            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemRef, SystemCoreRef, SystemXmlRef, SystemXmlLinqRef}, TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemRef, Net451.SystemCore, SystemXmlRef, SystemXmlLinqRef}, TestOptions.DebugDll)
             WithRuntimeInstance(comp, {MscorlibRef},
                 Sub(runtime)
                     Dim context = CreateMethodContext(runtime, "C.M")
@@ -301,7 +302,7 @@ Public Class C
     End Sub
 End Class
 "
-            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemCoreRef}, TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, {Net451.SystemCore}, TestOptions.DebugDll)
             WithRuntimeInstance(comp, {MscorlibRef},
                 Sub(runtime)
                     Dim context = CreateMethodContext(runtime, "C.M")
@@ -555,12 +556,12 @@ Class UseLinq
     Dim b = Enumerable.Any(Of Integer)(Nothing)
 End Class"
 
-            Dim comp = CreateCompilationWithMscorlib40({source}, references:={SystemCoreRef})
+            Dim comp = CreateCompilationWithMscorlib40({source}, references:={Net451.SystemCore})
             WithRuntimeInstance(comp, {MscorlibRef},
                 Sub(runtime)
                     Dim context = CreateMethodContext(runtime, "C.Main")
 
-                    Dim systemCore = SystemCoreRef.ToModuleInstance()
+                    Dim systemCore = Net451.SystemCore.ToModuleInstance()
                     Dim fakeSystemLinq = CreateCompilationWithMscorlib40({""}, options:=TestOptions.ReleaseDll, assemblyName:="System.Linq").ToModuleInstance()
 
                     Dim errorMessage As String = Nothing

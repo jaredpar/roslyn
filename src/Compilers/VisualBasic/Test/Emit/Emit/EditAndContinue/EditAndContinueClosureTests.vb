@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.Test.Extensions
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -672,7 +673,7 @@ Class C
     End Function
 End Class
 ")
-            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, SystemCoreRef}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
+            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, Net451.SystemCore}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
             Dim compilation1 = compilation0.WithSource(source1.Tree)
 
             Dim v0 = CompileAndVerify(compilation0)
@@ -735,7 +736,7 @@ Class C
     End Sub
 End Class
 ")
-            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, SystemCoreRef}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
+            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, Net451.SystemCore}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
             Dim compilation1 = compilation0.WithSource(source1.Tree)
 
             Dim v0 = CompileAndVerify(compilation0)
@@ -798,7 +799,7 @@ Class C
     End Sub
 End Class
 ")
-            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, SystemCoreRef}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
+            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, Net451.SystemCore}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
             Dim compilation1 = compilation0.WithSource(source1.Tree)
 
             Dim v0 = CompileAndVerify(compilation0)
@@ -863,7 +864,7 @@ Class C
     End Sub
 End Class
 ")
-            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, SystemCoreRef}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
+            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, Net451.SystemCore}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
             Dim compilation1 = compilation0.WithSource(source1.Tree)
 
             Dim v0 = CompileAndVerify(compilation0)
@@ -1297,7 +1298,7 @@ Class C
     End Sub
 End Class")
 
-            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, SystemCoreRef}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
+            Dim compilation0 = CreateEmptyCompilationWithReferences(source0.Tree, {MscorlibRef, Net451.SystemCore}, options:=ComSafeDebugDll.WithMetadataImportOptions(MetadataImportOptions.All))
             Dim compilation1 = compilation0.WithSource(source1.Tree)
             Dim compilation2 = compilation1.WithSource(source2.Tree)
 

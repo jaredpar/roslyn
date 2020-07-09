@@ -18,6 +18,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports TypeKind = Microsoft.CodeAnalysis.TypeKind
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
@@ -567,7 +568,7 @@ End Class
             Debug.Assert(Not preprocessorSymbols.IsDefault)
             Dim parseOpts = VisualBasicParseOptions.Default.WithPreprocessorSymbols(preprocessorSymbols)
             Dim testSource As String = condDefs & s_commonTestSource_ConditionalMethodDefs & s_commonTestSource_ConditionalMethodCalls
-            Dim comp = VisualBasicCompilation.Create(GetUniqueName(), {Parse(testSource, parseOpts)}, {MscorlibRef, SystemCoreRef, MsvbRef})
+            Dim comp = VisualBasicCompilation.Create(GetUniqueName(), {Parse(testSource, parseOpts)}, {MscorlibRef, Net451.SystemCore, MsvbRef})
             CompileAndVerify(comp, expectedOutput:=s_commonExpectedOutput_ConditionalMethodsTest)
         End Sub
 

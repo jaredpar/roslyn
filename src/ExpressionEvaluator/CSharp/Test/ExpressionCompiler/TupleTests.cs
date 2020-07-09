@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.UnitTests
 {
@@ -298,7 +299,7 @@ class C
     }
 }";
             var comp = CreateCompilationWithMscorlib40(source, new[] { SystemRuntimeFacadeRef, ValueTupleRef }, options: TestOptions.DebugDll);
-            WithRuntimeInstance(comp, new[] { MscorlibRef, SystemCoreRef, SystemRuntimeFacadeRef, ValueTupleRef }, runtime =>
+            WithRuntimeInstance(comp, new[] { MscorlibRef, Net451.SystemCore, SystemRuntimeFacadeRef, ValueTupleRef }, runtime =>
             {
                 var context = CreateMethodContext(runtime, "C.M");
                 var testData = new CompilationTestData();
@@ -332,7 +333,7 @@ class C
     }
 }";
             var comp = CreateCompilationWithMscorlib40(source, new[] { SystemRuntimeFacadeRef, ValueTupleRef }, options: TestOptions.DebugDll);
-            WithRuntimeInstance(comp, new[] { MscorlibRef, SystemCoreRef, SystemRuntimeFacadeRef, ValueTupleRef }, runtime =>
+            WithRuntimeInstance(comp, new[] { MscorlibRef, Net451.SystemCore, SystemRuntimeFacadeRef, ValueTupleRef }, runtime =>
             {
                 var context = CreateMethodContext(runtime, "C.M");
                 var testData = new CompilationTestData();
@@ -498,7 +499,7 @@ class C
     }
 }";
             var comp = CreateCompilationWithMscorlib40(source, new[] { SystemRuntimeFacadeRef, ValueTupleRef }, options: TestOptions.DebugDll);
-            WithRuntimeInstance(comp, new[] { MscorlibRef, SystemCoreRef, SystemRuntimeFacadeRef, ValueTupleRef }, runtime =>
+            WithRuntimeInstance(comp, new[] { MscorlibRef, Net451.SystemCore, SystemRuntimeFacadeRef, ValueTupleRef }, runtime =>
             {
                 var context = CreateMethodContext(runtime, "C.M");
                 var alias = new Alias(

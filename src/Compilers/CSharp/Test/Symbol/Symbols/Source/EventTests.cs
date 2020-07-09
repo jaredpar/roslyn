@@ -12,6 +12,7 @@ using Roslyn.Test.Utilities;
 using System;
 using System.Linq;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Symbols.Source
 {
@@ -367,7 +368,7 @@ class A
                 Assert.Equal(1, e2.GetAttributes(AttributeDescription.DynamicAttribute).Count());
                 Assert.Equal(1, p.GetAttributes(AttributeDescription.DynamicAttribute).Count());
             };
-            var comp = CreateEmptyCompilation(source, new[] { MscorlibRef, SystemCoreRef });
+            var comp = CreateEmptyCompilation(source, new[] { MscorlibRef, Net451.SystemCore });
             CompileAndVerify(comp, symbolValidator: validator);
         }
 

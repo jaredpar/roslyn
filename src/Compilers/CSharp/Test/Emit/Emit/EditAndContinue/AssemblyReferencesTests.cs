@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp.EditAndContinue.UnitTests
             // The only actual reference stored in the metadata image would be: mscorlib (rowid 1).
             // If we incorrectly assume the references are the same we will map TypeRefs of 
             // Mscorlib to System.Windows.Forms.
-            var references = new[] { SystemWindowsFormsRef, MscorlibRef, SystemCoreRef };
+            var references = new[] { SystemWindowsFormsRef, MscorlibRef, TestMetadata.Net451.SystemCore };
 
             string src1 = @"
 using System;

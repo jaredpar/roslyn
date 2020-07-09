@@ -5,6 +5,7 @@
 Imports Microsoft.CodeAnalysis.Test.Extensions
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -96,7 +97,7 @@ End Class
 </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef,
-                                                                                     {SystemCoreRef},
+                                                                                     {Net451.SystemCore},
                                                                                      TestOptions.DebugExe)
 
             Dim MyTests = compilation.GetTypeByMetadataName("MyTests")
@@ -3531,7 +3532,7 @@ End Namespace
 </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef,
-                                                                                     {SystemCoreRef},
+                                                                                     {Net451.SystemCore},
                                                                                      TestOptions.ReleaseExe.WithRootNamespace("WindowsApplication1"))
 
             compilation.MyTemplate = WindowsFormsMyTemplateTree
@@ -3590,7 +3591,7 @@ End Module
 </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef,
-                                                                                     {SystemCoreRef},
+                                                                                     {Net451.SystemCore},
                                                                                      TestOptions.ReleaseExe.WithRootNamespace("WindowsApplication1"))
 
             compilation.MyTemplate = WindowsFormsMyTemplateTree
@@ -3637,7 +3638,7 @@ End Module
 </compilation>
 
             Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef,
-                                                                                     {SystemCoreRef},
+                                                                                     {Net451.SystemCore},
                                                                                      TestOptions.DebugExe.WithRootNamespace("WindowsApplication1"))
 
             compilation.MyTemplate = WindowsFormsMyTemplateTree

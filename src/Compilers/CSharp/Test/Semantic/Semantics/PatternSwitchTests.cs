@@ -2947,7 +2947,7 @@ static class Ex
 ";
             // Use a compilation profile that supports Task<T>.
             var compilation = CreateCompilationWithMscorlib45(
-                source, options: TestOptions.ReleaseDll.WithOptimizationLevel(OptimizationLevel.Release), references: new[] { SystemCoreRef, CSharpRef });
+                source, options: TestOptions.ReleaseDll.WithOptimizationLevel(OptimizationLevel.Release), references: new[] { TestMetadata.Net451.SystemCore, CSharpRef });
             compilation.VerifyDiagnostics();
             var comp = CompileAndVerify(compilation);
         }

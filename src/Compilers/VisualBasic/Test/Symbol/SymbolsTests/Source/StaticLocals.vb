@@ -426,7 +426,7 @@ End Class
     ]]></file>
 </compilation>
 
-            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {SystemCoreRef}, TestOptions.ReleaseExe)
+            Dim compilation = CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {TestMetadata.Net451.SystemCore}, TestOptions.ReleaseExe)
 
             CompileAndVerify(compilation,
             <![CDATA[

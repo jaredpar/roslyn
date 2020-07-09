@@ -1085,7 +1085,7 @@ public class Class
          }
       }
    }
-}", references: new[] { LinqAssemblyRef });
+}", references: new[] { TestMetadata.Net451.SystemCore });
             CompileAndVerify(comp);
         }
 

@@ -272,7 +272,7 @@ Class Program
     End Sub
 End Class
     </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {TestMetadata.Net451.SystemCore})
 
             Dim expression = GetExpressionFromSyncLock(compilation)
             Dim semanticSummary = GetSemanticInfoSummary(compilation, expression)

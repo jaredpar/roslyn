@@ -10,6 +10,7 @@ Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols.Metadata.PE
 
@@ -81,11 +82,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols.Metadata.PE
 
         <Fact>
         Public Sub TypeInNamespace()
-            Dim comp = VisualBasicCompilation.Create("Dummy", references:={MscorlibRef, SystemCoreRef})
+            Dim comp = VisualBasicCompilation.Create("Dummy", references:={MscorlibRef, Net451.SystemCore})
 
             Dim corlibAssembly = comp.GetReferencedAssemblySymbol(MscorlibRef)
             Assert.NotNull(corlibAssembly)
-            Dim systemCoreAssembly = comp.GetReferencedAssemblySymbol(SystemCoreRef)
+            Dim systemCoreAssembly = comp.GetReferencedAssemblySymbol(Net451.SystemCore)
             Assert.NotNull(systemCoreAssembly)
 
             Const funcTypeMetadataName As String = "System.Func`1"

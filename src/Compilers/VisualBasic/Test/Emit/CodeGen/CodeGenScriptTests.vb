@@ -8,6 +8,7 @@ Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
 
@@ -300,7 +301,7 @@ System.Console.Write("complete")
                 </compilation>,
                 parseOptions:=TestOptions.Script,
                 options:=TestOptions.DebugExe,
-                references:={SystemCoreRef})
+                references:={Net451.SystemCore})
             Dim verifier = CompileAndVerify(comp, expectedOutput:="complete")
             Dim methodData = verifier.TestData.GetMethodData("Script.<Initialize>")
             Assert.Equal("System.Threading.Tasks.Task(Of Object)", methodData.Method.ReturnType.ToDisplayString())
@@ -350,7 +351,7 @@ System.Console.Write("complete")
         <Fact>
         Public Sub SubmissionEntryPoint()
             Dim parseOptions = TestOptions.Script
-            Dim references = {MscorlibRef_v4_0_30316_17626, SystemCoreRef, MsvbRef}
+            Dim references = {MscorlibRef_v4_0_30316_17626, Net451.SystemCore, MsvbRef}
             Dim source0 = <![CDATA[
 System.Threading.Tasks.Task.Delay(100)
 System.Console.Write("complete")

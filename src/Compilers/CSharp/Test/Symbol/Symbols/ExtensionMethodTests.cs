@@ -2417,7 +2417,7 @@ B");
                 assemblyName: GetUniqueName(),
                 options: new CSharpCompilationOptions(OutputKind.ConsoleApplication).WithScriptClassName("Script"),
                 syntaxTrees: new[] { tree },
-                references: new[] { MscorlibRef, LinqAssemblyRef });
+                references: new[] { MscorlibRef, Net451.SystemCore });
 
             var expr = ((ExpressionStatementSyntax)((GlobalStatementSyntax)tree.GetCompilationUnitRoot().Members[0]).Statement).Expression;
             var model = compilation.GetSemanticModel(tree);
@@ -3259,7 +3259,7 @@ Public Module M
     Public Sub F(o As Object)
     End Sub
 End Module";
-            var reference1 = BasicCompilationUtils.CompileToMetadata(source1, references: new[] { MscorlibRef, SystemCoreRef, MsvbRef });
+            var reference1 = BasicCompilationUtils.CompileToMetadata(source1, references: new[] { MscorlibRef, Net451.SystemCore, MsvbRef });
             var source2 =
 @"class C
 {
@@ -3797,7 +3797,7 @@ o.F();";
         public void InteractiveExtensionMethods()
         {
             var parseOptions = TestOptions.Script;
-            var references = new[] { MscorlibRef, SystemCoreRef };
+            var references = new[] { MscorlibRef, Net451.SystemCore };
             var source0 =
 @"static object F(this object o) { return 0; }
 var o = new object();

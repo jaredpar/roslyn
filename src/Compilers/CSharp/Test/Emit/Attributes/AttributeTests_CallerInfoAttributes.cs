@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -2629,7 +2630,7 @@ query path : C:\filename
 
             var compilation = CreateCompilationWithMscorlib45(
                 new[] { SyntaxFactory.ParseSyntaxTree(source, path: @"C:\filename", encoding: Encoding.UTF8) },
-                new[] { SystemCoreRef },
+                new[] { Net451.SystemCore },
                 TestOptions.ReleaseExe);
 
             CompileAndVerify(compilation, expectedOutput: expected);
@@ -3010,7 +3011,7 @@ C:\filename";
 
             var compilation = CreateCompilationWithMscorlib45(
                 new[] { SyntaxFactory.ParseSyntaxTree(source, path: @"C:\filename", encoding: Encoding.UTF8) },
-                new[] { SystemCoreRef },
+                new[] { Net451.SystemCore },
                 TestOptions.ReleaseExe);
             CompileAndVerify(compilation, expectedOutput: expected);
         }
@@ -3070,7 +3071,7 @@ Main
 
             var compilation = CreateCompilationWithMscorlib45(
                 new[] { SyntaxFactory.ParseSyntaxTree(source, path: @"C:\filename", encoding: Encoding.UTF8) },
-                new[] { SystemCoreRef },
+                new[] { Net451.SystemCore },
                 TestOptions.ReleaseExe);
             CompileAndVerify(compilation, expectedOutput: expected);
         }
@@ -3105,7 +3106,7 @@ Public Class A
     End Property
 End Class";
 
-            var vbReference = BasicCompilationUtils.CompileToMetadata(vbSource, references: new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef });
+            var vbReference = BasicCompilationUtils.CompileToMetadata(vbSource, references: new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore });
 
             const string csSource =
 @"using System;
@@ -3125,7 +3126,7 @@ class C
 ";
             var compilation = CreateCompilationWithMscorlib45(
                 new[] { SyntaxFactory.ParseSyntaxTree(csSource, path: @"C:\filename", encoding: Encoding.UTF8) },
-                new[] { SystemCoreRef, vbReference },
+                new[] { Net451.SystemCore, vbReference },
                 TestOptions.ReleaseExe);
 
             CompileAndVerify(compilation, expectedOutput:
@@ -3164,7 +3165,7 @@ class C
 
             var compilation = CreateCompilationWithMscorlib45(
                 source,
-                new[] { SystemCoreRef },
+                new[] { Net451.SystemCore },
                 TestOptions.ReleaseExe);
             CompileAndVerify(compilation, expectedOutput: expected);
         }
@@ -3195,7 +3196,7 @@ Public Class A
     End Property
 End Class";
 
-            var vbReference = BasicCompilationUtils.CompileToMetadata(vbSource, references: new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef });
+            var vbReference = BasicCompilationUtils.CompileToMetadata(vbSource, references: new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore });
 
             const string csSource =
 @"using System;
@@ -3210,7 +3211,7 @@ class Program
 }";
             var compilation = CreateCompilationWithMscorlib45(
                 csSource,
-                new[] { SystemCoreRef, vbReference },
+                new[] { Net451.SystemCore, vbReference },
                 TestOptions.ReleaseExe);
 
             CompileAndVerify(compilation, expectedOutput:

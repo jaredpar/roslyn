@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -3404,7 +3405,7 @@ class C
         c.Select(o => new { E = F });
     }
 }";
-            var comp = CreateCompilationWithMscorlib40(source, references: new[] { LinqAssemblyRef });
+            var comp = CreateCompilationWithMscorlib40(source, references: new[] { Net451.SystemCore });
             comp.VerifyDiagnostics(
                 // (9,9): error CS0029: Cannot implicitly convert type 'System.Collections.Generic.IEnumerable<<anonymous type: int E>>' to 'int'
                 //         c.Select(o => new { E = F });
@@ -3426,7 +3427,7 @@ class C
         const int F = c.Sum(o => F);
     }
 }";
-            var comp = CreateCompilationWithMscorlib40(source, references: new[] { LinqAssemblyRef });
+            var comp = CreateCompilationWithMscorlib40(source, references: new[] { Net451.SystemCore });
             comp.VerifyDiagnostics(
                 // (8,34): error CS0110: The evaluation of the constant value for 'F' involves a circular definition
                 //         const int F = c.Sum(o => F);

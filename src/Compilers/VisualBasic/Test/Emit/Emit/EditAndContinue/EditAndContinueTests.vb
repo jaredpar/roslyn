@@ -4361,7 +4361,7 @@ End Class
             Dim source1 = MarkedSource(template.Replace("<<VALUE>>", "1"))
             Dim source2 = MarkedSource(template.Replace("<<VALUE>>", "2"))
 
-            Dim compilation0 = CreateCompilationWithMscorlib45({source0.Tree}, {SystemCoreRef}, options:=ComSafeDebugDll)
+            Dim compilation0 = CreateCompilationWithMscorlib45({source0.Tree}, {TestMetadata.Net451.SystemCore}, options:=ComSafeDebugDll)
             Dim compilation1 = compilation0.WithSource(source1.Tree)
             Dim compilation2 = compilation0.WithSource(source2.Tree)
 

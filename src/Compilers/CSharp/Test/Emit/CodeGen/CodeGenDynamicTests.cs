@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.CodeGen
 {
@@ -33,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.CodeGen
             CSharpParseOptions parseOptions = null,
             Verification verify = Verification.Passes)
         {
-            references = references ?? new[] { SystemCoreRef, CSharpRef };
+            references = references ?? new[] { Net451.SystemCore, CSharpRef };
 
             // verify that we emit correct optimized and unoptimized IL:
             var unoptimizedCompilation = CreateCompilationWithMscorlib45(source, references, parseOptions: parseOptions, options: TestOptions.DebugDll.WithMetadataImportOptions(MetadataImportOptions.All).WithAllowUnsafe(allowUnsafe));
@@ -140,7 +141,7 @@ public sealed class CSharpArgumentInfo
             }
 
             string source = string.Format(CSharpBinderTemplate, sb.ToString());
-            return CreateCompilationWithMscorlib40(source, new[] { systemCore ?? SystemCoreRef }, assemblyName: GetUniqueName()).EmitToImageReference();
+            return CreateCompilationWithMscorlib40(source, new[] { systemCore ?? Net451.SystemCore }, assemblyName: GetUniqueName()).EmitToImageReference();
         }
 
         private const string ExpressionTypeSource = @"
@@ -242,7 +243,7 @@ class C
     }
 }
 ";
-            CreateCompilationWithMscorlib40(source, new[] { SystemCoreRef, csrtRef }).VerifyEmitDiagnostics(
+            CreateCompilationWithMscorlib40(source, new[] { Net451.SystemCore, csrtRef }).VerifyEmitDiagnostics(
                 // (8,9): error CS0656: Missing compiler required member 'Microsoft.CSharp.RuntimeBinder.Binder.InvokeConstructor'
                 //         new C(d.M(d.M = d[-d], d[(int)d()] = d * d.M));
                 Diagnostic(ErrorCode.ERR_MissingPredefinedMember, "new C(d.M(d.M = d[-d], d[(int)d()] = d * d.M))").WithArguments("Microsoft.CSharp.RuntimeBinder.Binder", "InvokeConstructor")
@@ -267,7 +268,7 @@ class C
 }
 ";
             // the compiler ignores the enum values, uses hardcoded values:
-            CreateCompilationWithMscorlib40(source, new[] { SystemCoreRef, csrtRef }).VerifyEmitDiagnostics();
+            CreateCompilationWithMscorlib40(source, new[] { Net451.SystemCore, csrtRef }).VerifyEmitDiagnostics();
         }
 
         [Fact]
@@ -1089,7 +1090,7 @@ public class C
     }
 }
 ";
-            CompileAndVerifyWithMscorlib40(source, new[] { SystemCoreRef });
+            CompileAndVerifyWithMscorlib40(source, new[] { Net451.SystemCore });
         }
 
         [Fact, WorkItem(16, "http://roslyn.codeplex.com/workitem/16")]
@@ -7463,7 +7464,7 @@ dynamic x = Color.F((dynamic)1);
 ";
             var script = CreateCompilationWithMscorlib45(
                 new[] { Parse(sourceScript, options: TestOptions.Script) },
-                new[] { new CSharpCompilationReference(lib), SystemCoreRef, CSharpRef });
+                new[] { new CSharpCompilationReference(lib), Net451.SystemCore, CSharpRef });
 
             var verifier = CompileAndVerify(script);
             verifier.VerifyIL("<<Initialize>>d__0.System.Runtime.CompilerServices.IAsyncStateMachine.MoveNext()",
@@ -7560,7 +7561,7 @@ void Goo()
 ";
             var script = CreateCompilationWithMscorlib45(
                 new[] { Parse(sourceScript, options: TestOptions.Script) },
-                new[] { new CSharpCompilationReference(lib), SystemCoreRef, CSharpRef },
+                new[] { new CSharpCompilationReference(lib), Net451.SystemCore, CSharpRef },
                 TestOptions.ReleaseDll.WithMetadataImportOptions(MetadataImportOptions.All));
 
             CompileAndVerify(script).VerifyIL("Goo", @"
@@ -11209,7 +11210,7 @@ class C
             // Roslyn: Use strongly typed receiver.
             // Note that accessing an indexed property is the only way how to get strongly typed receiver.
 
-            CompileAndVerifyIL(source, "C.M", references: new MetadataReference[] { SystemCoreRef, CSharpRef, vbRef }, expectedOptimizedIL: @"
+            CompileAndVerifyIL(source, "C.M", references: new MetadataReference[] { Net451.SystemCore, CSharpRef, vbRef }, expectedOptimizedIL: @"
 {
   // Code size      167 (0xa7)
   .maxstack  10
@@ -11304,7 +11305,7 @@ class C
             // Roslyn: Use strongly typed receiver.
             // Note that accessing an indexed property is the only way how to get strongly typed receiver.
 
-            CompileAndVerifyIL(source, "C.M", references: new MetadataReference[] { SystemCoreRef, CSharpRef, vbRef }, expectedOptimizedIL: @"
+            CompileAndVerifyIL(source, "C.M", references: new MetadataReference[] { Net451.SystemCore, CSharpRef, vbRef }, expectedOptimizedIL: @"
 {
   // Code size      179 (0xb3)
   .maxstack  10
@@ -11406,7 +11407,7 @@ class C
             // Roslyn: Use strongly typed receiver.
             // Note that accessing an indexed property is the only way how to get strongly typed receiver.
 
-            CompileAndVerifyIL(source, "C.M", references: new MetadataReference[] { SystemCoreRef, CSharpRef, vbRef }, expectedOptimizedIL: @"
+            CompileAndVerifyIL(source, "C.M", references: new MetadataReference[] { Net451.SystemCore, CSharpRef, vbRef }, expectedOptimizedIL: @"
 {
   // Code size      424 (0x1a8)
   .maxstack  16
@@ -11572,7 +11573,7 @@ class C
     }
 }
 ";
-            CompileAndVerifyIL(source, "C.M", references: new MetadataReference[] { SystemCoreRef, CSharpRef, ilRef }, expectedOptimizedIL: @"
+            CompileAndVerifyIL(source, "C.M", references: new MetadataReference[] { Net451.SystemCore, CSharpRef, ilRef }, expectedOptimizedIL: @"
 {
   // Code size       92 (0x5c)
   .maxstack  7
@@ -14059,7 +14060,7 @@ class C
     }
 }
 ";
-            var comp = CompileAndVerifyWithMscorlib40(source, expectedOutput: "hello!", references: new[] { ValueTupleRef, SystemRuntimeFacadeRef, CSharpRef, SystemCoreRef });
+            var comp = CompileAndVerifyWithMscorlib40(source, expectedOutput: "hello!", references: new[] { ValueTupleRef, SystemRuntimeFacadeRef, CSharpRef, Net451.SystemCore });
             comp.VerifyDiagnostics();
             // No runtime failure (System.ArrayTypeMismatchException: Attempted to access an element as a type incompatible with the array.)
             // because of the special handling for dynamic in LocalRewriter.TransformCompoundAssignmentLHS
@@ -15422,7 +15423,7 @@ class C
 }";
             var comp = CreateCompilationWithMscorlib45(
                 new[] { DynamicAttributeSource, source },
-                references: new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929 });
+                references: new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore });
             comp.VerifyEmitDiagnostics(
                 // (5,9): error CS0656: Missing compiler required member 'Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo.Create'
                 //         d.F();
@@ -15444,7 +15445,7 @@ class C
 }";
             var comp = CreateCompilationWithMscorlib45(
                 new[] { DynamicAttributeSource, source },
-                references: new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929 });
+                references: new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore });
             comp.VerifyEmitDiagnostics(
                 // (6,15): error CS0656: Missing compiler required member 'Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo.Create'
                 //         await d;

@@ -13,6 +13,7 @@ Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.VisualStudio.Debugger.Evaluation
 Imports Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports Xunit
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.UnitTests
@@ -1436,7 +1437,7 @@ End Structure
 "
             Dim comp = CreateEmptyCompilationWithReferences(
                 MakeSources(source),
-                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929},
+                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, Net451.SystemCore},
                 TestOptions.DebugDll)
 
             WithRuntimeInstance(comp,
@@ -1527,7 +1528,7 @@ End Class
 "
             Dim comp = CreateEmptyCompilationWithReferences(
                 MakeSources(source),
-                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929},
+                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, Net451.SystemCore},
                 TestOptions.DebugDll)
 
             WithRuntimeInstance(comp,
@@ -1604,7 +1605,7 @@ Class C
 End Class"
             Dim comp = CreateEmptyCompilationWithReferences(
                 MakeSources(source),
-                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929},
+                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, Net451.SystemCore},
                 TestOptions.DebugDll)
 
             WithRuntimeInstance(comp,
@@ -1664,7 +1665,7 @@ Class C
 End Class"
             Dim comp = CreateEmptyCompilationWithReferences(
                 MakeSources(source),
-                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929},
+                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, Net451.SystemCore},
                 TestOptions.DebugDll)
 
             WithRuntimeInstance(comp,
@@ -2535,7 +2536,7 @@ Class C
 End Class"
             Dim comp = CreateEmptyCompilationWithReferences(
                 MakeSources(source),
-                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929},
+                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, Net451.SystemCore},
                 TestOptions.DebugDll)
 
             WithRuntimeInstance(comp,
@@ -2595,7 +2596,7 @@ Class C
 End Class"
             Dim comp = CreateEmptyCompilationWithReferences(
                 MakeSources(source),
-                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929},
+                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, Net451.SystemCore},
                 TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
@@ -2665,7 +2666,7 @@ End Class
 
             ' Referencing SystemCoreRef and SystemXmlLinqRef will cause Microsoft.VisualBasic.Embedded to be compiled
             ' and it depends on EditorBrowsableAttribute.
-            WithRuntimeInstance(comp, {MscorlibRef, SystemRef, SystemCoreRef, SystemXmlLinqRef, libRef},
+            WithRuntimeInstance(comp, {MscorlibRef, SystemRef, Net451.SystemCore, SystemXmlLinqRef, libRef},
                 Sub(runtime)
                     Dim typeName As String = Nothing
                     Dim locals = ArrayBuilder(Of LocalAndMethod).GetInstance()
@@ -2695,7 +2696,7 @@ Class C
 End Class"
             Dim comp = CreateEmptyCompilationWithReferences(
                 MakeSources(source),
-                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929},
+                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, Net451.SystemCore},
                 TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
@@ -2751,7 +2752,7 @@ End Class
 "
             Dim comp = CreateEmptyCompilationWithReferences(
                 MakeSources(source),
-                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929},
+                {MscorlibRef_v4_0_30316_17626, MsvbRef_v4_0_30319_17929, Net451.SystemCore},
                 TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
@@ -2818,7 +2819,7 @@ End Class
 }
 "
 
-            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemCoreRef, MsvbRef}, TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, {Net451.SystemCore, MsvbRef}, TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
 
@@ -2919,7 +2920,7 @@ End Class
 }
 "
 
-            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemCoreRef, MsvbRef}, TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, {Net451.SystemCore, MsvbRef}, TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
 
@@ -3006,7 +3007,7 @@ End Class
 }
 "
 
-            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemCoreRef, MsvbRef}, TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, {Net451.SystemCore, MsvbRef}, TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
 
@@ -3088,7 +3089,7 @@ End Class
 }
 "
 
-            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemCoreRef, MsvbRef}, TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, {Net451.SystemCore, MsvbRef}, TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
 
@@ -3149,7 +3150,7 @@ End Class
 }
 "
 
-            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemCoreRef, MsvbRef}, TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, {Net451.SystemCore, MsvbRef}, TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
 
@@ -3200,7 +3201,7 @@ End Class
 }
 "
 
-            Dim comp = CreateCompilationWithMscorlib40({source}, {SystemCoreRef, MsvbRef}, TestOptions.DebugDll)
+            Dim comp = CreateCompilationWithMscorlib40({source}, {Net451.SystemCore, MsvbRef}, TestOptions.DebugDll)
             WithRuntimeInstance(comp,
                 Sub(runtime)
 

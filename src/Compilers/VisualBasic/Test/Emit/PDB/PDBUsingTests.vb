@@ -5,6 +5,7 @@
 Imports System.IO
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.PDB
     Public Class PDBUsingTests
@@ -374,7 +375,7 @@ End Class
 "
             Dim comp = CreateCompilationWithMscorlib40(
                 {source},
-                {SystemCoreRef, SystemDataRef},
+                {Net451.SystemCore, SystemDataRef},
                 options:=TestOptions.ReleaseDll.WithGlobalImports(GlobalImport.Parse("System.Data.DataColumn")))
 
             CompileAndVerify(comp, validator:=
@@ -412,7 +413,7 @@ End Class
 "
             Dim comp = CreateCompilationWithMscorlib40(
                 {source},
-                {SystemCoreRef, SystemDataRef},
+                {Net451.SystemCore, SystemDataRef},
                 options:=TestOptions.ReleaseDll.WithGlobalImports(GlobalImport.Parse("E.F"), GlobalImport.Parse("Q = G.H")))
 
             ' only warnings are reported (unlike C# which reports errors):

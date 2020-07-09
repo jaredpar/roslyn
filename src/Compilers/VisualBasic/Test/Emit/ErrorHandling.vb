@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports Xunit
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
@@ -471,7 +472,7 @@ End Module
     </compilation>
 
             Dim compilation = CompilationUtils.CreateEmptyCompilationWithReferences(compilationDef,
-                                                                         references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                         references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                          options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             Dim ExpectedOutput = <![CDATA[Public Sub Main        
@@ -506,7 +507,7 @@ End Class
     </compilation>
 
             Dim compilation = CompilationUtils.CreateEmptyCompilationWithReferences(compilationDef,
-                                                                         references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                         references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                          options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
 
@@ -532,7 +533,7 @@ End Module
     </compilation>
 
             Dim compilation = CompilationUtils.CreateEmptyCompilationWithReferences(compilationDef,
-                                                                         references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                         references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                          options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             Dim ExpectedOutput = <![CDATA["F" Like "F"]]>
@@ -555,7 +556,7 @@ End Module
     </compilation>
 
             Dim compilation = CompilationUtils.CreateEmptyCompilationWithReferences(compilationDef,
-                                                                         references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                         references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                          options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             compilation.VerifyEmitDiagnostics(Diagnostic(ERRID.ERR_PlatformDoesntSupport, "Error 1").WithArguments("Unstructured exception handling").WithLocation(4, 18))
@@ -580,7 +581,7 @@ End Module
     </compilation>
 
             Dim compilation = CompilationUtils.CreateEmptyCompilationWithReferences(source,
-                                                                         references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                         references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                          options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             compilation.VerifyEmitDiagnostics(Diagnostic(ERRID.ERR_PlatformDoesntSupport, "a + 1").WithArguments("Late binding").WithLocation(6, 40))
@@ -601,7 +602,7 @@ End Module
 </compilation>
 
             Dim compilation = CompilationUtils.CreateEmptyCompilationWithReferences(source,
-                                                                         references:={MscorlibRef, SystemRef, SystemCoreRef},
+                                                                         references:={MscorlibRef, SystemRef, Net451.SystemCore},
                                                                          options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             compilation.VerifyDiagnostics(Diagnostic(ERRID.ERR_PlatformDoesntSupport, "My").WithArguments("My").WithLocation(3, 13))

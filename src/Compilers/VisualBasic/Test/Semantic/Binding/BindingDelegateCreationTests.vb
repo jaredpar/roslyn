@@ -1190,7 +1190,7 @@ BC36663: Option Strict On does not allow narrowing in implicit type conversions 
     </file>
     </compilation>
 
-                Dim c1 = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, references:={SystemCoreRef})
+                Dim c1 = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(source, references:={TestMetadata.Net451.SystemCore})
 
                 CompilationUtils.AssertTheseDiagnostics(c1,
 <expected>

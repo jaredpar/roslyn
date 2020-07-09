@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Emit
 {
@@ -26,7 +27,7 @@ Console.WriteLine(o.ToString());
                 CreateCompilationWithMscorlib45(
                     new[] { tree },
                     options: TestOptions.ReleaseExe.WithScriptClassName("Script"),
-                    references: new[] { SystemCoreRef }),
+                    references: new[] { Net451.SystemCore }),
                 expectedOutput: "{ a = 1 }"
             );
         }
@@ -45,7 +46,7 @@ Console.WriteLine(o.ToString());
                 CreateCompilationWithMscorlib45(
                     new[] { tree },
                     options: TestOptions.ReleaseExe.WithScriptClassName("Script"),
-                    references: new[] { SystemCoreRef }),
+                    references: new[] { Net451.SystemCore }),
                 expectedOutput: "{ a = 1 }"
             );
         }
@@ -63,7 +64,7 @@ Console.WriteLine(new { a = 1 }.ToString());
                 CreateCompilationWithMscorlib45(
                     new[] { tree },
                     options: TestOptions.ReleaseExe.WithScriptClassName("Script"),
-                    references: new[] { SystemCoreRef }),
+                    references: new[] { Net451.SystemCore }),
                 expectedOutput: "{ a = 1 }"
             );
         }
@@ -89,7 +90,7 @@ new CLS().M();
                 CreateCompilationWithMscorlib45(
                     new[] { tree },
                     options: TestOptions.ReleaseExe.WithScriptClassName("Script"),
-                    references: new[] { SystemCoreRef }),
+                    references: new[] { Net451.SystemCore }),
                 expectedOutput: "{ a = 1 }"
             );
         }
@@ -231,7 +232,7 @@ class CLS
         public void CompilationChain_DynamicSiteDelegates()
         {
             // TODO: references should be inherited
-            MetadataReference[] references = { SystemCoreRef, CSharpRef };
+            MetadataReference[] references = { Net451.SystemCore, CSharpRef };
 
             var s0 = CreateSubmission("var i = 1; dynamic d = null; d.m(ref i);", references);
             var sx = CreateSubmission("var i = 1; dynamic d = null; d.m(ref i, ref i);", references, previous: s0);
@@ -542,7 +543,7 @@ public abstract class C
         [ConditionalFact(typeof(DesktopOnly))]
         public void SubmissionEntryPoint()
         {
-            var references = new[] { MscorlibRef_v4_0_30316_17626, SystemCoreRef };
+            var references = new[] { MscorlibRef_v4_0_30316_17626, Net451.SystemCore };
             var source0 =
 @"{
     await System.Threading.Tasks.Task.Delay(100);

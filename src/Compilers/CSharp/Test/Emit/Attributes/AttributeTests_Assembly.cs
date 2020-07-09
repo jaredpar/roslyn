@@ -1711,7 +1711,7 @@ class Program1 { static void Main(string[] args) {    } }
                 public class Test { }
                 ";
 
-            var netModuleRef = GetNetModuleWithAssemblyAttributesRef(mod, new[] { SystemCoreRef });
+            var netModuleRef = GetNetModuleWithAssemblyAttributesRef(mod, new[] { TestMetadata.Net451.SystemCore });
             var appCompilation = CreateCompilationWithMscorlib40(app, references: new[] { netModuleRef }, options: TestOptions.ReleaseDll);
 
             var module = (PEModuleSymbol)appCompilation.Assembly.Modules[1];

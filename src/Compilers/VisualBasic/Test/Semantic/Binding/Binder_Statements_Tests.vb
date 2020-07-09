@@ -1572,7 +1572,7 @@ Class DerivedClass
     End Sub
 End Class
                 </file>
-</compilation>, {SystemCoreRef})
+</compilation>, {TestMetadata.Net451.SystemCore})
 
             CompilationUtils.AssertTheseDiagnostics(compilation,
 <expected>

@@ -8,6 +8,7 @@ Imports Microsoft.Cci
 Imports Microsoft.CodeAnalysis.PooledObjects
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -4256,7 +4257,7 @@ End Module]]>
 
             Dim comp = CreateEmptyCompilationWithReferences(
                 source,
-                references:={MscorlibRef_v20, SystemRef_v20, MsvbRef, SystemXmlRef, SystemXmlLinqRef, SystemCoreRef},
+                references:={MscorlibRef_v20, SystemRef_v20, MsvbRef, SystemXmlRef, SystemXmlLinqRef, Net451.SystemCore},
                 options:=TestOptions.ReleaseExe.WithAssemblyIdentityComparer(DesktopAssemblyIdentityComparer.Default))
 
             CompileAndVerify(comp, expectedOutput:="1" & Environment.NewLine & "2" & Environment.NewLine &
@@ -4289,7 +4290,7 @@ End Module
 
             Dim comp = CreateEmptyCompilationWithReferences(
                 source,
-                references:={MscorlibRef_v20, SystemRef_v20, MsvbRef, SystemXmlRef, SystemXmlLinqRef, SystemCoreRef},
+                references:={MscorlibRef_v20, SystemRef_v20, MsvbRef, SystemXmlRef, SystemXmlLinqRef, Net451.SystemCore},
                 options:=TestOptions.ReleaseExe.WithAssemblyIdentityComparer(DesktopAssemblyIdentityComparer.Default))
 
             VerifyDiagnostics(comp, Diagnostic(ERRID.ERR_TypeDisallowsElements, "objArray.<output>").WithArguments("Object()"),

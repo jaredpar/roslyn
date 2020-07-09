@@ -8,6 +8,7 @@ Imports Microsoft.CodeAnalysis
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE
+Imports Roslyn.Test.Utilities
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
 
@@ -3992,7 +3993,7 @@ End Module
 
             Dim verifier = CompileAndVerify(compilationDef,
                              options:=TestOptions.DebugDll,
-                             references:={SystemCoreRef})
+                             references:={TestMetadata.Net451.SystemCore})
 
 
             Dim _assembly = Assembly.Load(verifier.EmittedAssemblyData.ToArray())

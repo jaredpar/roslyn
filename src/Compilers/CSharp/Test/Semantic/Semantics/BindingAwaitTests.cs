@@ -2757,7 +2757,7 @@ class Repro
     }
 }";
 
-            var comp = CreateCompilationWithMscorlib45(source, new[] { SystemCoreRef, CSharpRef }, TestOptions.ReleaseExe);
+            var comp = CreateCompilationWithMscorlib45(source, new[] { TestMetadata.Net451.SystemCore, TestMetadata.Net451.MicrosoftCSharp }, TestOptions.ReleaseExe);
             comp.VerifyDiagnostics();
 
             CompileAndVerify(comp, expectedOutput: "42");

@@ -1674,7 +1674,7 @@ class C
         return (System.Type)typeof(Program).GetMember(target)[0].GetCustomAttributesData().ElementAt(0).ConstructorArguments[0].Value;
     }
 }";
-            var compilation = CreateCompilationWithILAndMscorlib40(source, ilSource, references: new[] { SystemCoreRef }, options: TestOptions.ReleaseExe);
+            var compilation = CreateCompilationWithILAndMscorlib40(source, ilSource, references: new[] { TestMetadata.Net451.SystemCore }, options: TestOptions.ReleaseExe);
 
             var p = compilation.GetTypeByMetadataName("Program");
             var a1 = (IArrayTypeSymbol)p.GetMember<MethodSymbol>("Test1").GetAttributes().Single().ConstructorArguments.Single().Value;

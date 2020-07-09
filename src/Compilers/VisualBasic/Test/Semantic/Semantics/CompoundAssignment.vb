@@ -14,6 +14,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
 
@@ -678,7 +679,7 @@ End Class
     ]]></file>
 </compilation>
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {SystemCoreRef, SystemXmlRef, SystemXmlLinqRef}, TestOptions.ReleaseExe)
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {Net451.SystemCore, SystemXmlRef, SystemXmlLinqRef}, TestOptions.ReleaseExe)
 
             Dim verifier = CompileAndVerify(compilation, expectedOutput:=
             <![CDATA[
@@ -933,7 +934,7 @@ End Module
     ]]></file>
 </compilation>
 
-            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {SystemCoreRef, SystemXmlRef, SystemXmlLinqRef}, TestOptions.ReleaseExe)
+            Dim compilation = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntimeAndReferences(compilationDef, {Net451.SystemCore, SystemXmlRef, SystemXmlLinqRef}, TestOptions.ReleaseExe)
 
             AssertTheseDiagnostics(compilation,
 <expected><![CDATA[

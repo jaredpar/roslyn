@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.UnitTests
 {
@@ -530,7 +531,7 @@ class C
     }
 }";
             var compilation0 = CreateCompilationWithMscorlib45(source, options: TestOptions.DebugDll,
-                references: new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929, CSharpRef });
+                references: new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore, CSharpRef });
             WithRuntimeInstance(compilation0, runtime =>
             {
                 var context = CreateMethodContext(runtime, "C.<M>d__1.MoveNext", atLineNumber: 1000);
@@ -2042,7 +2043,7 @@ struct S<T> where T : class
             var compilation0 = CreateCompilationWithMscorlib45(
                 source,
                 options: TestOptions.DebugDll,
-                references: new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929, CSharpRef });
+                references: new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore, CSharpRef });
 
             WithRuntimeInstance(compilation0, runtime =>
             {
@@ -2113,7 +2114,7 @@ class C
             var compilation0 = CreateCompilationWithMscorlib45(
                 source,
                 options: TestOptions.DebugDll,
-                references: new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929, CSharpRef });
+                references: new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore, CSharpRef });
 
             WithRuntimeInstance(compilation0, runtime =>
             {
@@ -2183,7 +2184,7 @@ class C
             var compilation0 = CreateCompilationWithMscorlib45(
                 source,
                 options: TestOptions.DebugDll,
-                references: new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929, CSharpRef });
+                references: new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore, CSharpRef });
 
             WithRuntimeInstance(compilation0, runtime =>
             {
@@ -2298,7 +2299,7 @@ class C
             var compilation0 = CreateCompilationWithMscorlib45(
                 source,
                 options: TestOptions.DebugDll,
-                references: new[] { SystemRef_v4_0_30319_17929, SystemCoreRef_v4_0_30319_17929, CSharpRef });
+                references: new[] { SystemRef_v4_0_30319_17929, Net451.SystemCore, CSharpRef });
 
             WithRuntimeInstance(compilation0, runtime =>
             {
@@ -3410,7 +3411,7 @@ class C
             var libRef = CreateCompilation(libSource).EmitToImageReference();
             var comp = CreateCompilation(source, options: TestOptions.DebugDll);
 
-            WithRuntimeInstance(comp, new[] { MscorlibRef, SystemRef, SystemCoreRef, SystemXmlLinqRef, libRef }, runtime =>
+            WithRuntimeInstance(comp, new[] { MscorlibRef, SystemRef, Net451.SystemCore, SystemXmlLinqRef, libRef }, runtime =>
             {
                 string typeName;
                 var locals = ArrayBuilder<LocalAndMethod>.GetInstance();

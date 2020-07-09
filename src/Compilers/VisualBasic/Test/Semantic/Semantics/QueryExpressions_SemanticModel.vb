@@ -3924,7 +3924,7 @@ Module Program
     End Sub
 End Module
     ]]></file>
-</compilation>, {SystemCoreRef})
+</compilation>, {TestMetadata.Net451.SystemCore})
 
             Dim tree As SyntaxTree = (From t In compilation.SyntaxTrees Where t.FilePath = "a.vb").Single()
 

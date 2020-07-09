@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using static Roslyn.Test.Utilities.TestMetadata;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -484,7 +485,7 @@ public class C
         {
             var sourceCode = TestResource.AllInOneCSharpCode;
 
-            var compilation = CreateCompilationWithMscorlib40(sourceCode, new[] { SystemRef, SystemCoreRef, ValueTupleRef, SystemRuntimeFacadeRef }, sourceFileName: "file.cs");
+            var compilation = CreateCompilationWithMscorlib40(sourceCode, new[] { SystemRef, Net451.SystemCore, ValueTupleRef, SystemRuntimeFacadeRef }, sourceFileName: "file.cs");
             var tree = compilation.SyntaxTrees[0];
             var model = compilation.GetSemanticModel(tree);
 
@@ -518,7 +519,7 @@ System.Console.WriteLine();
         {
             var sourceCode = TestResource.AllInOneCSharpCode;
 
-            var compilation = CreateCompilationWithMscorlib40(sourceCode, new[] { SystemRef, SystemCoreRef, ValueTupleRef, SystemRuntimeFacadeRef }, sourceFileName: "file.cs");
+            var compilation = CreateCompilationWithMscorlib40(sourceCode, new[] { SystemRef, Net451.SystemCore, ValueTupleRef, SystemRuntimeFacadeRef }, sourceFileName: "file.cs");
             var tree = compilation.SyntaxTrees[0];
             var model = compilation.GetSemanticModel(tree);
 

@@ -12,6 +12,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -146,7 +147,7 @@ Module Program
     End Sub
 End Module
     ]]></file>
-</compilation>, options:=TestOptions.ReleaseExe, references:={SystemCoreRef})
+</compilation>, options:=TestOptions.ReleaseExe, references:={Net451.SystemCore})
 
             Dim model As VBSemanticModel = GetSemanticModel(compilation, "a.vb")
             Dim operatorSyntax As OperatorStatementSyntax

@@ -10,6 +10,7 @@ Imports Microsoft.CodeAnalysis.Test.Extensions
 Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -2600,7 +2601,7 @@ Namespace Global.Microsoft.VisualBasic
 End Namespace
     </file>
 </compilation>,
-            references:={SystemRef, SystemCoreRef},
+            references:={SystemRef, Net451.SystemCore},
             options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             CompilationUtils.AssertTheseDiagnostics(compilation1,
@@ -2626,7 +2627,7 @@ Namespace Global.Microsoft.VisualBasic
 End Namespace
     </file>
 </compilation>,
-            references:={SystemRef, SystemCoreRef},
+            references:={SystemRef, Net451.SystemCore},
             options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             CompilationUtils.AssertTheseDiagnostics(compilation1,
@@ -2652,7 +2653,7 @@ Namespace Global.Microsoft
 End Namespace
     </file>
 </compilation>,
-            references:={SystemRef, SystemCoreRef},
+            references:={SystemRef, Net451.SystemCore},
             options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             CompilationUtils.AssertTheseDiagnostics(compilation1,
@@ -2678,7 +2679,7 @@ Namespace Global.Microsoft.VisualBasic.Strings
 End Namespace
     </file>
 </compilation>,
-            references:={SystemRef, SystemCoreRef},
+            references:={SystemRef, Net451.SystemCore},
             options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             CompilationUtils.AssertTheseDiagnostics(compilation1,
@@ -2710,7 +2711,7 @@ Namespace Global.Microsoft.VisualBasic.Strings
 End Namespace
     </file>
 </compilation>,
-            references:={SystemRef, SystemCoreRef},
+            references:={SystemRef, Net451.SystemCore},
             options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             CompilationUtils.AssertTheseDiagnostics(compilation1,
@@ -2755,7 +2756,7 @@ Namespace Global.Microsoft
 End Namespace
     </file>
 </compilation>,
-            references:={SystemRef, SystemCoreRef},
+            references:={SystemRef, Net451.SystemCore},
             options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             CompilationUtils.AssertTheseDiagnostics(compilation1,
@@ -2792,7 +2793,7 @@ End Namespace
     </file>
 </compilation>,
             options:=compilationOptions,
-references:={SystemCoreRef, SystemXmlLinqRef, SystemXmlRef})
+references:={Net451.SystemCore, SystemXmlLinqRef, SystemXmlRef})
 
             CompilationUtils.AssertTheseDiagnostics(compilation1,
             <errors>BC30560: Error in project-level import 'Microsoft.VisualBasic' at 'Microsoft.VisualBasic' : 'VisualBasic' is ambiguous in the namespace 'Microsoft'.
@@ -2846,7 +2847,7 @@ BC31210: module 'VisualBasic' conflicts with a Visual Basic Runtime namespace 'V
     <file name="a.vb">
     </file>
 </compilation>,
-            references:={SystemRef, SystemCoreRef},
+            references:={SystemRef, Net451.SystemCore},
             options:=TestOptions.ReleaseDll.WithEmbedVbCoreRuntime(True))
 
             CompilationUtils.AssertTheseDiagnostics(compilation, <errors></errors>)
@@ -3291,7 +3292,7 @@ End Module
 
 #Region "Utilities"
 
-        Protected NoVbRuntimeReferences As MetadataReference() = {MscorlibRef, SystemRef, SystemCoreRef}
+        Protected NoVbRuntimeReferences As MetadataReference() = {MscorlibRef, SystemRef, Net451.SystemCore}
 
         Friend Shadows Function CompileAndVerify(
             source As XElement,

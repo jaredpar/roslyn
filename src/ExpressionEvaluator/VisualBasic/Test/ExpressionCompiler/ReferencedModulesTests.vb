@@ -22,6 +22,7 @@ Imports Microsoft.DiaSymReader
 Imports Microsoft.VisualStudio.Debugger.Evaluation
 Imports Roslyn.Test.PdbUtilities
 Imports Roslyn.Test.Utilities
+Imports Roslyn.Test.Utilities.TestMetadata
 Imports Xunit
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.UnitTests
@@ -541,7 +542,7 @@ End Class"
             Dim compilationA = CreateEmptyCompilationWithReferences(
                 MakeSources(sourceA),
                 options:=TestOptions.DebugDll,
-                references:={MscorlibRef, SystemRef, MsvbRef, SystemCoreRef})
+                references:={MscorlibRef, SystemRef, MsvbRef, Net451.SystemCore})
 
             Dim moduleA = compilationA.ToModuleInstance()
             Dim identityA = compilationA.Assembly.Identity
@@ -549,14 +550,14 @@ End Class"
             Dim moduleB = CreateEmptyCompilationWithReferences(
                 MakeSources(sourceB),
                 options:=TestOptions.DebugDll,
-                references:={MscorlibRef, SystemRef, MsvbRef, SystemCoreRef, moduleA.GetReference()}).ToModuleInstance()
+                references:={MscorlibRef, SystemRef, MsvbRef, Net451.SystemCore, moduleA.GetReference()}).ToModuleInstance()
 
             Dim runtime = CreateRuntimeInstance(
             {
                 MscorlibRef.ToModuleInstance(),
                 SystemRef.ToModuleInstance(),
                 MsvbRef.ToModuleInstance(),
-                SystemCoreRef.ToModuleInstance(),
+                Net451.SystemCore.ToModuleInstance(),
                 moduleA,
                 moduleB
             })
