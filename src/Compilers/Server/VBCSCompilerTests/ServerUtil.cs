@@ -116,26 +116,19 @@ namespace Microsoft.CodeAnalysis.CompilerServer.UnitTests
             keepAlive ??= TimeSpan.FromMilliseconds(-1);
 
             var listener = new TestableDiagnosticListener();
-            var listenerTaskCompletionSource = new TaskCompletionSource<TestableDiagnosticListener>();
             var serverListenSource = new TaskCompletionSource<bool>();
             var cts = new CancellationTokenSource();
             var mutexName = BuildServerConnection.GetServerMutexName(pipeName);
             var task = Task.Run(() =>
             {
-                try
-                {
-                    BuildServerController.CreateAndRunServer(
-                        pipeName,
-                        compilerServerHost,
-                        clientConnectionHost,
-                        listener,
-                        keepAlive: keepAlive,
-                        cancellationToken: cts.Token);
-                }
-                finally
-                {
-                    listenerTaskCompletionSource.SetResult(listener);
-                }
+                BuildServerController.CreateAndRunServer(
+                    pipeName,
+                    compilerServerHost,
+                    clientConnectionHost,
+                    listener,
+                    keepAlive: keepAlive,
+                    cancellationToken: cts.Token);
+                return listener;
             });
 
             // The contract of this function is that it will return once the server has started.  Spin here until
@@ -145,12 +138,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer.UnitTests
                 await Task.Yield();
             }
 
-            if (task.IsFaulted)
-            {
-                throw task.Exception;
-            }
-
-            return new ServerData(cts, pipeName, listenerTaskCompletionSource.Task);
+            return new ServerData(cts, pipeName, task);
         }
 
         internal static BuildClient CreateBuildClient(
