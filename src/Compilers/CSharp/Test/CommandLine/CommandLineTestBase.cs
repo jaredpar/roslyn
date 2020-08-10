@@ -21,29 +21,21 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
 {
     public abstract class CommandLineTestBase : CSharpTestBase
     {
-        public string WorkingDirectory { get; }
+        /// <summary>
+        /// Path to an SDK directory that has a .NET Destokp mscorlib
+        /// </summary>
         public string SdkDirectory { get; }
+        public string WorkingDirectory { get; }
         public string MscorlibFullPath { get; }
+        public string DefaultResponseFilePath { get; }
 
         public CommandLineTestBase()
         {
-            WorkingDirectory = TempRoot.Root;
-            SdkDirectory = getSdkDirectory(Temp);
+
+            SdkDirectory = Temp.CreateDirectory().Path;
             MscorlibFullPath = Path.Combine(SdkDirectory, "mscorlib.dll");
-
-            // This will return a directory which contains mscorlib for use in the compiler instances created for
-            // this set of tests
-            string getSdkDirectory(TempRoot temp)
-            {
-                if (ExecutionConditionUtil.IsCoreClr)
-                {
-                    var dir = temp.CreateDirectory();
-                    File.WriteAllBytes(Path.Combine(dir.Path, "mscorlib.dll"), ResourcesNet461.mscorlib);
-                    return dir.Path;
-                }
-
-                return RuntimeEnvironment.GetRuntimeDirectory();
-            }
+            File.WriteAllBytes(MscorlibFullPath, ResourcesNet461.mscorlib);
+            WorkingDirectory = TempRoot.Root;
         }
 
         internal CSharpCommandLineArguments DefaultParse(IEnumerable<string> args, string baseDirectory, string sdkDirectory = null, string additionalReferenceDirectories = null)
@@ -60,7 +52,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
         internal MockCSharpCompiler CreateCSharpCompiler(string responseFile, string workingDirectory, string[] args, ImmutableArray<DiagnosticAnalyzer> analyzers = default, ImmutableArray<ISourceGenerator> generators = default, AnalyzerAssemblyLoader loader = null)
         {
             var buildPaths = RuntimeUtilities.CreateBuildPaths(workingDirectory, sdkDirectory: SdkDirectory);
-            return new MockCSharpCompiler(responseFile, buildPaths, args, analyzers, generators, loader);
+            return new MockCSharpCompiler(responseFile ?? DefaultResponseFilePath, buildPaths, args, analyzers, generators, loader);
         }
     }
 }

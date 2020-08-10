@@ -9,6 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Test\Resources\Core\ResourceLoader.cs" Link="ResourceLoader.cs" />
+    <Compile Include="..\..\..\Shared\RuntimeHostInfo.cs" Link="Shared\RuntimeHostInfo.cs" />
   </ItemGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\..\..\Test\Utilities\Portable\Roslyn.Test.Utilities.csproj" />

@@ -40,35 +40,80 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
 {
     public class CommandLineTests : CommandLineTestBase
     {
-#if NETCOREAPP
-        private static readonly string s_CSharpCompilerExecutable;
-        private static readonly string s_DotnetCscRun;
-#else
-        private static readonly string s_CSharpCompilerExecutable = Path.Combine(
-            Path.GetDirectoryName(typeof(CommandLineTests).GetTypeInfo().Assembly.Location),
-            Path.Combine("dependency", "csc.exe"));
-        private static readonly string s_DotnetCscRun = ExecutionConditionUtil.IsMono ? "mono" : string.Empty;
-#endif
-        private static readonly string s_CSharpScriptExecutable;
-
         private static readonly string s_compilerVersion = CommonCompiler.GetProductVersion(typeof(CommandLineTests));
 
-        static CommandLineTests()
+        /// <summary>
+        /// Path to the csc exe / dll
+        /// </summary>
+        public string CscFilePath { get; }
+
+        /// <summary>
+        /// Command line for invoking csc on the current environment such that it will produce binaries that are runnable
+        /// in the current environment
+        /// </summary>
+        public string CscCommandLine { get; }
+
+        /// <summary>
+        /// Command line for invoking csi on the current environment such that it will produce binaries that are runnable
+        /// in the current environment
+        /// </summary>
+        public string CsiCommandLine { get; }
+
+        /// <summary>
+        /// In the case we are in a hosted environment this will point to the host: dotnet or mono.
+        /// </summary>
+        public string RuntimeHost { get; }
+
+        public string RuntimeConfigJsonContent { get; }
+
+        public CommandLineTests()
         {
 #if NETCOREAPP
-            var cscDllPath = Path.Combine(
+            RuntimeHost = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            RuntimeConfigJsonContent = @"
+{
+  ""runtimeOptions"": {
+    ""tfm"": ""netcoreapp3.1"",
+    ""framework"": {
+      ""name"": ""Microsoft.NETCore.App"",
+      ""version"": ""3.1.0""
+    },
+    ""rollForward"": ""Major""
+ }
+}
+";
+
+            // RuntimeHost = RuntimeHostInfo.GetDotNetPath();
+            CscFilePath = Path.Combine(
                 Path.GetDirectoryName(typeof(CommandLineTests).GetTypeInfo().Assembly.Location),
                 Path.Combine("dependency", "csc.dll"));
-            var dotnetExe = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-            var netStandardDllPath = AppDomain.CurrentDomain.GetAssemblies()
-                .FirstOrDefault(assembly => !assembly.IsDynamic && assembly.Location.EndsWith("netstandard.dll")).Location;
-            var netStandardDllDir = Path.GetDirectoryName(netStandardDllPath);
 
-            s_CSharpCompilerExecutable = $@"""{dotnetExe}"" ""{cscDllPath}"" /r:""{netStandardDllPath}"" /r:""{netStandardDllDir}/System.Private.CoreLib.dll"" /r:""{netStandardDllDir}/System.Console.dll"" /r:""{netStandardDllDir}/System.Runtime.dll""";
-            s_DotnetCscRun = $@"""{dotnetExe}"" exec --runtimeconfig ""{Path.Combine(Path.GetDirectoryName(cscDllPath), "csc.runtimeconfig.json")}""";
-            s_CSharpScriptExecutable = s_CSharpCompilerExecutable.Replace("csc.dll", Path.Combine("csi", "csi.dll"));
+            var sdkDir = Temp.CreateDirectory().Path;
+            var mscorlibPath = Path.Combine(sdkDir, "mscorlib.dll");
+            File.WriteAllBytes(mscorlibPath, ResourcesNetCoreApp31.mscorlib);
+            var systemRuntimePath = Path.Combine(sdkDir, "System.Runtime.dll");
+            File.WriteAllBytes(systemRuntimePath, ResourcesNetCoreApp31.SystemRuntime);
+            var systemConsolePath = Path.Combine(sdkDir, "System.Console.dll");
+            File.WriteAllBytes(systemConsolePath, ResourcesNetCoreApp31.SystemConsole);
+
+            CscCommandLine = $@"""{RuntimeHost}"" exec ""{CscFilePath}"" /r:""{mscorlibPath}"" /r:""{systemRuntimePath}"" /r:""{systemConsolePath}""";
+            var csiFilePath = Path.Combine(
+                Path.GetDirectoryName(typeof(CommandLineTests).GetTypeInfo().Assembly.Location),
+                Path.Combine("dependency", "csi", "csi.dll"));
+            CsiCommandLine = $@"""{RuntimeHost}"" exec ""{csiFilePath}""";
 #else
-            s_CSharpScriptExecutable = s_CSharpCompilerExecutable.Replace("csc.exe", Path.Combine("csi", "csi.exe"));
+            RuntimeHost = null;
+            RuntimeConfigJsonContent = null;
+            CscFilePath = Path.Combine(
+                Path.GetDirectoryName(typeof(CommandLineTests).GetTypeInfo().Assembly.Location),
+                Path.Combine("dependency", "csc.exe"));
+            CscCommandLine = CscFilePath;
+            if (ExecutionConditionUtil.IsMono)
+            {
+                RuntimeHost = "mono";
+                CscCommandLine = $"mono {CscCommandLine}";
+            }
+            CsiCommandLine = CscCommandLine.Replace("csc.exe", "csi.exe");
 #endif
         }
 
@@ -367,10 +412,10 @@ dotnet_diagnostic.cs0169.severity = suppress";
         }
 
         [WorkItem(946954, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/946954")]
-        [ConditionalFact(typeof(WindowsDesktopOnly), Reason = "https://github.com/dotnet/roslyn/issues/30321")]
+        [Fact]
         public void CompilerBinariesAreAnyCPU()
         {
-            Assert.Equal(ProcessorArchitecture.MSIL, AssemblyName.GetAssemblyName(s_CSharpCompilerExecutable).ProcessorArchitecture);
+            Assert.Equal(ProcessorArchitecture.MSIL, AssemblyName.GetAssemblyName(CscFilePath).ProcessorArchitecture);
         }
 
         [Fact]
@@ -5767,14 +5812,14 @@ class A                                                 ^
 {{                                                      ^
     public static void Main() =^^^>                     ^
         System.Console.WriteLine(""Hello World!"");     ^
-}} | {s_CSharpCompilerExecutable} /nologo /t:exe -"
+}} | {CscCommandLine} /nologo /t:exe -"
     .Replace(Environment.NewLine, string.Empty), workingDirectory: tempDir) :
                 ProcessUtilities.Run("/usr/bin/env", $@"sh -c ""echo  \
 class A                                                               \
 {{                                                                    \
     public static void Main\(\) =\>                                   \
         System.Console.WriteLine\(\\\""Hello World\!\\\""\)\;         \
-}} | {s_CSharpCompilerExecutable} /nologo /t:exe -""", workingDirectory: tempDir,
+}} | {CscCommandLine} /nologo /t:exe -""", workingDirectory: tempDir,
                     // we are testing shell's piped/redirected stdin behavior explicitly
                     // instead of using Process.StandardInput.Write(), so we set
                     // redirectStandardInput to true, which implies that isatty of child
@@ -5784,9 +5829,12 @@ class A                                                               \
 
             Assert.False(result.ContainsErrors, $"Compilation error(s) occurred: {result.Output} {result.Errors}");
 
+#if NETCOREAPP
+            File.WriteAllText(Path.Combine(tempDir, "-.runtimeconfig.json"), RuntimeConfigJsonContent);
+#endif
             string output = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
-                ProcessUtilities.RunAndGetOutput("cmd.exe", $@"/C ""{s_DotnetCscRun} -.exe""", expectedRetCode: 0, startFolder: tempDir) :
-                ProcessUtilities.RunAndGetOutput("sh", $@"-c ""{s_DotnetCscRun} -.exe""", expectedRetCode: 0, startFolder: tempDir);
+                ProcessUtilities.RunAndGetOutput("cmd.exe", $@"/C ""{RuntimeHost}"" -.exe", expectedRetCode: 0, startFolder: tempDir) :
+                ProcessUtilities.RunAndGetOutput("sh", $@"-c ""{RuntimeHost}"" -.exe", expectedRetCode: 0, startFolder: tempDir);
 
             Assert.Equal("Hello World!", output.Trim());
         }
@@ -5801,13 +5849,13 @@ class A                                                               \
 class A                                                 ^
 {{                                                      ^
     public A Get() =^^^> default;                       ^
-}} | {s_CSharpCompilerExecutable} /nologo /t:library /out:{name} -"
+}} | {CscCommandLine} /nologo /t:library /out:{name} -"
     .Replace(Environment.NewLine, string.Empty), workingDirectory: tempDir) :
                 ProcessUtilities.Run("/usr/bin/env", $@"sh -c ""echo  \
 class A                                                               \
 {{                                                                    \
     public A Get\(\) =\> default\;                                    \
-}} | {s_CSharpCompilerExecutable} /nologo /t:library /out:{name} -""", workingDirectory: tempDir,
+}} | {CscCommandLine} /nologo /t:library /out:{name} -""", workingDirectory: tempDir,
                     // we are testing shell's piped/redirected stdin behavior explicitly
                     // instead of using Process.StandardInput.Write(), so we set
                     // redirectStandardInput to true, which implies that isatty of child
@@ -5827,15 +5875,15 @@ class A                                                               \
         {
             string tempDir = Temp.CreateDirectory().Path;
             ProcessResult result = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
-                ProcessUtilities.Run("cmd", $@"/C echo Console.WriteLine(""Hello World!"") | {s_CSharpScriptExecutable} -") :
-                ProcessUtilities.Run("/usr/bin/env", $@"sh -c ""echo Console.WriteLine\(\\\""Hello World\!\\\""\) | {s_CSharpScriptExecutable} -""",
+                ProcessUtilities.Run("cmd", $@"/C echo Console.WriteLine(""Hello World!"") | {CsiCommandLine} -") :
+                ProcessUtilities.Run("/usr/bin/env", $@"sh -c ""echo Console.WriteLine\(\\\""Hello World\!\\\""\) | {CsiCommandLine} -""",
                 workingDirectory: tempDir,
-                    // we are testing shell's piped/redirected stdin behavior explicitly
-                    // instead of using Process.StandardInput.Write(), so we set
-                    // redirectStandardInput to true, which implies that isatty of child
-                    // process is false and thereby Console.IsInputRedirected will return
-                    // true in csc code.
-                    redirectStandardInput: true);
+                // we are testing shell's piped/redirected stdin behavior explicitly
+                // instead of using Process.StandardInput.Write(), so we set
+                // redirectStandardInput to true, which implies that isatty of child
+                // process is false and thereby Console.IsInputRedirected will return
+                // true in csc code.
+                redirectStandardInput: true);
 
             Assert.False(result.ContainsErrors, $"Compilation error(s) occurred: {result.Output} {result.Errors}");
             Assert.Equal("Hello World!", result.Output.Trim());
@@ -5861,8 +5909,8 @@ class A                                                               \
 
             string tempDir = Temp.CreateDirectory().Path;
             ProcessResult result = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
-                ProcessUtilities.Run("cmd", $@"/C ""{s_CSharpCompilerExecutable} /nologo /t:exe -""", workingDirectory: tempDir) :
-                ProcessUtilities.Run("/usr/bin/env", $@"sh -c ""{s_CSharpCompilerExecutable} /nologo /t:exe -""", workingDirectory: tempDir);
+                ProcessUtilities.Run("cmd", $@"/C ""{CscCommandLine} /nologo /t:exe -""", workingDirectory: tempDir) :
+                ProcessUtilities.Run("/usr/bin/env", $@"sh -c ""{CscCommandLine} /nologo /t:exe -""", workingDirectory: tempDir);
 
             Assert.True(result.ContainsErrors);
             Assert.Contains(((int)ErrorCode.ERR_StdInOptionProvidedButConsoleInputIsNotRedirected).ToString(), result.Output);
@@ -5878,14 +5926,14 @@ class A                                                 ^
 {{                                                      ^
     public static void Main() =^^^>                     ^
         System.Console.WriteLine(""Hello World!"");     ^
-}} | {s_CSharpCompilerExecutable} /nologo - /t:exe -"
+}} | {CscCommandLine} /nologo - /t:exe -"
     .Replace(Environment.NewLine, string.Empty)) :
                 ProcessUtilities.Run("/usr/bin/env", $@"sh -c ""echo  \
 class A                                                               \
 {{                                                                    \
     public static void Main\(\) =\>                                   \
         System.Console.WriteLine\(\\\""Hello World\!\\\""\)\;         \
-}} | {s_CSharpCompilerExecutable} /nologo - /t:exe -""", workingDirectory: tempDir,
+}} | {CscCommandLine} /nologo - /t:exe -""", workingDirectory: tempDir,
                     // we are testing shell's piped/redirected stdin behavior explicitly
                     // instead of using Process.StandardInput.Write(), so we set
                     // redirectStandardInput to true, which implies that isatty of child
@@ -5903,7 +5951,7 @@ class A                                                               \
 
             var tempOut = Temp.CreateFile();
 
-            var output = ProcessUtilities.RunAndGetOutput("cmd", "/C \"" + s_CSharpCompilerExecutable + "\" /nologo /preferreduilang:en /t:library " + srcFile + " > " + tempOut.Path, expectedRetCode: 1);
+            var output = ProcessUtilities.RunAndGetOutput("cmd", "/C \"" + CscCommandLine + "\" /nologo /preferreduilang:en /t:library " + srcFile + " > " + tempOut.Path, expectedRetCode: 1);
             Assert.Equal("", output.Trim());
             Assert.Equal("SRC.CS(1,1): error CS1056: Unexpected character '?'", tempOut.ReadAllText().Trim().Replace(srcFile, "SRC.CS"));
 
@@ -5918,7 +5966,7 @@ class A                                                               \
 
             var tempOut = Temp.CreateFile();
 
-            var output = ProcessUtilities.RunAndGetOutput("cmd", "/C \"" + s_CSharpCompilerExecutable + "\" /utf8output /nologo /preferreduilang:en /t:library " + srcFile + " > " + tempOut.Path, expectedRetCode: 1);
+            var output = ProcessUtilities.RunAndGetOutput("cmd", "/C \"" + CscCommandLine + "\" /utf8output /nologo /preferreduilang:en /t:library " + srcFile + " > " + tempOut.Path, expectedRetCode: 1);
             Assert.Equal("", output.Trim());
             Assert.Equal("SRC.CS(1,1): error CS1056: Unexpected character '♚'", tempOut.ReadAllText().Trim().Replace(srcFile, "SRC.CS"));
 
@@ -5934,13 +5982,13 @@ class A                                                               \
             var aCs = folder.CreateFile("a.cs");
             aCs.WriteAllText("public class C {}");
 
-            var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, $"/nologo /t:module /out:a.netmodule \"{aCs}\"", startFolder: folder.ToString());
+            var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, $"/nologo /t:module /out:a.netmodule \"{aCs}\"", startFolder: folder.ToString());
             Assert.Equal("", output.Trim());
 
-            output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, "/nologo /t:library /out:b.dll /addmodule:a.netmodule ", startFolder: folder.ToString());
+            output = ProcessUtilities.RunAndGetOutput(CscCommandLine, "/nologo /t:library /out:b.dll /addmodule:a.netmodule ", startFolder: folder.ToString());
             Assert.Equal("", output.Trim());
 
-            output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, "/nologo /preferreduilang:en /t:module /out:b.dll /addmodule:a.netmodule ", startFolder: folder.ToString());
+            output = ProcessUtilities.RunAndGetOutput(CscCommandLine, "/nologo /preferreduilang:en /t:module /out:b.dll /addmodule:a.netmodule ", startFolder: folder.ToString());
             Assert.Equal("warning CS2008: No source files specified.", output.Trim());
 
             CleanupAllGeneratedFiles(aCs.Path);
@@ -5954,7 +6002,7 @@ class A                                                               \
             var aCs = folder.CreateFile("a.cs");
             aCs.WriteAllText("public class C {}");
 
-            var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, "/nologo /t:library /out:b.dll /resource:a.cs", startFolder: folder.ToString());
+            var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, "/nologo /t:library /out:b.dll /resource:a.cs", startFolder: folder.ToString());
             Assert.Equal("", output.Trim());
 
             CleanupAllGeneratedFiles(aCs.Path);
@@ -5968,7 +6016,7 @@ class A                                                               \
             var aCs = folder.CreateFile("a.cs");
             aCs.WriteAllText("public class C {}");
 
-            var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, "/nologo /t:library /out:b.dll /linkresource:a.cs", startFolder: folder.ToString());
+            var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, "/nologo /t:library /out:b.dll /linkresource:a.cs", startFolder: folder.ToString());
             Assert.Equal("", output.Trim());
 
             CleanupAllGeneratedFiles(aCs.Path);
@@ -6145,7 +6193,7 @@ public class CS1698_a {}
                 output = ProcessUtilities.RunAndGetOutput("cmd", "/C icacls " + _ref + @" /deny %USERDOMAIN%\%USERNAME%:(r,WDAC) /Q");
                 Assert.Equal("Successfully processed 1 files; Failed processing 0 files", output.Trim());
 
-                output = ProcessUtilities.RunAndGetOutput("cmd", "/C \"" + s_CSharpCompilerExecutable + "\" /nologo /preferreduilang:en /r:" + _ref + " /t:library " + source, expectedRetCode: 1);
+                output = ProcessUtilities.RunAndGetOutput("cmd", "/C \"" + CscCommandLine + "\" /nologo /preferreduilang:en /r:" + _ref + " /t:library " + source, expectedRetCode: 1);
                 Assert.Equal("error CS0009: Metadata file '" + _ref + "' could not be opened -- Access to the path '" + _ref + "' is denied.", output.Trim());
             }
             finally
@@ -7200,10 +7248,10 @@ public class C
             var file = dir.CreateFile(fileName);
             file.WriteAllBytes(source);
 
-            var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, $"/nologo /t:library \"{file}\"", startFolder: dir.Path);
+            var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, $"/nologo /t:library \"{file}\"", startFolder: dir.Path);
             Assert.Equal("", output); // Autodetected UTF8, NO ERROR
 
-            output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, $"/nologo /preferreduilang:en /t:library /codepage:20127 \"{file}\"", expectedRetCode: 1, startFolder: dir.Path); // 20127: US-ASCII
+            output = ProcessUtilities.RunAndGetOutput(CscCommandLine, $"/nologo /preferreduilang:en /t:library /codepage:20127 \"{file}\"", expectedRetCode: 1, startFolder: dir.Path); // 20127: US-ASCII
             // 0xd0, 0x96 ==> ERROR
             Assert.Equal(@"
 a.cs(1,7): error CS1001: Identifier expected
@@ -7716,7 +7764,7 @@ public class C
         [Fact, WorkItem(530359, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530359")]
         public void NoStdLib02()
         {
-            #region "source"
+#region "source"
             var source = @"
 // <Title>A collection initializer can be declared with a user-defined IEnumerable that is declared in a user-defined System.Collections</Title>
 using System.Collections;
@@ -7768,9 +7816,9 @@ namespace System.Collections
     }
 }
 ";
-            #endregion
+#endregion
 
-            #region "mslib"
+#region "mslib"
             var mslib = @"
 namespace System
 {
@@ -7835,7 +7883,7 @@ namespace System
     }
 }
 ";
-            #endregion
+#endregion
 
             var src = Temp.CreateFile("NoStdLib02.cs");
             src.WriteAllText(source + mslib);
@@ -7939,7 +7987,7 @@ class C {} ");
 
             using (var xmlFileHandle = File.Open(xml.ToString(), FileMode.Open, FileAccess.Read, FileShare.Delete | FileShare.ReadWrite))
             {
-                var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, String.Format("/nologo /t:library /doc:\"{1}\" \"{0}\"", src.ToString(), xml.ToString()), startFolder: dir.ToString());
+                var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, String.Format("/nologo /t:library /doc:\"{1}\" \"{0}\"", src.ToString(), xml.ToString()), startFolder: dir.ToString());
                 Assert.Equal("", output.Trim());
 
                 Assert.True(File.Exists(Path.Combine(dir.ToString(), "a.xml")));
@@ -7984,7 +8032,7 @@ class E {}
             var xml = dir.CreateFile("a.xml");
             xml.WriteAllText("EMPTY");
 
-            var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, String.Format("/nologo /t:library /doc:\"{1}\" \"{0}\"", src.ToString(), xml.ToString()), startFolder: dir.ToString());
+            var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, String.Format("/nologo /t:library /doc:\"{1}\" \"{0}\"", src.ToString(), xml.ToString()), startFolder: dir.ToString());
             Assert.Equal("", output.Trim());
 
             using (var reader = new StreamReader(xml.ToString()))
@@ -8013,7 +8061,7 @@ class E {}
 class C {}
 ");
 
-            output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, String.Format("/nologo /t:library /doc:\"{1}\" \"{0}\"", src.ToString(), xml.ToString()), startFolder: dir.ToString());
+            output = ProcessUtilities.RunAndGetOutput(CscCommandLine, String.Format("/nologo /t:library /doc:\"{1}\" \"{0}\"", src.ToString(), xml.ToString()), startFolder: dir.ToString());
             Assert.Equal("", output.Trim());
 
             using (var reader = new StreamReader(xml.ToString()))
@@ -8567,7 +8615,7 @@ class Program3
             var imageDll = peDll.GetEntireImage();
             var imagePdb = pePdb.GetEntireImage();
 
-            var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, $"/target:library /debug:portable \"{libSrc.Path}\"", startFolder: dir.ToString());
+            var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, $"/target:library /debug:portable \"{libSrc.Path}\"", startFolder: dir.ToString());
             AssertEx.AssertEqualToleratingWhitespaceDifferences($@"
 Microsoft (R) Visual C# Compiler version {s_compilerVersion}
 Copyright (C) Microsoft Corporation. All rights reserved.", output);
@@ -10455,7 +10503,7 @@ class C {
     }
 } ");
 
-            var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, String.Format("/nologo /doc:doc.xml /out:out.exe /resource:doc.xml \"{0}\"", src.ToString()), startFolder: dir.ToString());
+            var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, String.Format("/nologo /doc:doc.xml /out:out.exe /resource:doc.xml \"{0}\"", src.ToString()), startFolder: dir.ToString());
             Assert.Equal("", output.Trim());
 
             Assert.True(File.Exists(Path.Combine(dir.ToString(), "doc.xml")));
@@ -10811,7 +10859,7 @@ class Runner
 {{
     static int Main(string[] args)
     {{
-        var assembly = Assembly.LoadFrom(@""{s_CSharpCompilerExecutable}"");
+        var assembly = Assembly.LoadFrom(@""{CscCommandLine}"");
         var program = assembly.GetType(""Microsoft.CodeAnalysis.CSharp.CommandLine.Program"");
         var main = program.GetMethod(""Main"");
         return (int)main.Invoke(null, new object[] {{ args }});
@@ -10821,13 +10869,13 @@ class Runner
             var csc32 = CreateCompilationWithMscorlib46(csc32src, options: TestOptions.ReleaseExe.WithPlatform(Platform.X86), assemblyName: "csc32");
             var csc32exe = dir.CreateFile("csc32.exe").WriteAllBytes(csc32.EmitToArray());
 
-            dir.CopyFile(Path.ChangeExtension(s_CSharpCompilerExecutable, ".exe.config"), "csc32.exe.config");
-            dir.CopyFile(Path.Combine(Path.GetDirectoryName(s_CSharpCompilerExecutable), "csc.rsp"));
+            dir.CopyFile(Path.ChangeExtension(CscCommandLine, ".exe.config"), "csc32.exe.config");
+            dir.CopyFile(Path.Combine(Path.GetDirectoryName(CscCommandLine), "csc.rsp"));
 
             var output = ProcessUtilities.RunAndGetOutput(csc32exe.Path, $@"/nologo /debug:full /deterministic /out:Program.exe /pathmap:""{dir32.Path}""=X:\ ""{sourceFile.Path}""", expectedRetCode: 0, startFolder: dir32.Path);
             Assert.Equal("", output);
 
-            output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, $@"/nologo /debug:full /deterministic /out:Program.exe /pathmap:""{dir64.Path}""=X:\ ""{sourceFile.Path}""", expectedRetCode: 0, startFolder: dir64.Path);
+            output = ProcessUtilities.RunAndGetOutput(CscCommandLine, $@"/nologo /debug:full /deterministic /out:Program.exe /pathmap:""{dir64.Path}""=X:\ ""{sourceFile.Path}""", expectedRetCode: 0, startFolder: dir64.Path);
             Assert.Equal("", output);
 
             AssertEx.Equal(programExe32.ReadAllBytes(), programExe64.ReadAllBytes());
@@ -10849,7 +10897,7 @@ class Runner
 
             foreach (var args in argss)
             {
-                var output = ProcessUtilities.RunAndGetOutput(s_CSharpCompilerExecutable, args, startFolder: folderName);
+                var output = ProcessUtilities.RunAndGetOutput(CscCommandLine, args, startFolder: folderName);
                 Assert.Equal(s_compilerVersion, output.Trim());
             }
         }
@@ -11081,7 +11129,7 @@ class C
         public void MissingCompilerAssembly()
         {
             var dir = Temp.CreateDirectory();
-            var cscPath = dir.CopyFile(s_CSharpCompilerExecutable).Path;
+            var cscPath = dir.CopyFile(CscCommandLine).Path;
             dir.CopyFile(typeof(Compilation).Assembly.Location);
 
             // Missing Microsoft.CodeAnalysis.CSharp.dll.
@@ -11112,7 +11160,7 @@ class C
             var analyzerFile = analyzerDir.CreateFile(analyzerFileName).WriteAllBytes(DesktopTestHelpers.CreateCSharpAnalyzerNetStandard13(Path.GetFileNameWithoutExtension(analyzerFileName)));
             var srcFile = analyzerDir.CreateFile(srcFileName).WriteAllText("public class C { }");
 
-            var result = ProcessUtilities.Run(s_CSharpCompilerExecutable, arguments: $"/nologo /t:library /analyzer:{analyzerFileName} {srcFileName}", workingDirectory: analyzerDir.Path);
+            var result = ProcessUtilities.Run(CscCommandLine, arguments: $"/nologo /t:library /analyzer:{analyzerFileName} {srcFileName}", workingDirectory: analyzerDir.Path);
             var outputWithoutPaths = Regex.Replace(result.Output, " in .*", "");
             AssertEx.AssertEqualToleratingWhitespaceDifferences(
                 $@"warning AD0001: Analyzer 'TestAnalyzer' threw an exception of type 'System.NotImplementedException' with message '28'.
@@ -11131,7 +11179,7 @@ System.NotImplementedException: 28
         public void MicrosoftDiaSymReaderNativeAltLoadPath()
         {
             var dir = Temp.CreateDirectory();
-            var cscDir = Path.GetDirectoryName(s_CSharpCompilerExecutable);
+            var cscDir = Path.GetDirectoryName(CscCommandLine);
 
             // copy csc and dependencies except for DSRN:
             foreach (var filePath in Directory.EnumerateFiles(cscDir))

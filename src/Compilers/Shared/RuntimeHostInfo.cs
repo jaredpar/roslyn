@@ -76,7 +76,7 @@ namespace Microsoft.CodeAnalysis
         /// Get the path to the dotnet executable. This will throw in the case it is not properly setup 
         /// by the environment.
         /// </summary>
-        private static string GetDotNetPath()
+        internal static string GetDotNetPath()
         {
             var pathToDotNet = Environment.GetEnvironmentVariable(DotNetHostPathEnvironmentName);
             if (string.IsNullOrEmpty(pathToDotNet))
