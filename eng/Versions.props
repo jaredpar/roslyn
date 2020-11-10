@@ -33,7 +33,7 @@
     <MicrosoftCodeAnalysisTestingVersion>1.0.1-beta1.20407.3</MicrosoftCodeAnalysisTestingVersion>
     <CodeStyleAnalyzerVersion>3.8.0-2.20414.4</CodeStyleAnalyzerVersion>
     <VisualStudioEditorPackagesVersion>16.8.181</VisualStudioEditorPackagesVersion>
-    <ILToolsPackageVersion>5.0.0-alpha1.19409.1</ILToolsPackageVersion>
+    <ILToolsPackageVersion>5.0.0-rc.2.20475.5</ILToolsPackageVersion>
     <MicrosoftVisualStudioLanguageServerProtocolPackagesVersion>16.9.43</MicrosoftVisualStudioLanguageServerProtocolPackagesVersion>
     <MicrosoftVisualStudioShellPackagesVersion>16.8.30406.65-pre</MicrosoftVisualStudioShellPackagesVersion>
   </PropertyGroup>
@@ -242,6 +242,7 @@
     <runtimeWinX64MicrosoftNETCoreILAsmPackageVersion>$(ILToolsPackageVersion)</runtimeWinX64MicrosoftNETCoreILAsmPackageVersion>
     <runtimeLinuxX64MicrosoftNETCoreILAsmPackageVersion>$(ILToolsPackageVersion)</runtimeLinuxX64MicrosoftNETCoreILAsmPackageVersion>
     <runtimeOSXX64MicrosoftNETCoreILAsmPackageVersion>$(ILToolsPackageVersion)</runtimeOSXX64MicrosoftNETCoreILAsmPackageVersion>
+    <runtimeLinuxArm64MicrosoftNETCoreILAsmPackageVersion>$(ILToolsPackageVersion)</runtimeLinuxArm64MicrosoftNETCoreILAsmPackageVersion>
     <!--
       NOTE: The following dependencies have been identified as particularly problematic to update.
       If you bump their versions, you must push your changes to a dev branch in dotnet/roslyn and

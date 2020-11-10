@@ -796,7 +796,7 @@ public static class Program
                 Diagnostic(ErrorCode.ERR_NoSuchMemberOrExtension, "PrintValue").WithArguments("string", "PrintValue").WithLocation(7, 11));
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void RefExtensionMethodsReceiverTypes_StructConstrainedGenericTypes_Allowed_IL()
         {
             var reference = CompileIL(@"

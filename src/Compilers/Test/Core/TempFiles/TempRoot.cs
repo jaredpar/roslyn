@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
 
         static TempRoot()
         {
-            Root = Path.Combine(Path.GetTempPath(), "RoslynTests");
+            Root = Path.Combine(Path.GetTempPath(), "RoslynTests2");
             Directory.CreateDirectory(Root);
         }
 

@@ -5206,7 +5206,7 @@ class C
         /// constraint is specified.
         /// </summary>
         [WorkItem(543335, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543335")]
-        [ClrOnlyFact(ClrOnlyReason.Ilasm)]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void ObjectAndValueTypeMetadataConstraints()
         {
             var ilSource =
@@ -5235,7 +5235,7 @@ class C
         }
 
         [WorkItem(543335, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543335")]
-        [ClrOnlyFact(ClrOnlyReason.Ilasm)]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void ObjectAndValueTypeMethodMetadataConstraints()
         {
             var ilSource =
@@ -5281,7 +5281,7 @@ class C
         /// Overriding methods with implicit and explicit
         /// System.Object and System.ValueType constraints.
         /// </summary>
-        [ClrOnlyFact(ClrOnlyReason.Ilasm)]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void OverridingObjectAndValueTypeMethodMetadataConstraints()
         {
             var ilSource =

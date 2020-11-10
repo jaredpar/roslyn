@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Emit
 {
     public class UnmanagedTypeModifierTests : CSharpTestBase
     {
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void LoadingADifferentModifierTypeForUnmanagedConstraint()
         {
             var ilSource = IsUnmanagedAttributeIL + @"
@@ -83,7 +83,7 @@ public class Test
                 );
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void LoadingUnmanagedTypeModifier_OptionalIsError()
         {
             var ilSource = IsUnmanagedAttributeIL + @"
@@ -152,7 +152,7 @@ public class Test
                 );
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void LoadingUnmanagedTypeModifier_MoreThanOneModifier()
         {
             var ilSource = IsUnmanagedAttributeIL + @"
@@ -221,7 +221,7 @@ public class Test
                 );
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void LoadingUnmanagedTypeModifier_ModreqWithoutAttribute()
         {
             var ilSource = IsUnmanagedAttributeIL + @"
@@ -282,7 +282,7 @@ public class Test
                 );
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void LoadingUnmanagedTypeModifier_AttributeWithoutModreq()
         {
             var ilSource = IsUnmanagedAttributeIL + @"
@@ -1061,7 +1061,7 @@ public class Test<T> where T : unmanaged
                 Diagnostic(ErrorCode.ERR_PredefinedTypeNotFound, "unmanaged").WithArguments("System.Runtime.InteropServices.UnmanagedType").WithLocation(2, 32));
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void UnmanagedConstraintWithClassConstraint_IL()
         {
             var ilSource = IsUnmanagedAttributeIL + @"
@@ -1117,7 +1117,7 @@ public class Test
                 );
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void UnmanagedConstraintWithConstructorConstraint_IL()
         {
             var ilSource = IsUnmanagedAttributeIL + @"
@@ -1230,7 +1230,7 @@ public class Test
                 Diagnostic(ErrorCode.ERR_BindToBogus, "M<string>").WithArguments("T").WithLocation(7, 23));
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void UnmanagedConstraintWithTypeConstraint_IL()
         {
             var ilSource = IsUnmanagedAttributeIL + @"
@@ -1285,7 +1285,7 @@ public class Test
                 );
         }
 
-        [Fact]
+        [ConditionalFact(typeof(NoLinuxArm64))]
         public void UnmanagedConstraintWithNoCtorConstraint_IL()
         {
             var ilSource = IsUnmanagedAttributeIL + @"

@@ -3716,7 +3716,7 @@ BC33101: Type 'C' must be a value type or a type argument constrained to 'Struct
         ' By contrast, redundant 'class' constraints should not be removed
         ' if explicit class constraint is specified.
         <WorkItem(543335, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543335")>
-        <Fact()>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub ObjectAndValueTypeMetadataConstraints()
             Dim ilSource = <![CDATA[
 .class public A { }
@@ -3750,7 +3750,7 @@ BC33101: Type 'C' must be a value type or a type argument constrained to 'Struct
         End Sub
 
         <WorkItem(543335, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543335")>
-        <Fact()>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub ObjectAndValueTypeMethodMetadataConstraints()
             Dim ilSource = <![CDATA[
 .class public abstract A<T>
@@ -3799,7 +3799,7 @@ BC33101: Type 'C' must be a value type or a type argument constrained to 'Struct
 
         ' Overriding methods with implicit and explicit
         ' System.Object and System.ValueType constraints.
-        <Fact()>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub OverridingObjectAndValueTypeMethodMetadataConstraints()
             Dim ilSource = <![CDATA[
 .class interface public abstract IA

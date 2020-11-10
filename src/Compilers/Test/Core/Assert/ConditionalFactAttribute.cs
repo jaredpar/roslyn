@@ -317,6 +317,12 @@ namespace Roslyn.Test.Utilities
         public override string SkipReason => "Test not supported in TEST_IOPERATION_INTERFACE";
     }
 
+    public class NoLinuxArm64 : ExecutionCondition
+    {
+        public override bool ShouldSkip => ExecutionConditionUtil.IsLinux && RuntimeInformation.OSArchitecture == Architecture.Arm64;
+        public override string SkipReason => "Test not supported on Linux Arm64";
+    }
+
     public class OSVersionWin8 : ExecutionCondition
     {
         public override bool ShouldSkip => !OSVersion.IsWin8;

@@ -46,7 +46,14 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             }
             else if (ExecutionConditionUtil.IsLinux)
             {
-                ridName = "linux-x64";
+                if (System.Runtime.InteropServices.RuntimeInformation.OSArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+                {
+                    ridName = "linux-arm64";
+                }
+                else
+                {
+                    ridName = "linux-x64";
+                }
             }
             else
             {

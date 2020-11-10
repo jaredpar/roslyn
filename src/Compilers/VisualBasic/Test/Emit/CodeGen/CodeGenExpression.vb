@@ -8,7 +8,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Public Class CodeGenExpression
         Inherits BasicTestBase
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntFix_01()
             Dim source =
 <compilation>
@@ -529,7 +530,8 @@ done
         End Sub
 
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntFix_Implicit_01()
             Dim source =
 <compilation>
@@ -1049,7 +1051,8 @@ done
 ]]>)
         End Sub
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntTruncate_01()
             Dim source =
 <compilation>
@@ -1340,7 +1343,8 @@ done
         End Sub
 
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntTruncate_Implicit_01()
             Dim source =
 <compilation>
@@ -1630,7 +1634,8 @@ done
 ]]>)
         End Sub
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntCeiling_01()
             Dim source =
 <compilation>
@@ -1937,7 +1942,8 @@ done
         End Sub
 
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntCeiling_Implicit_01()
             Dim source =
 <compilation>
@@ -2243,7 +2249,8 @@ done
 ]]>)
         End Sub
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntFloor_01()
             Dim source =
 <compilation>
@@ -2550,7 +2557,8 @@ done
         End Sub
 
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntFloor_Implicit_01()
             Dim source =
 <compilation>
@@ -2855,7 +2863,8 @@ done
 ]]>)
         End Sub
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntRound_01()
             Dim source =
 <compilation>
@@ -3162,7 +3171,8 @@ done
         End Sub
 
 
-        <Fact, WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <WorkItem(25692, "https://github.com/dotnet/roslyn/issues/25692")>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub CIntRound_Implicit_01()
             Dim source =
 <compilation>

@@ -211,7 +211,7 @@ End Class
         End Function
 
 
-        <Fact()>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub ConstantExpressionConversions()
 
             Dim dummyCode =
@@ -1071,7 +1071,7 @@ End Class
 
         End Sub
 
-        <Fact()>
+        <ConditionalFact(GetType(NoLinuxArm64))>
         Public Sub ConstantExpressionConversions2()
             Dim dummyCode =
 <file>
