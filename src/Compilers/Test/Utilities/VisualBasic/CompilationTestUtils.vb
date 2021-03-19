@@ -40,14 +40,7 @@ Friend Module CompilationUtils
             Optional parseOptions As VisualBasicParseOptions = Nothing,
             Optional assemblyName As String = Nothing) As VisualBasicCompilation
 
-        If options Is Nothing Then
-            options = TestOptions.ReleaseDll
-        End If
-
-        ' Using single-threaded build if debugger attached, to simplify debugging.
-        If Debugger.IsAttached Then
-            options = options.WithConcurrentBuild(False)
-        End If
+        CommonTestBase.NormalizeVisualBasicOptions(parseOptions, options, defaultCompilationOptions:=TestOptions.ReleaseDll)
 
         Dim trees = source.GetSyntaxTrees(parseOptions, assemblyName)
         Dim createCompilationLambda = Function()
@@ -236,10 +229,7 @@ Friend Module CompilationUtils
 
         If references Is Nothing Then references = {}
         Dim allReferences = {CType(Net40.mscorlib, MetadataReference), Net40.System, Net40.MicrosoftVisualBasic}.Concat(references)
-        If parseOptions Is Nothing AndAlso options IsNot Nothing Then
-            parseOptions = options.ParseOptions
-        End If
-
+        CommonTestBase.NormalizeVisualBasicOptions(parseOptions, options)
         Return CreateEmptyCompilationWithReferences(source, allReferences, options, parseOptions:=parseOptions)
     End Function
 
@@ -278,6 +268,7 @@ Friend Module CompilationUtils
                                                     Optional options As VisualBasicCompilationOptions = Nothing,
                                                     Optional parseOptions As VisualBasicParseOptions = Nothing,
                                                     Optional assemblyName As String = Nothing) As VisualBasicCompilation
+        CommonTestBase.NormalizeVisualBasicOptions(parseOptions, options, defaultCompilationOptions:=TestOptions.ReleaseDll)
         Dim sourceTrees = ParseSourceXml(source, parseOptions, assemblyName)
         Return CreateEmptyCompilationWithReferences(sourceTrees, references, options, assemblyName)
     End Function
@@ -312,14 +303,7 @@ Friend Module CompilationUtils
                                                     references As IEnumerable(Of MetadataReference),
                                                     Optional options As VisualBasicCompilationOptions = Nothing,
                                                     Optional assemblyName As String = Nothing) As VisualBasicCompilation
-        If options Is Nothing Then
-            options = TestOptions.ReleaseDll
-
-            ' Using single-threaded build if debugger attached, to simplify debugging.
-            If Debugger.IsAttached Then
-                options = options.WithConcurrentBuild(False)
-            End If
-        End If
+        CommonTestBase.NormalizeVisualBasicOptions(options, TestOptions.ReleaseDll)
         Dim createCompilationLambda = Function()
                                           Return VisualBasicCompilation.Create(If(assemblyName, GetUniqueName()), source, references, options)
                                       End Function

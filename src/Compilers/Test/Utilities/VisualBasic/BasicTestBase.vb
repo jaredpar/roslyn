@@ -170,9 +170,10 @@ Public MustInherit Class BasicTestBase
         Optional verify As Verification = Verification.Passes
     ) As CompilationVerifier
 
-        If options Is Nothing Then
-            options = If(expectedOutput Is Nothing, TestOptions.ReleaseDll, TestOptions.ReleaseExe)
-        End If
+        CommonTestBase.NormalizeVisualBasicOptions(
+            parseOptions,
+            options,
+            defaultCompilationOptions:=If(expectedOutput Is Nothing, TestOptions.ReleaseDll, TestOptions.ReleaseExe))
 
         Dim assemblyName As String = Nothing
         Dim sourceTrees = ParseSourceXml(source, parseOptions, assemblyName)

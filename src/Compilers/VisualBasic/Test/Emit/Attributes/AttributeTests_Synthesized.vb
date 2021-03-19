@@ -1085,8 +1085,9 @@ End Class
                     End If
                 End Sub
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
-            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, {MscorlibRef}, compOptions)
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
+            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source, parseOptions)}, {MscorlibRef}, compOptions)
             CompileAndVerify(comp, verify:=If(outputKind <> OutputKind.NetModule, Verification.Passes, Verification.Skipped), symbolValidator:=validator)
         End Sub
 
@@ -1123,8 +1124,9 @@ End Class
                     End If
                 End Sub
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
-            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, {MscorlibRef}, compOptions)
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
+            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source, parseOptions)}, {MscorlibRef}, compOptions)
             CompileAndVerify(comp, verify:=If(outputKind <> OutputKind.NetModule, Verification.Passes, Verification.Skipped), symbolValidator:=validator)
         End Sub
 
@@ -1160,8 +1162,9 @@ End Class
                     End If
                 End Sub
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
-            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, {MscorlibRef}, compOptions)
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
+            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source, parseOptions)}, {MscorlibRef}, compOptions)
             CompileAndVerify(comp, verify:=If(outputKind <> OutputKind.NetModule, Verification.Passes, Verification.Skipped), symbolValidator:=validator)
         End Sub
 
@@ -1204,8 +1207,9 @@ End Class
                     VerifyDebuggableAttribute(moduleAttributes.Single(), DebuggableAttribute.DebuggingModes.Default)
                 End Sub
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
-            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, {MscorlibRef}, compOptions)
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
+            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source, parseOptions)}, {MscorlibRef}, compOptions)
             CompileAndVerify(comp, verify:=If(outputKind <> OutputKind.NetModule, Verification.Passes, Verification.Skipped), symbolValidator:=validator)
         End Sub
 
@@ -1223,7 +1227,8 @@ Public Class Test
 End Class
         ]]>
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
             Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, options:=compOptions)
 
             CompilationUtils.AssertTheseDiagnostics(comp,
@@ -1279,8 +1284,9 @@ BC30002: Type 'System.Void' is not defined.
                     End If
                 End Sub
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
-            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, {MscorlibRef}, compOptions)
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
+            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source, parseOptions)}, {MscorlibRef}, compOptions)
             CompileAndVerify(comp, verify:=If(outputKind <> OutputKind.NetModule, Verification.Passes, Verification.Skipped), symbolValidator:=validator)
         End Sub
 
@@ -1331,8 +1337,9 @@ BC30002: Type 'System.Void' is not defined.
                     End If
                 End Sub
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
-            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, {MscorlibRef}, compOptions)
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
+            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source, parseOptions)}, {MscorlibRef}, compOptions)
             CompileAndVerify(comp, verify:=If(outputKind <> OutputKind.NetModule, Verification.Passes, Verification.Skipped), symbolValidator:=validator)
         End Sub
 
@@ -1378,8 +1385,9 @@ BC30002: Type 'System.Void' is not defined.
                     End If
                 End Sub
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
-            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, {MscorlibRef}, compOptions)
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
+            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source, parseOptions)}, {MscorlibRef}, compOptions)
             CompileAndVerify(comp, verify:=If(outputKind <> OutputKind.NetModule, Verification.Passes, Verification.Skipped), symbolValidator:=validator)
         End Sub
 
@@ -1427,8 +1435,9 @@ BC30002: Type 'System.Void' is not defined.
                     End If
                 End Sub
 
-            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp")
-            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source)}, {MscorlibRef}, compOptions)
+            Dim parseOptions = VisualBasicParseOptions.Default
+            Dim compOptions = New VisualBasicCompilationOptions(outputKind, optimizationLevel:=optimizationLevel, moduleName:="comp", parseOptions:=parseOptions)
+            Dim comp = VisualBasicCompilation.Create("comp", {Parse(source, parseOptions)}, {MscorlibRef}, compOptions)
             CompileAndVerify(comp, verify:=If(outputKind <> OutputKind.NetModule, Verification.Passes, Verification.Skipped), symbolValidator:=validator)
         End Sub
 

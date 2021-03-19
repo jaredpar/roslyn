@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
@@ -355,11 +356,16 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
             if (parseOptions == null)
             {
                 parseOptions = VisualBasic.VisualBasicParseOptions.Default;
+
+                if (compilationOptions is object)
+                {
+                    compilationOptions = compilationOptions.WithParseOptions(parseOptions);
+                }
             }
 
             if (compilationOptions == null)
             {
-                compilationOptions = new VisualBasic.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+                compilationOptions = new VisualBasic.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithParseOptions(parseOptions);
             }
 
             var references = new List<MetadataReference>();
@@ -394,6 +400,51 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
                 }
             }
         }
+
+#nullable enable
+
+        internal static void NormalizeVisualBasicOptions(
+            ref VisualBasic.VisualBasicCompilationOptions compilationOptions,
+            VisualBasic.VisualBasicCompilationOptions? defaultCompilationOptions = null)
+        {
+            var parseOptions = compilationOptions.ParseOptions;
+            NormalizeVisualBasicOptions(ref parseOptions, ref compilationOptions, defaultCompilationOptions?.ParseOptions, defaultCompilationOptions);
+        }
+
+        internal static void NormalizeVisualBasicOptions(
+            ref VisualBasic.VisualBasicParseOptions parseOptions,
+            ref VisualBasic.VisualBasicCompilationOptions compilationOptions,
+            VisualBasic.VisualBasicParseOptions? defaultParseOptions = null,
+            VisualBasic.VisualBasicCompilationOptions? defaultCompilationOptions = null)
+        {
+            Debug.Assert(parseOptions is null || compilationOptions is null || parseOptions == compilationOptions.ParseOptions);
+
+            if (parseOptions is null)
+            {
+                defaultParseOptions ??= compilationOptions?.ParseOptions;
+                defaultParseOptions ??= defaultCompilationOptions?.ParseOptions;
+                Debug.Assert(defaultParseOptions is object);
+                parseOptions = defaultParseOptions;
+                if (compilationOptions is { })
+                {
+                    compilationOptions = compilationOptions.WithParseOptions(parseOptions);
+                }
+            }
+
+            if (compilationOptions is null)
+            {
+                Debug.Assert(defaultCompilationOptions is { });
+                compilationOptions = defaultCompilationOptions.WithParseOptions(parseOptions);
+            }
+
+            if (Debugger.IsAttached)
+            {
+                // Using single-threaded build if debugger attached, to simplify debugging.
+                compilationOptions = compilationOptions.WithConcurrentBuild(false);
+            }
+        }
+
+#nullable disable
 
         internal static MetadataReference AsReference(Compilation comp, bool useCompilationReference)
         {

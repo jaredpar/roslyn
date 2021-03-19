@@ -245,6 +245,10 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
                         ' first see whether we can use one from global cache
                         Dim parseOptions = If(compilationOptions.ParseOptions, VisualBasicParseOptions.Default)
 
+                        ' The my templates must be parsed with regular parsing, not script or interactive parsing. If
+                        ' this occurs it leads to hard to diagnose errors in scripting binding and emit.
+                        Debug.Assert(parseOptions.Kind = SourceCodeKind.Regular)
+
                         Dim tree As SyntaxTree = Nothing
 
                         If s_myTemplateCache.TryGetValue(parseOptions, tree) Then
@@ -370,7 +374,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(Not isSubmission OrElse options.ReferencesSupersedeLowerVersions)
 
             If options Is Nothing Then
-                options = New VisualBasicCompilationOptions(OutputKind.ConsoleApplication)
+                options = New VisualBasicCompilationOptions(OutputKind.ConsoleApplication, parseOptions:=VisualBasicParseOptions.Default)
             End If
 
             Dim validatedReferences = ValidateReferences(Of VisualBasicCompilationReference)(references)
@@ -434,6 +438,11 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
             Debug.Assert(syntaxTrees.SetEquals(rootNamespaces.Keys.AsImmutable(), EqualityComparer(Of SyntaxTree).Default))
             Debug.Assert(embeddedTrees.All(Function(treeAndDeclaration) declarationTable.Contains(treeAndDeclaration.DeclarationEntry)))
 
+            ' Parse options must be Nothing in scripting mode to ensure MyTemplates parse correctly 
+            ' but otherwise must be Not Nothing
+            Debug.Assert(options.ParseOptions IsNot Nothing OrElse isSubmission)
+            Debug.Assert(Not isSubmission OrElse options.ParseOptions Is Nothing)
+
             _options = options
             _syntaxTrees = syntaxTrees
             _syntaxTreeOrdinalMap = syntaxTreeOrdinalMap
@@ -478,13 +487,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         End Sub
 
         Private Function CommonLanguageVersion(syntaxTrees As ImmutableArray(Of SyntaxTree)) As LanguageVersion
-            ' We don't check m_Options.ParseOptions.LanguageVersion for consistency, because
-            ' it isn't consistent in practice.  In fact sometimes m_Options.ParseOptions is Nothing.
             Dim result As LanguageVersion? = Nothing
             For Each tree In syntaxTrees
                 Dim version = CType(tree.Options, VisualBasicParseOptions).LanguageVersion
                 If result Is Nothing Then
                     result = version
+                    Debug.Assert(_options.ParseOptions Is Nothing OrElse _options.ParseOptions.LanguageVersion = version)
                 ElseIf result <> version Then
                     Throw New ArgumentException(CodeAnalysisResources.InconsistentLanguageVersions, NameOf(syntaxTrees))
                 End If

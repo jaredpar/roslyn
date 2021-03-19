@@ -3195,7 +3195,7 @@ End Interface
 
             Dim text = SourceText.Value
             'Construct a SyntaxList and verify the bounds exceptions
-            Dim tree = VisualBasicSyntaxTree.ParseText(text)
+            Dim tree = VisualBasicSyntaxTree.ParseText(text, options:=TestOptions.Regular)
             Dim Root As CompilationUnitSyntax = CType(tree.GetRoot(), CompilationUnitSyntax)
 
             'We want to insert a Implements clause or Implements into Modules
@@ -3238,7 +3238,7 @@ End Interface
             'Verify Compile Errors when try to use
             Dim c = CompilationUtils.CreateCompilationWithMscorlib40AndVBRuntime(
                 compilationDef,
-                New VisualBasicCompilationOptions(OutputKind.ConsoleApplication).WithOptionStrict(OptionStrict.Custom))
+                New VisualBasicCompilationOptions(OutputKind.ConsoleApplication).WithOptionStrict(OptionStrict.Custom).WithParseOptions(TestOptions.Regular))
 
             c.VerifyDiagnostics(
                 Diagnostic(ERRID.ERR_ModuleCantInherit, "Inherits aaa"),

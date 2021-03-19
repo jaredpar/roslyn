@@ -9,7 +9,7 @@ Imports Roslyn.Test.Utilities
 
 Public Class TestOptions
     Public Shared ReadOnly Script As New VisualBasicParseOptions(kind:=SourceCodeKind.Script)
-    Public Shared ReadOnly Regular As New VisualBasicParseOptions(kind:=SourceCodeKind.Regular)
+    Public Shared ReadOnly Regular As VisualBasicParseOptions = VisualBasicParseOptions.Default
     Public Shared ReadOnly Regular15_5 As VisualBasicParseOptions = Regular.WithLanguageVersion(LanguageVersion.VisualBasic15_5)
     Public Shared ReadOnly Regular16 As VisualBasicParseOptions = Regular.WithLanguageVersion(LanguageVersion.VisualBasic16)
     Public Shared ReadOnly Regular16_9 As VisualBasicParseOptions = Regular.WithLanguageVersion(LanguageVersion.VisualBasic16_9)

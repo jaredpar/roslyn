@@ -2209,7 +2209,7 @@ End Class]]>
     </file>
 </compilation>
 
-        Dim ca = CreateCompilationWithMscorlib40(sourceA, options:=TestOptions.ReleaseDll, parseOptions:=parseOptions)
+        Dim ca = CreateCompilationWithMscorlib40(sourceA, options:=TestOptions.ReleaseDll.WithParseOptions(parseOptions), parseOptions:=parseOptions)
         CompileAndVerify(ca)
 
         Dim cb = CreateCompilationWithMscorlib40(sourceB, options:=TestOptions.ReleaseExe, references:={New VisualBasicCompilationReference(ca)}, parseOptions:=parseOptions)
@@ -2267,7 +2267,7 @@ End Class]]>
     <MemberData(NameOf(AllProviderParseOptions))>
     <WorkItem(11497, "https://github.com/dotnet/roslyn/issues/11497")>
     Public Sub ConsistentErrorMessageWhenProvidingNullKeyFile(parseOptions As VisualBasicParseOptions)
-        Dim options = New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, cryptoKeyFile:=Nothing)
+        Dim options = New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, cryptoKeyFile:=Nothing, parseOptions:=parseOptions)
         Dim compilation = CreateCompilationWithMscorlib40(String.Empty, options:=options, parseOptions:=parseOptions).VerifyEmitDiagnostics()
 
         VerifySigned(compilation, expectedToBeSigned:=False)
@@ -2277,7 +2277,7 @@ End Class]]>
     <MemberData(NameOf(AllProviderParseOptions))>
     <WorkItem(11497, "https://github.com/dotnet/roslyn/issues/11497")>
     Public Sub ConsistentErrorMessageWhenProvidingEmptyKeyFile(parseOptions As VisualBasicParseOptions)
-        Dim options = New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, cryptoKeyFile:=String.Empty)
+        Dim options = New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, cryptoKeyFile:=String.Empty, parseOptions:=parseOptions)
         Dim compilation = CreateCompilationWithMscorlib40(String.Empty, options:=options, parseOptions:=parseOptions).VerifyEmitDiagnostics()
 
         VerifySigned(compilation, expectedToBeSigned:=False)
@@ -2287,7 +2287,7 @@ End Class]]>
     <MemberData(NameOf(AllProviderParseOptions))>
     <WorkItem(11497, "https://github.com/dotnet/roslyn/issues/11497")>
     Public Sub ConsistentErrorMessageWhenProvidingNullKeyFile_PublicSign(parseOptions As VisualBasicParseOptions)
-        Dim options = New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, cryptoKeyFile:=Nothing, publicSign:=True)
+        Dim options = New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, cryptoKeyFile:=Nothing, publicSign:=True, parseOptions:=parseOptions)
         Dim compilation = CreateCompilationWithMscorlib40(String.Empty, options:=options, parseOptions:=parseOptions)
 
         CompilationUtils.AssertTheseDiagnostics(compilation,
@@ -2300,7 +2300,7 @@ BC37254: Public sign was specified and requires a public key, but no public key 
     <MemberData(NameOf(AllProviderParseOptions))>
     <WorkItem(11497, "https://github.com/dotnet/roslyn/issues/11497")>
     Public Sub ConsistentErrorMessageWhenProvidingEmptyKeyFile_PublicSign(parseOptions As VisualBasicParseOptions)
-        Dim options = New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, cryptoKeyFile:=String.Empty, publicSign:=True)
+        Dim options = New VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, cryptoKeyFile:=String.Empty, publicSign:=True, parseOptions:=parseOptions)
         Dim compilation = CreateCompilationWithMscorlib40(String.Empty, options:=options, parseOptions:=parseOptions)
 
         CompilationUtils.AssertTheseDiagnostics(compilation,

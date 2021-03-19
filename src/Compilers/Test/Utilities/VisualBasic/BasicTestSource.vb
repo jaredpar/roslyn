@@ -40,13 +40,15 @@ Public Structure BasicTestSource
 
         Dim tree = TryCast(Value, SyntaxTree)
         If tree IsNot Nothing Then
-            Debug.Assert(parseOptions Is Nothing)
+            Debug.Assert(parseOptions Is Nothing OrElse tree.Options = parseOptions)
             Return New SyntaxTree() {tree}
         End If
 
         Dim trees = TryCast(Value, SyntaxTree())
         If trees IsNot Nothing Then
-            Debug.Assert(parseOptions Is Nothing)
+            If parseOptions IsNot Nothing Then
+                Debug.Assert(trees.All(Function(t) t.Options = parseOptions))
+            End If
             Return trees
         End If
 
