@@ -1808,35 +1808,6 @@ class C
             }
         }
 
-
-        [Fact]
-        public void OptimizationLevelAdded_Canary()
-        {
-            // When OptimizationLevel is changed, this test will break. This list must be checked:
-            // - update OptimizationLevelFacts.ToPdbSerializedString
-            // - update tests that call this method
-            // - update docs\features\compilation-from-portable-pdb.md
-            // NOTE: release is duplicated because the return value for release is the same regardless of the debugPlusMode bool
-            AssertEx.SetEqual(new[] { "release", "release", "debug", "debug-plus" },
-                Enum.GetValues(typeof(OptimizationLevel)).Cast<OptimizationLevel>().SelectMany(l => new[] { l.ToPdbSerializedString(false), l.ToPdbSerializedString(true) }));
-        }
-
-        [Theory,
-            InlineData("release", true, OptimizationLevel.Release, false),
-            InlineData("debug", true, OptimizationLevel.Debug, false),
-            InlineData("debug-plus", true, OptimizationLevel.Debug, true),
-            InlineData("other", false, OptimizationLevel.Debug, false),
-            InlineData(null, false, OptimizationLevel.Debug, false)]
-        public void OptimizationLevel_ParsePdbSerializedString(string input, bool success, OptimizationLevel expected, bool expectedDebugPlusMode)
-        {
-            Assert.Equal(success, OptimizationLevelFacts.TryParsePdbSerializedString(input, out var optimization, out var debugPlusMode));
-            Assert.Equal(expected, optimization);
-            Assert.Equal(expectedDebugPlusMode, debugPlusMode);
-
-            // The canary check is a reminder that this test needs to be updated when an optimization level is added
-            OptimizationLevelAdded_Canary();
-        }
-
         [Fact]
         [WorkItem(546961, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546961")]
         public void Define()
@@ -4159,7 +4130,7 @@ C:\*.cs(100,7): error CS0103: The name 'Goo' does not exist in the current conte
 </configuration>");
 
             var silverlight = Temp.CreateFile().WriteAllBytes(ProprietaryTestResources.silverlight_v5_0_5_0.System_v5_0_5_0_silverlight).Path;
-            var net4_0dll = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System).Path;
+            var net4_0dll = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System.ImageBytes).Path;
 
             // Test linking two appconfig dlls with simple src
             var outWriter = new StringWriter(CultureInfo.InvariantCulture);
@@ -6125,7 +6096,7 @@ public class CS1698_a {}
         [ConditionalFact(typeof(ClrOnly), Reason = "https://github.com/dotnet/roslyn/issues/30926")]
         public void BinaryFileErrorTest()
         {
-            var binaryPath = Temp.CreateFile().WriteAllBytes(ResourcesNet451.mscorlib).Path;
+            var binaryPath = Temp.CreateFile().WriteAllBytes(ResourcesNet451.mscorlib.ImageBytes).Path;
             var csc = CreateCSharpCompiler(null, WorkingDirectory, new[] { "/nologo", "/preferreduilang:en", binaryPath });
             var outWriter = new StringWriter(CultureInfo.InvariantCulture);
             int exitCode = csc.Run(outWriter);

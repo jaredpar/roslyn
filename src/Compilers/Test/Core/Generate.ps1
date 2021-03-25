@@ -13,6 +13,12 @@ function Add-TargetFramework($name, $packagePath, $list)
 
 "@
 
+  $refAllContent = @"
+            public static ReferenceInfo[] All => new[]
+            {
+
+"@
+
   $name = $name.ToLower()
   foreach ($dllPath in $list)
   {
@@ -44,18 +50,25 @@ function Add-TargetFramework($name, $packagePath, $list)
     $fieldName = "_" + $propName
     $script:codeContent += @"
             private static byte[] $fieldName;
-            public static byte[] $propName => ResourceLoader.GetOrCreateResource(ref $fieldName, "$logicalName");
+            public static ReferenceInfo $propName => new ReferenceInfo("$($dllName).dll", ResourceLoader.GetOrCreateResource(ref $fieldName, "$logicalName"));
+
+"@
+
+    $refAllContent += @"
+                $propName,
 
 "@
 
     $refContent += @"
-            public static PortableExecutableReference $propName { get; } = AssemblyMetadata.CreateFromImage($($resourceTypeName).$($propName)).GetReference(display: "$dll ($name)");
+            public static PortableExecutableReference $propName { get; } = AssemblyMetadata.CreateFromImage($($resourceTypeName).$($propName).ImageBytes).GetReference(display: "$dll ($name)", filePath: "$($dllName).dll");
 
 "@
 
   }
 
+  $script:codeContent += $refAllContent
   $script:codeContent += @"
+            };
         }
 
 "@
@@ -88,6 +101,16 @@ namespace Roslyn.Test.Utilities
 {
     public static class TestMetadata
     {
+        public readonly struct ReferenceInfo
+        {
+            public string FileName { get; }
+            public byte[] ImageBytes { get; }
+            public ReferenceInfo(string fileName, byte[] imageBytes)
+            {
+                FileName = fileName;
+                ImageBytes = imageBytes;
+            }
+        }
 
 "@
 

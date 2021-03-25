@@ -2045,7 +2045,7 @@ class Program
         {
             var resolver = new TestMetadataReferenceResolver(assemblyNames: new Dictionary<string, PortableExecutableReference>()
             {
-                { "exprs", AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore).GetReference() }
+                { "exprs", AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore.ImageBytes).GetReference() }
             });
 
             await TestAsync(

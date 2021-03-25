@@ -101,7 +101,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
         [Fact]
         public void Disposal()
         {
-            var md = ModuleMetadata.CreateFromImage(TestMetadata.ResourcesNet451.mscorlib);
+            var md = ModuleMetadata.CreateFromImage(TestMetadata.ResourcesNet451.mscorlib.ImageBytes);
             md.Dispose();
             Assert.Throws<ObjectDisposedException>(() => md.Module);
             md.Dispose();
@@ -110,7 +110,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
         [Fact]
         public void ImageOwnership()
         {
-            var m = ModuleMetadata.CreateFromImage(TestMetadata.ResourcesNet451.mscorlib);
+            var m = ModuleMetadata.CreateFromImage(TestMetadata.ResourcesNet451.mscorlib.ImageBytes);
             var copy1 = m.Copy();
             var copy2 = copy1.Copy();
 

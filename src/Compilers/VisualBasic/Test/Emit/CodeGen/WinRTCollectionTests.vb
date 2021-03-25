@@ -18,7 +18,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.CodeGen
                     Dim listRefs = New List(Of MetadataReference)(WinRtRefs.Length + 2)
                     listRefs.AddRange(WinRtRefs)
                     listRefs.Add(AssemblyMetadata.CreateFromImage(TestResources.WinRt.Windows_Languages_WinRTTest).GetReference(display:="WinRTTest"))
-                    listRefs.Add(AssemblyMetadata.CreateFromImage(TestMetadata.ResourcesNet451.SystemCore).GetReference(display:="SystemCore"))
+                    listRefs.Add(AssemblyMetadata.CreateFromImage(TestMetadata.ResourcesNet451.SystemCore.ImageBytes).GetReference(display:="SystemCore"))
                     _legacyRefs = listRefs.ToArray()
                 End If
                 Return _legacyRefs

@@ -738,8 +738,8 @@ namespace Microsoft.TeamFoundation.WebAccess.Common
     }
 }";
             var tree = Parse(source);
-            var r1 = AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore).GetReference(filePath: @"c:\temp\aa.dll", display: "System.Core.v4_0_30319.dll");
-            var r2 = AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore).GetReference(filePath: @"c:\temp\aa.dll", display: "System.Core.v4_0_30319.dll");
+            var r1 = AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore.ImageBytes).GetReference(filePath: @"c:\temp\aa.dll", display: "System.Core.v4_0_30319.dll");
+            var r2 = AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemCore.ImageBytes).GetReference(filePath: @"c:\temp\aa.dll", display: "System.Core.v4_0_30319.dll");
             var r2_SysCore = r2.WithAliases(new[] { "SysCore" });
 
             var compilation = CreateEmptyCompilation(tree, new[] { MscorlibRef, r1, r2_SysCore }, TestOptions.DebugExe, assemblyName: "Test");
@@ -992,7 +992,7 @@ public interface I {}";
         [Fact]
         public void DuplicateAssemblyReferences_EquivalentName()
         {
-            string p1 = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemCore).Path;
+            string p1 = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemCore.ImageBytes).Path;
             string p2 = Temp.CreateFile().CopyContentFrom(p1).Path;
 
             var r1 = MetadataReference.CreateFromFile(p1);
@@ -1012,8 +1012,8 @@ public interface I {}";
         [WorkItem(546026, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546026"), WorkItem(546169, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546169")]
         public void CS1703ERR_DuplicateImport()
         {
-            var p1 = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System).Path;
-            var p2 = Temp.CreateFile().WriteAllBytes(ResourcesNet20.System).Path;
+            var p1 = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System.ImageBytes).Path;
+            var p2 = Temp.CreateFile().WriteAllBytes(ResourcesNet20.System.ImageBytes).Path;
             var text = @"namespace N {}";
 
             var comp = CSharpCompilation.Create(

@@ -78,7 +78,7 @@ class C
 </configuration>").Path;
 
             var silverlight = Temp.CreateFile().WriteAllBytes(ProprietaryTestResources.silverlight_v5_0_5_0.System_v5_0_5_0_silverlight).Path;
-            var net4_0dll = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System).Path;
+            var net4_0dll = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System.ImageBytes).Path;
 
             var outWriter = new StringWriter(CultureInfo.InvariantCulture);
             var cmd = CreateCSharpCompiler(

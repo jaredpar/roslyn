@@ -2673,10 +2673,10 @@ class Module1
         [Fact]
         public void CompilationWithReferenceDirectives()
         {
-            var data = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemData).Path;
-            var core = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemCore).Path;
-            var xml = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemXml).Path;
-            var system = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System).Path;
+            var data = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemData.ImageBytes).Path;
+            var core = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemCore.ImageBytes).Path;
+            var xml = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemXml.ImageBytes).Path;
+            var system = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System.ImageBytes).Path;
 
             var trees = new[]
             {
@@ -2718,9 +2718,9 @@ System.Diagnostics.Process.GetCurrentProcess();
         [Fact]
         public void CompilationWithReferenceDirectives_Errors()
         {
-            var data = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemData).Path;
-            var core = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemCore).Path;
-            var system = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System).Path;
+            var data = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemData.ImageBytes).Path;
+            var core = Temp.CreateFile().WriteAllBytes(ResourcesNet451.SystemCore.ImageBytes).Path;
+            var system = Temp.CreateFile().WriteAllBytes(ResourcesNet451.System.ImageBytes).Path;
 
             var trees = new[] {
                     SyntaxFactory.ParseSyntaxTree(@"

@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine.UnitTests
                 if (ExecutionConditionUtil.IsCoreClr)
                 {
                     var dir = temp.CreateDirectory();
-                    File.WriteAllBytes(Path.Combine(dir.Path, "mscorlib.dll"), ResourcesNet461.mscorlib);
+                    File.WriteAllBytes(Path.Combine(dir.Path, "mscorlib.dll"), ResourcesNet461.mscorlib.ImageBytes);
                     return dir.Path;
                 }
 
