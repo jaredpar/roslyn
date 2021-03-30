@@ -49,6 +49,9 @@ namespace Microsoft.CodeAnalysis.Rebuild.UnitTests
             var emitResult = compilationFactory.Emit(rebuildPeStream, syntaxTrees, metadataReferences, cancellationToken);
             Assert.True(emitResult.Success);
 
+            File.WriteAllBytes(@"c:\users\jaredpar\temp\rebuild\original\contents.dll", peStream.ToArray());
+            File.WriteAllBytes(@"c:\users\jaredpar\temp\rebuild\rebuild\contents.dll", peStream.ToArray());
+
             Assert.True(peStream.ToArray().SequenceEqual(rebuildPeStream.ToArray()));
         }
 
@@ -98,7 +101,7 @@ namespace Microsoft.CodeAnalysis.Rebuild.UnitTests
         }
 
 #pragma warning disable 612
-        private static void VerifyCompilationOptions(CompilationOptions originalOptions, CompilationOptions rebuildOptions)
+        public static void VerifyCompilationOptions(CompilationOptions originalOptions, CompilationOptions rebuildOptions)
         {
             var type = originalOptions.GetType();
             foreach (var propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
@@ -111,6 +114,12 @@ namespace Microsoft.CodeAnalysis.Rebuild.UnitTests
                     case nameof(CompilationOptions.MainTypeName):
                     case nameof(CompilationOptions.ConcurrentBuild):
                     case nameof(CompilationOptions.WarningLevel):
+                    case nameof(CompilationOptions.SyntaxTreeOptionsProvider):
+                    case nameof(CompilationOptions.MetadataReferenceResolver):
+                    case nameof(CompilationOptions.XmlReferenceResolver):
+                    case nameof(CompilationOptions.SourceReferenceResolver):
+                    case nameof(CompilationOptions.StrongNameProvider):
+                    case nameof(CompilationOptions.AssemblyIdentityComparer):
                         // Can be different and are special cased
                         break;
                     case nameof(VisualBasicCompilationOptions.ParseOptions):

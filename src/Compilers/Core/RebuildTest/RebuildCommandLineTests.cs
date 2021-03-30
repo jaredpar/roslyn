@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +28,8 @@ namespace Microsoft.CodeAnalysis.Rebuild.UnitTests
 {
     public sealed partial class RebuildCommandLineTests : CSharpTestBase
     {
+        private record CommandInfo(string CommandLine, string PeFileName, string? PdbFileName);
+
         internal const string ClientDirectory = @"q:\compiler";
         internal const string WorkingDirectory = @"q:\rebuild";
         internal const string SdkDirectory = @"q:\sdk";
@@ -80,6 +83,7 @@ namespace Microsoft.CodeAnalysis.Rebuild.UnitTests
                 analyzerConfigOptions: default,
                 globalConfigOptions: default);
             AssertEx.NotNull(compilation);
+            RoundTripUtil.VerifyCompilationOptions(commonCompiler.Arguments.CompilationOptions, compilation.Options);
 
             RoundTripUtil.VerifyRoundTrip(
                 peStream,
@@ -114,21 +118,62 @@ class Library
         {
             var list = new List<object?[]>();
 
-            PermutateOptimizations("hw.cs /target:exe /debug:embedded", "test.exe", null);
-            PermutateOptimizations("lib1.cs /target:library /debug:embedded", "test.dll", null);
+            Add(Permutate(new CommandInfo("hw.cs /target:exe", "test.exe", null)));
+            Add(Permutate(new CommandInfo("lib1.cs /target:library", "test.dll", null)));
 
             return list;
 
-            void PermutateOptimizations(string commandLine, string peFileName, string? pdbFileName)
+            IEnumerable<CommandInfo> Permutate(CommandInfo commandInfo)
             {
-                Add(commandLine + " /optimize+", peFileName, pdbFileName);
-                Add(commandLine + " /debug+", peFileName, pdbFileName);
-                Add(commandLine + " /optimize+ /debug+", peFileName, pdbFileName);
+                IEnumerable<CommandInfo> e = new[] { commandInfo };
+                e = e.SelectMany(PermutatePdbType);
+                e = e.SelectMany(PermutateOptimizations);
+                return e;
             }
 
-            void Add(string commandLine, string peFileName, string? pdbFileName)
+            IEnumerable<CommandInfo> PermutatePdbType(CommandInfo commandInfo)
             {
-                list.Add(new object?[] { commandLine, peFileName, pdbFileName });
+                Debug.Assert(commandInfo.PdbFileName is null);
+                yield return commandInfo with
+                {
+                    CommandLine = commandInfo.CommandLine + " /debug:embedded"
+                };
+
+                yield return commandInfo with
+                {
+                    CommandLine = commandInfo.CommandLine + " /debug:portable",
+                    PdbFileName = Path.ChangeExtension(commandInfo.PeFileName, "pdb"),
+                };
+            }
+
+            IEnumerable<CommandInfo> PermutateOptimizations(CommandInfo commandInfo)
+            {
+                // No options at all for optimization
+                yield return commandInfo;
+                yield return commandInfo with
+                {
+                    CommandLine = commandInfo.CommandLine + " /debug+ /optimize+"
+                };
+                yield return commandInfo with
+                {
+                    CommandLine = commandInfo.CommandLine + " /debug+ /optimize-"
+                };
+                yield return commandInfo with
+                {
+                    CommandLine = commandInfo.CommandLine + " /debug- /optimize-"
+                };
+                yield return commandInfo with
+                {
+                    CommandLine = commandInfo.CommandLine + " /debug- /optimize+"
+                };
+            }
+
+            void Add(IEnumerable<CommandInfo> commandInfos)
+            {
+                foreach (var commandInfo in commandInfos)
+                {
+                    list.Add(new object?[] { commandInfo.CommandLine, commandInfo.PeFileName, commandInfo.PdbFileName });
+                }
             }
         }
 
