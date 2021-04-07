@@ -177,6 +177,28 @@ class Library
     }
 }
 ");
+
+            AddSourceFile("lib4.cs", @"
+using System;
+
+#line 1 ""data.txt""
+class Library
+{
+    #line 2 ""data.txt""
+    void Method()
+    {
+        var lib = new Library();
+        Console.WriteLine(lib);
+    }
+}
+");
+
+            AddSourceFile("data.txt", @"
+line 1
+line 2
+line 3
+line 4
+line 5");
         }
 
         public static IEnumerable<object?[]> GetCSharpData()
@@ -187,11 +209,15 @@ class Library
                 new CommandInfo("hw.cs", "test.exe", null),
                 PermutateOptimizations, PermutateExeKinds, PermutatePdbFormat);
             Permutate(new CommandInfo("lib1.cs", "test.dll", null),
-                PermutateOptimizations, PermutateDllKinds, PermutatePdbFormat);
+                PermutateOptimizations, PermutateDllKinds, PermutatePdbFormat, PermutatePathMap);
             Permutate(new CommandInfo("lib2.cs /target:library /r:SystemRuntime=System.Runtime.dll /debug:embedded", "test.dll", null),
                 PermutateOptimizations);
             Permutate(new CommandInfo("lib3.cs /target:library", "test.dll", null),
                 PermutateOptimizations, PermutateExternAlias, PermutatePdbFormat);
+            Permutate(new CommandInfo("lib3.cs /target:library", "test.dll", null),
+                PermutateOptimizations, PermutateExternAlias, PermutatePdbFormat);
+            Permutate(new CommandInfo($"lib4.cs /target:library", "test.dll", null),
+                PermutateOptimizations, PermutatePdbFormat, PermutatePathMap);
 
             return list;
 
@@ -204,6 +230,15 @@ class Library
                 }
 
                 Add(e);
+            }
+
+            static IEnumerable<CommandInfo> PermutatePathMap(CommandInfo commandInfo)
+            {
+                yield return commandInfo;
+                yield return commandInfo with
+                {
+                    CommandLine = commandInfo.CommandLine + $" /pathmap:{RootDirectory}=/root/test",
+                };
             }
 
             // Permutate the alias before and after the standard references so that we make sure the 
