@@ -119,8 +119,7 @@ namespace Microsoft.CodeAnalysis.Rebuild.UnitTests
                 peStream,
                 pdbStream,
                 Path.GetFileName(peFilePath),
-                compilation.SyntaxTrees.ToImmutableArray(),
-                compilation.References.ToImmutableArray());
+                new CompilationRebuildArtifactResolver(compilation));
         }
 
         private void AddCSharpSourceFiles()

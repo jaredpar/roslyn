@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Microsoft.CodeAnalysis.Rebuild
 {
+    /*
     public readonly struct MetadataReferenceInfo
     {
         public readonly int Timestamp;
@@ -44,4 +45,5 @@ namespace Microsoft.CodeAnalysis.Rebuild
             return $"{Name}::{Mvid}::{Timestamp}";
         }
     }
+    */
 }
