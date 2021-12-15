@@ -132,7 +132,7 @@ namespace Microsoft.CodeAnalysis.CSharp.DisambiguateSameVariable
             if (matchingMember == null)
                 return false;
 
-            var memberContainer = matchingMember.ContainingType.ToMinimalDisplayString(semanticModel, span.Start);
+            var memberContainer = matchingMember.ContainingType!.ToMinimalDisplayString(semanticModel, span.Start);
             title = string.Format(titleFormat, $"{memberContainer}.{matchingMember.Name}");
 
             leftName = left is MemberAccessExpressionSyntax memberAccess

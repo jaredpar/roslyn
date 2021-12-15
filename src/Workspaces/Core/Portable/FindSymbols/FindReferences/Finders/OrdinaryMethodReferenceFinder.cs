@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Microsoft.CodeAnalysis.FindSymbols.Finders
 {
@@ -29,7 +30,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
         {
             // If it's a delegate method, then cascade to the type as well.  These guys are
             // practically equivalent for users.
-            if (symbol.ContainingType.TypeKind == TypeKind.Delegate)
+            if (symbol.ContainingType.IsTypeKind(TypeKind.Delegate))
             {
                 return Task.FromResult(ImmutableArray.Create<ISymbol>(symbol.ContainingType));
             }

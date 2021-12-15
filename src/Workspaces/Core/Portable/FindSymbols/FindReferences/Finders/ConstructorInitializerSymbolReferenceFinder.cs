@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             FindReferencesSearchOptions options,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             return FindDocumentsAsync(project, documents, async (d, c) =>
             {
                 var index = await SyntaxTreeIndex.GetRequiredIndexAsync(d, c).ConfigureAwait(false);
@@ -59,6 +61,8 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             FindReferencesSearchOptions options,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(methodSymbol.ContainingType is not null);
+
             var syntaxFactsService = document.GetRequiredLanguageService<ISyntaxFactsService>();
             var typeName = methodSymbol.ContainingType.Name;
 

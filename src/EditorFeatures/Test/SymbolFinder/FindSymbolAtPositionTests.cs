@@ -61,7 +61,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
                 }");
 
             var fieldSymbol = Assert.IsAssignableFrom<IFieldSymbol>(await FindSymbolAtPositionAsync(workspace));
-            Assert.Equal(TypeKind.Enum, fieldSymbol.ContainingType.TypeKind);
+            Assert.Equal(TypeKind.Enum, fieldSymbol.ContainingType!.TypeKind);
         }
     }
 }

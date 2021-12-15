@@ -212,7 +212,7 @@ namespace Microsoft.CodeAnalysis.Editor.FindUsages
             {
                 // If the symbol being considered is a constructor include the containing type in case
                 // a third party wants to navigate to that.
-                rqName = RQNameInternal.From(definition.ContainingType);
+                rqName = RQNameInternal.From(definition.ContainingType!);
                 if (rqName != null)
                 {
                     properties = properties.Add(DefinitionItem.RQNameKey2, rqName);

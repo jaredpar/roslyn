@@ -135,6 +135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.SignatureHelp
                 SemanticModel semanticModel,
                 int position)
             {
+                RoslynDebug.Assert(method.ContainingType is not null);
                 var result = new List<SymbolDisplayPart>();
 
                 result.AddRange(method.ContainingType.ToMinimalDisplayParts(semanticModel, position));

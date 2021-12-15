@@ -7,6 +7,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeGeneration;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Shared.Extensions
 {
@@ -74,9 +75,12 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             => (property.SetMethod != null || ContainsBackingField(property));
 
         public static IFieldSymbol? GetBackingFieldIfAny(this IPropertySymbol property)
-            => property.ContainingType.GetMembers()
+        {
+            RoslynDebug.Assert(property.ContainingType is not null);
+            return property.ContainingType.GetMembers()
                 .OfType<IFieldSymbol>()
                 .FirstOrDefault(f => property.Equals(f.AssociatedSymbol));
+        }
 
         private static bool ContainsBackingField(IPropertySymbol property)
             => property.GetBackingFieldIfAny() != null;

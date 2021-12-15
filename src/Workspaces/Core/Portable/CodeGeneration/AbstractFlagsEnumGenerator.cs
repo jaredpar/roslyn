@@ -46,7 +46,7 @@ namespace Microsoft.CodeAnalysis.CodeGeneration
                 if (ctor != null)
                 {
                     var type = ctor.ContainingType;
-                    if (!ctor.Parameters.Any() && type.Name == "FlagsAttribute")
+                    if (!ctor.Parameters.Any() && type?.Name == "FlagsAttribute")
                     {
                         RoslynDebug.Assert(type.ContainingSymbol is not null);
                         var containingSymbol = type.ContainingSymbol;

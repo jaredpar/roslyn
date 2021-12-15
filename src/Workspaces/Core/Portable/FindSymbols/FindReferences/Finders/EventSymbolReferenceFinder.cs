@@ -7,6 +7,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.FindSymbols.Finders
 {
@@ -21,6 +22,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             FindReferencesSearchOptions options,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             var backingFields = symbol.ContainingType.GetMembers()
                                                      .OfType<IFieldSymbol>()
                                                      .Where(f => symbol.Equals(f.AssociatedSymbol))

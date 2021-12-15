@@ -106,7 +106,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols
 
                 // If they're searching for a delegate constructor, then just search for the delegate
                 // itself.  They're practically interchangeable for consumers.
-                if (searchSymbol.IsConstructor() && searchSymbol.ContainingType.TypeKind == TypeKind.Delegate)
+                if (searchSymbol.IsConstructor() && searchSymbol.ContainingType.IsTypeKind(TypeKind.Delegate))
                     searchSymbol = symbol.ContainingType;
 
                 Contract.ThrowIfNull(searchSymbol);

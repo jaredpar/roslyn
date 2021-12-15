@@ -59,7 +59,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             Contract.ThrowIfNull(symbol.DeclaringMethod);
             return FindDocumentsAsync(project, documents, cancellationToken, symbol.Name,
                 GetMemberNameWithoutInterfaceName(symbol.DeclaringMethod.Name),
-                symbol.DeclaringMethod.ContainingType.Name);
+                symbol.DeclaringMethod.ContainingType!.Name);
         }
 
         private static string GetMemberNameWithoutInterfaceName(string fullName)

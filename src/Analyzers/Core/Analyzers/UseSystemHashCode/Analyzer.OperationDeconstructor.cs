@@ -86,7 +86,7 @@ namespace Microsoft.CodeAnalysis.UseSystemHashCode
                         }
 
                         if (targetMethod.Name == nameof(GetHashCode) &&
-                            Equals(_analyzer._equalityComparerType, targetMethod.ContainingType.OriginalDefinition) &&
+                            Equals(_analyzer._equalityComparerType, targetMethod.ContainingType!.OriginalDefinition) &&
                             invocation.Arguments.Length == 1)
                         {
                             // EqualityComparer<T>.Default.GetHashCode(i)
@@ -130,7 +130,7 @@ namespace Microsoft.CodeAnalysis.UseSystemHashCode
                 {
                     if (value is IInstanceReferenceOperation instanceReference &&
                         instanceReference.ReferenceKind == InstanceReferenceKind.ContainingTypeInstance &&
-                        Equals(_method.ContainingType.BaseType, instanceReference.Type))
+                        Equals(_method.ContainingType!.BaseType, instanceReference.Type))
                     {
                         if (_accessesBase)
                         {
@@ -152,7 +152,7 @@ namespace Microsoft.CodeAnalysis.UseSystemHashCode
                     // We only do this if we actually did something that counts as hashing along the way.  This
                     // way
                     if (TryGetFieldOrProperty(value, out var fieldOrProp) &&
-                        Equals(fieldOrProp.ContainingType.OriginalDefinition, _method.ContainingType))
+                        Equals(fieldOrProp.ContainingType!.OriginalDefinition, _method.ContainingType))
                     {
                         return TryAddSymbol(fieldOrProp);
                     }

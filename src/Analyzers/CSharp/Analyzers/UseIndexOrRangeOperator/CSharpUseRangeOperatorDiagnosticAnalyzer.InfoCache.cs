@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.UseIndexOrRangeOperator
 {
@@ -82,6 +83,8 @@ namespace Microsoft.CodeAnalysis.CSharp.UseIndexOrRangeOperator
 
             public bool TryGetMemberInfoOneArgument(IMethodSymbol method, out MemberInfo memberInfo)
             {
+                RoslynDebug.Assert(method.ContainingType is not null);
+
                 if (!IsOneArgumentSliceLikeMethod(method))
                 {
                     memberInfo = default;
@@ -117,6 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UseIndexOrRangeOperator
 
             private MemberInfo ComputeMemberInfo(IMethodSymbol sliceLikeMethod, bool requireRangeMember)
             {
+                RoslynDebug.Assert(sliceLikeMethod.ContainingType is not null);
                 Debug.Assert(IsTwoArgumentSliceLikeMethod(sliceLikeMethod));
 
                 // Check that the type has an int32 'Length' or 'Count' property. If not, we don't

@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.LanguageServices;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Text;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.FindSymbols.Finders
 {
@@ -29,6 +30,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             FindReferencesSearchOptions options,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             var backingFields = symbol.ContainingType.GetMembers()
                                       .OfType<IFieldSymbol>()
                                       .Where(f => symbol.Equals(f.AssociatedSymbol))

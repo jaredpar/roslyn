@@ -67,7 +67,7 @@ namespace Microsoft.CodeAnalysis.ReplaceMethodWithProperty
             var propertyName = hasGetPrefix
                 ? NameGenerator.GenerateUniqueName(
                     methodName[GetPrefix.Length..],
-                    n => !methodSymbol.ContainingType.GetMembers(n).Any())
+                    n => !methodSymbol.ContainingType!.GetMembers(n).Any())
                 : methodName;
             var nameChanged = hasGetPrefix;
 
@@ -101,6 +101,7 @@ namespace Microsoft.CodeAnalysis.ReplaceMethodWithProperty
 
         private static IMethodSymbol? FindSetMethod(IMethodSymbol getMethod)
         {
+            RoslynDebug.Assert(gethMethod.ContainingType is not null);
             var containingType = getMethod.ContainingType;
             var setMethodName = "Set" + getMethod.Name[GetPrefix.Length..];
             var setMethod = containingType.GetMembers()
@@ -128,7 +129,7 @@ namespace Microsoft.CodeAnalysis.ReplaceMethodWithProperty
         {
             for (var current = method; current != null; current = current.OverriddenMethod)
             {
-                if (current.ContainingType.SpecialType == SpecialType.System_Object)
+                if (current.ContainingType.IsSpecialType(SpecialType.System_Object))
                 {
                     return true;
                 }

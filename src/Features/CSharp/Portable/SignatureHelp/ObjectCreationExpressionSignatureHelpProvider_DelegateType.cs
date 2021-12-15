@@ -40,6 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp.SignatureHelp
 
         private static IList<SymbolDisplayPart> GetDelegateTypePreambleParts(IMethodSymbol invokeMethod, SemanticModel semanticModel, int position)
         {
+            RoslynDebug.Assert(invokeMethod.ContainingType is not null);
             var result = new List<SymbolDisplayPart>();
 
             result.AddRange(invokeMethod.ContainingType.ToMinimalDisplayParts(semanticModel, position));

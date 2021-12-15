@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
             if (methodSymbol.IsAbstract ||
                 methodSymbol.IsExtern ||
                 methodSymbol.PartialImplementationPart != null ||
-                methodSymbol.ContainingType.TypeKind == TypeKind.Interface)
+                methodSymbol.ContainingType.IsTypeKind(TypeKind.Interface))
             {
                 return;
             }
@@ -251,7 +251,7 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
             [NotNullWhen(true)] out ISymbol? fieldOrProperty)
         {
             if (operation is IMemberReferenceOperation memberReference &&
-                memberReference.Member.ContainingType.Equals(containingType))
+                memberReference.Member.ContainingType!.Equals(containingType))
             {
                 if (memberReference.Member is IFieldSymbol or
                     IPropertySymbol)

@@ -50,7 +50,7 @@ namespace Microsoft.CodeAnalysis.Features.RQName
             return parts;
         }
 
-        private static RQUnconstructedType? BuildUnconstructedNamedType(INamedTypeSymbol type)
+        private static RQUnconstructedType? BuildUnconstructedNamedType(INamedTypeSymbol? type)
         {
             // Anything that is a valid RQUnconstructed types is ALWAYS safe for public APIs
 
@@ -109,7 +109,7 @@ namespace Microsoft.CodeAnalysis.Features.RQName
                     return null;
                 }
 
-                var interfaceType = BuildType(symbol.ExplicitInterfaceImplementations.Single().ContainingType);
+                var interfaceType = BuildType(symbol.ExplicitInterfaceImplementations.Single().ContainingType!);
 
                 if (interfaceType != null)
                 {
@@ -184,7 +184,7 @@ namespace Microsoft.CodeAnalysis.Features.RQName
                     return null;
                 }
 
-                var interfaceType = BuildType(symbol.ExplicitInterfaceImplementations.Single().ContainingType);
+                var interfaceType = BuildType(symbol.ExplicitInterfaceImplementations.Single().ContainingType!);
 
                 if (interfaceType != null)
                 {
@@ -229,7 +229,7 @@ namespace Microsoft.CodeAnalysis.Features.RQName
                     return null;
                 }
 
-                var interfaceType = BuildType(symbol.ExplicitInterfaceImplementations.Single().ContainingType);
+                var interfaceType = BuildType(symbol.ExplicitInterfaceImplementations.Single().ContainingType!);
 
                 if (interfaceType != null)
                 {

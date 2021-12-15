@@ -101,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ImplementInterface
 
             if (offerForSameInterface)
             {
-                var interfaceNames = interfaceTypes.Select(i => i.ToDisplayString(NameAndTypeParametersFormat));
+                var interfaceNames = interfaceTypes.Select(i => i!.ToDisplayString(NameAndTypeParametersFormat));
                 nestedActions.Add(new MyCodeAction(
                     string.Format(Implement_0, string.Join(", ", interfaceNames)),
                     c => ChangeImplementationAsync(project, implementedMembersFromSameInterfaces, c)));

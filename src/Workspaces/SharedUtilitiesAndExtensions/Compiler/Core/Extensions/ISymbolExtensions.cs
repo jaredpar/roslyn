@@ -98,7 +98,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
                 return ImmutableArray<ISymbol>.Empty;
 
             var containingType = symbol.ContainingType;
-            var query = from iface in containingType.AllInterfaces
+            var query = from iface in containingType!.AllInterfaces
                         from interfaceMember in iface.GetMembers()
                         let impl = containingType.FindImplementationForInterfaceMember(interfaceMember)
                         where symbol.Equals(impl)
@@ -222,7 +222,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             => symbol.IsAnonymousFunction() || symbol.IsLocalFunction();
 
         public static bool IsModuleMember([NotNullWhen(returnValue: true)] this ISymbol? symbol)
-            => symbol != null && symbol.ContainingSymbol is INamedTypeSymbol && symbol.ContainingType.TypeKind == TypeKind.Module;
+            => symbol != null && symbol.ContainingSymbol is INamedTypeSymbol && symbol.ContainingType.IsTypeKind(TypeKind.Module);
 
         public static bool IsConstructor([NotNullWhen(returnValue: true)] this ISymbol? symbol)
             => (symbol as IMethodSymbol)?.MethodKind == MethodKind.Constructor;
@@ -269,7 +269,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             => symbol is IPropertySymbol && symbol.ContainingType.IsNormalAnonymousType();
 
         public static bool IsTupleField([NotNullWhen(returnValue: true)] this ISymbol? symbol)
-            => symbol is IFieldSymbol && symbol.ContainingType.IsTupleType;
+            => symbol is IFieldSymbol && symbol.ContainingType?.IsTupleType == true;
 
         public static bool IsIndexer([NotNullWhen(returnValue: true)] this ISymbol? symbol)
             => (symbol as IPropertySymbol)?.IsIndexer == true;

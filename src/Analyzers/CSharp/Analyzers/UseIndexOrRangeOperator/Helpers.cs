@@ -142,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UseIndexOrRangeOperator
         public static IMethodSymbol? GetOverload(IMethodSymbol method, ITypeSymbol parameterType)
             => method.MethodKind != MethodKind.Ordinary
                 ? null
-                : method.ContainingType.GetMembers(method.Name)
+                : method.ContainingType!.GetMembers(method.Name)
                                        .OfType<IMethodSymbol>()
                                        .Where(m => IsPublicInstance(m) &&
                                                    m.Parameters.Length == 1 &&

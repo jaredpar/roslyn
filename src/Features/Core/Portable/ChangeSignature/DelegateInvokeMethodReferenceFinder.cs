@@ -38,6 +38,7 @@ namespace Microsoft.CodeAnalysis.ChangeSignature
             FindReferencesSearchOptions options,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             using var _ = ArrayBuilder<ISymbol>.GetInstance(out var result);
 
             var beginInvoke = symbol.ContainingType.GetMembers(WellKnownMemberNames.DelegateBeginInvokeName).FirstOrDefault();

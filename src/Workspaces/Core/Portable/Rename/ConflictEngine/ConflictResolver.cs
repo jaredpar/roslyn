@@ -218,7 +218,7 @@ namespace Microsoft.CodeAnalysis.Rename.ConflictEngine
                 if (renamedSymbol.ContainingSymbol.IsKind(SymbolKind.NamedType))
                 {
                     Contract.ThrowIfNull(projectOpt);
-                    var otherThingsNamedTheSame = renamedSymbol.ContainingType.GetMembers(renamedSymbol.Name)
+                    var otherThingsNamedTheSame = renamedSymbol.ContainingType!.GetMembers(renamedSymbol.Name)
                                                            .Where(s => !s.Equals(renamedSymbol) &&
                                                                        string.Equals(s.MetadataName, renamedSymbol.MetadataName, StringComparison.Ordinal));
 

@@ -205,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.NavigationBar
 
             if (symbol.Kind == SymbolKind.Field)
             {
-                return symbol.ContainingType.TypeKind == TypeKind.Enum
+                return symbol.ContainingType.IsTypeKind(TypeKind.Enum)
                     ? GetSymbolLocation(solution, symbol, tree, static reference => GetEnumMemberSpan(reference))
                     : GetSymbolLocation(solution, symbol, tree, static reference => GetFieldReferenceSpan(reference));
             }

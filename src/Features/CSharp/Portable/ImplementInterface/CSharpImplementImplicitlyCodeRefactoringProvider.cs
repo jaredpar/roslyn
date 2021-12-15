@@ -37,6 +37,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ImplementInterface
         // implicit.
         protected override bool CheckMemberCanBeConverted(ISymbol member)
         {
+            RoslynDebug.Assert(member.ContainingType is not null);
             var memberInterfaceImplementations = member.ExplicitInterfaceImplementations();
             if (memberInterfaceImplementations.Length == 0)
                 return false;

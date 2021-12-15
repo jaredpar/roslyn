@@ -1370,14 +1370,14 @@ namespace Microsoft.CodeAnalysis
                 var containingTypeParameterCount = GetTypeParameterCount(typeSymbol.ContainingType);
                 if (n < containingTypeParameterCount)
                 {
-                    return GetNthTypeParameter(typeSymbol.ContainingType, n);
+                    return GetNthTypeParameter(typeSymbol.ContainingType!, n);
                 }
 
                 var index = n - containingTypeParameterCount;
                 return typeSymbol.TypeParameters[index];
             }
 
-            private static int GetTypeParameterCount(INamedTypeSymbol typeSymbol)
+            private static int GetTypeParameterCount(INamedTypeSymbol? typeSymbol)
             {
                 if (typeSymbol == null)
                 {

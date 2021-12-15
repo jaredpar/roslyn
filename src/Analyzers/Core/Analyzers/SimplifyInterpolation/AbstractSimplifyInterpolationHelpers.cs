@@ -127,7 +127,7 @@ namespace Microsoft.CodeAnalysis.SimplifyInterpolation
             while (method.OverriddenMethod is not null)
                 method = method.OverriddenMethod;
 
-            return method.ContainingType.SpecialType == SpecialType.System_Object
+            return method.ContainingType?.SpecialType == SpecialType.System_Object
                 && method.Name == nameof(ToString);
         }
 
@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.SimplifyInterpolation
             } && IsType<System.FormattableString>(containingType, operation.SemanticModel);
         }
 
-        private static bool IsType<T>(INamedTypeSymbol type, SemanticModel semanticModel)
+        private static bool IsType<T>(INamedTypeSymbol? type, SemanticModel semanticModel)
         {
             return SymbolEqualityComparer.Default.Equals(type, FindType<T>(semanticModel));
         }

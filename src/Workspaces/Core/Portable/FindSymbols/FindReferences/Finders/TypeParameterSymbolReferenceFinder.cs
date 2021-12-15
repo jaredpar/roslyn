@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.FindSymbols.Finders
 {
@@ -22,6 +23,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             FindReferencesSearchOptions options,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             // Type parameters are only found in documents that have both their name, and the
             // name of its owning type.  NOTE(cyrusn): We have to check in multiple files because
             // of partial types.  A type parameter can be referenced across all the parts.

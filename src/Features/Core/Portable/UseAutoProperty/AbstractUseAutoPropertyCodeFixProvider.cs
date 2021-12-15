@@ -287,6 +287,7 @@ namespace Microsoft.CodeAnalysis.UseAutoProperty
         private static bool IsWrittenToOutsideOfConstructorOrProperty(
             IFieldSymbol field, RenameLocations renameLocations, TPropertyDeclaration propertyDeclaration, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(field.ContainingType is not null);
             var constructorNodes = field.ContainingType.GetMembers()
                                                        .Where(m => m.IsConstructor())
                                                        .SelectMany(c => c.DeclaringSyntaxReferences)

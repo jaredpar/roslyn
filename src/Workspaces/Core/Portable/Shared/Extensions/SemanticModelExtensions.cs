@@ -42,7 +42,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
 
         private static ISymbol? MapSymbol(ISymbol symbol, ITypeSymbol? type)
         {
-            if (symbol.IsConstructor() && symbol.ContainingType.IsAnonymousType)
+            if (symbol.IsConstructor() && symbol.ContainingType?.IsAnonymousType == true)
             {
                 return symbol.ContainingType;
             }

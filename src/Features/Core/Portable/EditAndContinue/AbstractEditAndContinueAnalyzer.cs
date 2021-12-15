@@ -352,7 +352,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
             };
 
         internal virtual string GetDisplayName(IFieldSymbol symbol)
-            => symbol.IsConst ? ((symbol.ContainingType.TypeKind == TypeKind.Enum) ? FeaturesResources.enum_value : FeaturesResources.const_field) :
+            => symbol.IsConst ? ((symbol.ContainingType.IsTypeKind(TypeKind.Enum)) ? FeaturesResources.enum_value : FeaturesResources.const_field) :
                FeaturesResources.field;
 
         internal virtual string GetDisplayName(IMethodSymbol symbol)
@@ -2686,10 +2686,12 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                                             continue;
                                         }
 
+                                        RoslynDebug.Assert(newSymbol.ContainingType != null);
+                                        RoslynDebug.Assert(oldSymbol.ContainingType != null);
                                         if (IsPropertyAccessorDeclarationMatchingPrimaryConstructorParameter(oldDeclaration, newSymbol.ContainingType, out var isFirst))
                                         {
                                             // Defer a constructor edit to cover the property initializer changing
-                                            DeferConstructorEdit(oldSymbol.ContainingType, newSymbol.ContainingType, newDeclaration: null, syntaxMap, oldSymbol.IsStatic, ref instanceConstructorEdits, ref staticConstructorEdits);
+                                            DeferConstructorEdit(oldSymbol.ContainingType, newSymbol.ContainingType!, newDeclaration: null, syntaxMap, oldSymbol.IsStatic, ref instanceConstructorEdits, ref staticConstructorEdits);
 
                                             // If there was no body deleted then we are done since the compiler generated property also has no body
                                             if (TryGetDeclarationBody(oldDeclaration) is null)
@@ -2885,7 +2887,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                                                     AnalyzeSymbolUpdate(oldSymbol, newSymbol, edit.NewNode, newCompilation, editScript.Match, capabilities, diagnostics, semanticEdits, syntaxMap, cancellationToken);
                                                 }
 
-                                                DeferConstructorEdit(oldSymbol.ContainingType, newContainingType, newDeclaration, syntaxMap, newSymbol.IsStatic, ref instanceConstructorEdits, ref staticConstructorEdits);
+                                                DeferConstructorEdit(oldSymbol.ContainingType!, newContainingType!, newDeclaration, syntaxMap, newSymbol.IsStatic, ref instanceConstructorEdits, ref staticConstructorEdits);
 
                                                 // Don't add a separate semantic edit.
                                                 // Updates of data members with initializers and constructors that emit initializers will be aggregated and added later.
@@ -3367,7 +3369,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                 }
             }
 
-            if (oldSymbol is IFieldSymbol oldField && newSymbol is IFieldSymbol newField)
+            if (oldSymbol is IFieldSymbol { ContainingType: { } } oldField && newSymbol is IFieldSymbol { ContainingType: { } } newField)
             {
                 if (oldField.IsConst != newField.IsConst ||
                     oldField.IsReadOnly != newField.IsReadOnly ||
@@ -4170,6 +4172,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 
         private void ReportTypeLayoutUpdateRudeEdits(ArrayBuilder<RudeEditDiagnostic> diagnostics, ISymbol symbol, SyntaxNode syntax)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             var intoStruct = symbol.ContainingType.TypeKind == TypeKind.Struct;
 
             diagnostics.Add(new RudeEditDiagnostic(
@@ -4192,10 +4195,15 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
         }
 
         private static bool HasExplicitOrSequentialLayout(
-            INamedTypeSymbol type,
+            [NotNullWhen(true)] INamedTypeSymbol? type,
             SemanticModel model,
             ref INamedTypeSymbol? lazyLayoutAttribute)
         {
+            if (type is null)
+            {
+                return false;
+            }
+
             if (type.TypeKind == TypeKind.Struct)
             {
                 return true;

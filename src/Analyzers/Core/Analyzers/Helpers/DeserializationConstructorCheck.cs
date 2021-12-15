@@ -27,6 +27,6 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
                methodSymbol.Parameters.Length == 2 &&
                methodSymbol.Parameters[0].Type.Equals(_serializationInfoType) &&
                methodSymbol.Parameters[1].Type.Equals(_streamingContextType) &&
-               methodSymbol.ContainingType.AllInterfaces.Contains(_iSerializableType);
+               methodSymbol.ContainingType?.AllInterfaces.Contains(_iSerializableType) == true;
     }
 }

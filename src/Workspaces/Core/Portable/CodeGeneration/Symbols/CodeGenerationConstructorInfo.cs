@@ -81,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CodeGeneration
             => info?._statements ?? default;
 
         private static string GetTypeName(CodeGenerationConstructorInfo? info, IMethodSymbol constructor)
-            => info == null ? constructor.ContainingType.Name : info._typeName;
+            => info == null ? constructor.ContainingType!.Name : info._typeName;
 
         private static bool GetIsUnsafe(CodeGenerationConstructorInfo? info)
             => info?._isUnsafe ?? false;

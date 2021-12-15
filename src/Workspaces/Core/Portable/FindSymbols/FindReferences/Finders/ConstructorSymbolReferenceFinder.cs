@@ -33,6 +33,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
 
         protected override Task<ImmutableArray<string>> DetermineGlobalAliasesAsync(IMethodSymbol symbol, Project project, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             var containingType = symbol.ContainingType;
             return GetAllMatchingGlobalAliasNamesAsync(project, containingType.Name, containingType.Arity, cancellationToken);
         }
@@ -45,6 +46,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             FindReferencesSearchOptions options,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             var containingType = symbol.ContainingType;
             var typeName = symbol.ContainingType.Name;
 
@@ -110,6 +112,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             FindReferencesSearchOptions options,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(methodSymbol.ContainingType is not null);
             var syntaxFacts = document.GetRequiredLanguageService<ISyntaxFactsService>();
 
             using var _1 = ArrayBuilder<FinderLocation>.GetInstance(out var result);
@@ -200,6 +203,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols.Finders
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             var predefinedType = symbol.ContainingType.SpecialType.ToPredefinedType();
             if (predefinedType == PredefinedType.None)
             {

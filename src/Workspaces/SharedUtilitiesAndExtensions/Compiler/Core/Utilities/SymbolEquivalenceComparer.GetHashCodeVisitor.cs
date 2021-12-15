@@ -269,7 +269,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
             {
                 Debug.Assert(
                     (x.TypeParameterKind == TypeParameterKind.Method && IsConstructedFromSelf(x.DeclaringMethod!)) ||
-                    (x.TypeParameterKind == TypeParameterKind.Type && IsConstructedFromSelf(x.ContainingType)) ||
+                    (x.TypeParameterKind == TypeParameterKind.Type && IsConstructedFromSelf(x.ContainingType!)) ||
                     x.TypeParameterKind == TypeParameterKind.Cref);
 
                 currentHash =
@@ -281,7 +281,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
                     return currentHash;
                 }
 
-                if (x.TypeParameterKind == TypeParameterKind.Type && x.ContainingType.IsAnonymousType)
+                if (x.TypeParameterKind == TypeParameterKind.Type && x.ContainingType?.IsAnonymousType == true)
                 {
                     // Anonymous type type parameters compare by index as well to prevent
                     // recursion.

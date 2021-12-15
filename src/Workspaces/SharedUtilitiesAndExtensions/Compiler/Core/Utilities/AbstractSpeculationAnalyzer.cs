@@ -618,7 +618,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
         {
             return symbol != null
                 && symbol.IsKind(SymbolKind.Method)
-                && symbol.ContainingType.SpecialType == SpecialType.System_Object
+                && symbol.ContainingType?.SpecialType == SpecialType.System_Object
                 && !symbol.IsOverridable()
                 && !symbol.IsStaticType();
         }

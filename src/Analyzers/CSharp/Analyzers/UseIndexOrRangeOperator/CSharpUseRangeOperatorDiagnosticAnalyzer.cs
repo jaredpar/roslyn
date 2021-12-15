@@ -235,6 +235,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UseIndexOrRangeOperator
 
         private static bool IsValidIndexing(IInvocationOperation invocation, InfoCache infoCache, IMethodSymbol targetMethod)
         {
+            RoslynDebug.Assert(targetMethod.ContainingType is not null);
             var indexer = GetIndexer(targetMethod.ContainingType, infoCache.RangeType, targetMethod.ContainingType);
             // Need to make sure that if the target method is being written to, that the indexer returns a ref, is a read/write property,
             // or the syntax allows for the slice method to be run

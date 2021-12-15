@@ -288,6 +288,7 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
 
         private static string GenerateUniqueName(IParameterSymbol parameter, ImmutableArray<string> parameterNameParts, NamingRule rule)
         {
+            RoslynDebug.Assert(parameter.ContainingType is not null);
             // Determine an appropriate name to call the new field.
             var containingType = parameter.ContainingType;
             var baseName = rule.NamingStyle.CreateName(parameterNameParts);

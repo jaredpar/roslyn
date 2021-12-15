@@ -578,7 +578,7 @@ namespace Microsoft.CodeAnalysis.GenerateMember.GenerateConstructor
 
                 var provider = document.Project.Solution.Workspace.Services.GetLanguageServices(TypeToGenerateIn.Language);
                 var (members, assignments) = await GenerateMembersAndAssignmentsAsync(document, withFields, withProperties, cancellationToken).ConfigureAwait(false);
-                var isThis = _delegatedConstructor.ContainingType.OriginalDefinition.Equals(TypeToGenerateIn.OriginalDefinition);
+                var isThis = _delegatedConstructor.ContainingType!.OriginalDefinition.Equals(TypeToGenerateIn.OriginalDefinition);
                 var delegatingArguments = provider.GetService<SyntaxGenerator>().CreateArguments(_delegatedConstructor.Parameters);
 
                 var newParameters = _delegatedConstructor.Parameters.Concat(_parameters);

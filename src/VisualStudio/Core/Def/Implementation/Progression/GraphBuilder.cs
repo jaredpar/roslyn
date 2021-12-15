@@ -601,6 +601,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
 
         private static async Task<GraphNode> GetOrCreateNodeForMethodAsync(Graph graph, IMethodSymbol method, Solution solution, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(method.ContainingType is not null);
             var id = await GraphNodeIdCreation.GetIdForMemberAsync(method, solution, cancellationToken).ConfigureAwait(false);
             var node = graph.Nodes.GetOrCreate(id);
 
@@ -619,6 +620,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
 
         private static async Task<GraphNode> GetOrCreateNodeForFieldAsync(Graph graph, IFieldSymbol field, Solution solution, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(field.ContainingType is not null);
             var id = await GraphNodeIdCreation.GetIdForMemberAsync(field, solution, cancellationToken).ConfigureAwait(false);
             var node = graph.Nodes.GetOrCreate(id);
 
@@ -638,6 +640,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
 
         private static async Task<GraphNode> GetOrCreateNodeForPropertyAsync(Graph graph, IPropertySymbol property, Solution solution, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(property.ContainingType is not null);
             var id = await GraphNodeIdCreation.GetIdForMemberAsync(property, solution, cancellationToken).ConfigureAwait(false);
             var node = graph.Nodes.GetOrCreate(id);
 
@@ -651,6 +654,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Progression
 
         private static async Task<GraphNode> GetOrCreateNodeForEventAsync(Graph graph, IEventSymbol eventSymbol, Solution solution, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(eventSymbol.ContainingType is not null);
             var id = await GraphNodeIdCreation.GetIdForMemberAsync(eventSymbol, solution, cancellationToken).ConfigureAwait(false);
             var node = graph.Nodes.GetOrCreate(id);
 

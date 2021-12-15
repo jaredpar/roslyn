@@ -61,6 +61,7 @@ namespace Microsoft.CodeAnalysis.ConvertAutoPropertyToFullProperty
 
         internal static bool IsValidAutoProperty(IPropertySymbol propertySymbol)
         {
+            RoslsynDebug.Assert(propertySymbol.ContainingType is not null);
             var fields = propertySymbol.ContainingType.GetMembers().OfType<IFieldSymbol>();
             var field = fields.FirstOrDefault(f => propertySymbol.Equals(f.AssociatedSymbol));
             return field != null;
@@ -84,6 +85,8 @@ namespace Microsoft.CodeAnalysis.ConvertAutoPropertyToFullProperty
             SyntaxNode root,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(propertySymbol.ContainingType is not null);
+
             var generator = SyntaxGenerator.GetGenerator(document);
             var workspace = document.Project.Solution.Workspace;
             var options = await document.GetOptionsAsync(cancellationToken).ConfigureAwait(false);

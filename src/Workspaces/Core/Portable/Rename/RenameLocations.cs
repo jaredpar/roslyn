@@ -178,7 +178,7 @@ namespace Microsoft.CodeAnalysis.Rename
             if (symbol is IMethodSymbol)
             {
                 var containingType = symbol.ContainingType;
-                if (containingType.Kind == SymbolKind.NamedType)
+                if (containingType.IsKind(SymbolKind.NamedType))
                 {
                     foreach (var member in containingType.GetMembers())
                     {

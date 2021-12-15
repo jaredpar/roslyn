@@ -141,13 +141,14 @@ namespace Microsoft.CodeAnalysis.ReplacePropertyWithMethods
         private static bool HasAnyMatchingGetMethods(IPropertySymbol property, string name)
         {
             return property.GetMethod != null &&
-                   property.ContainingType.GetMembers(GetPrefix + name)
+                   property.ContainingType!.GetMembers(GetPrefix + name)
                                           .OfType<IMethodSymbol>()
                                           .Any(m => m.Parameters.Length == 0);
         }
 
         private static bool HasAnyMatchingSetMethods(IPropertySymbol property, string name)
         {
+            RoslynDebug.Assert(property.ContainingType is not null);
             var comparer = SymbolEquivalenceComparer.Instance.SignatureTypeEquivalenceComparer;
             return property.SetMethod != null &&
                    property.ContainingType
@@ -174,7 +175,7 @@ namespace Microsoft.CodeAnalysis.ReplacePropertyWithMethods
             // actually usable in code.
             var uniqueName = NameGenerator.GenerateUniqueName(
                 property.Name.ToCamelCase(),
-                n => !property.ContainingType.GetMembers(n).Any());
+                n => !property.ContainingType!.GetMembers(n).Any());
 
             return CodeGenerationSymbolFactory.CreateFieldSymbol(
                 attributes: default,
@@ -373,7 +374,7 @@ namespace Microsoft.CodeAnalysis.ReplacePropertyWithMethods
 
                 // Properly make the members fit within an interface if that's what
                 // we're generating into.
-                if (property.ContainingType.TypeKind == TypeKind.Interface)
+                if (property.ContainingType.IsTypeKind(TypeKind.Interface))
                 {
                     members = members.Select(editor.Generator.AsInterfaceMember)
                                      .WhereNotNull()

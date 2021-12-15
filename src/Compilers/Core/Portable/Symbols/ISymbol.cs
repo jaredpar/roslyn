@@ -74,20 +74,20 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         IAssemblySymbol? ContainingAssembly { get; }
 
-#nullable disable // Skipped for now https://github.com/dotnet/roslyn/issues/39166
-#pragma warning disable RS0041 // uses oblivious reference types
         /// <summary>
         /// Gets the <see cref="IModuleSymbol"/> for the containing module. Returns null if the
         /// symbol is shared across multiple modules.
         /// </summary>
-        IModuleSymbol ContainingModule { get; }
+        IModuleSymbol? ContainingModule { get; }
 
         /// <summary>
         /// Gets the <see cref="INamedTypeSymbol"/> for the containing type. Returns null if the
         /// symbol is not contained within a type.
         /// </summary>
-        INamedTypeSymbol ContainingType { get; }
+        INamedTypeSymbol? ContainingType { get; }
 
+#nullable disable // Skipped for now https://github.com/dotnet/roslyn/issues/39166
+#pragma warning disable RS0041 // uses oblivious reference types
         /// <summary>
         /// Gets the <see cref="INamespaceSymbol"/> for the nearest enclosing namespace. Returns null if the
         /// symbol isn't contained in a namespace.

@@ -245,6 +245,8 @@ namespace Microsoft.CodeAnalysis.CSharp.SignatureHelp
             int position,
             SemanticModel semanticModel)
         {
+            RoslynDebug.Assert(indexer.ContainingType is not null);
+
             var result = new List<SymbolDisplayPart>();
 
             if (indexer.ReturnsByRef)

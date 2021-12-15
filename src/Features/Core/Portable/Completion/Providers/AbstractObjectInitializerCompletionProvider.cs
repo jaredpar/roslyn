@@ -83,6 +83,7 @@ namespace Microsoft.CodeAnalysis.Completion.Providers
 
         private static bool IsLegalFieldOrProperty(ISymbol symbol)
         {
+            RoslynDebug.Assert(symbol.ContainingType is not null);
             return symbol.IsWriteableFieldOrProperty()
                 || symbol.ContainingType.IsAnonymousType
                 || CanSupportObjectInitializer(symbol);

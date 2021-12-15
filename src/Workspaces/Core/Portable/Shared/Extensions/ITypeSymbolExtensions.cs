@@ -75,7 +75,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             // that actually has I in it's direct interface chain, or a type that's a base type of
             // that.  in this case, that means only classes C or B.
             var interfaceType = interfaceMember.ContainingType;
-            if (!typeSymbol.ImplementsIgnoringConstruction(interfaceType))
+            if (!typeSymbol.ImplementsIgnoringConstruction(interfaceType!))
                 return ImmutableArray<ISymbol>.Empty;
 
             // We've ascertained that the type T implements some constructed type of the form I<X>.
@@ -83,7 +83,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             // example, a type C might implement I<int> and I<string>.  If we're searching for a
             // method from I<X> we might need to find several methods that implement different
             // instantiations of that method.
-            var originalInterfaceType = interfaceMember.ContainingType.OriginalDefinition;
+            var originalInterfaceType = interfaceMember.ContainingType!.OriginalDefinition;
             var originalInterfaceMember = interfaceMember.OriginalDefinition;
 
             var constructedInterfaces = typeSymbol.AllInterfaces.Where(i =>
@@ -110,7 +110,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
                 for (var currentType = typeSymbol; currentType != null; currentType = currentType.BaseType)
                 {
                     seenTypeDeclaringInterface = seenTypeDeclaringInterface ||
-                                                 currentType.GetOriginalInterfacesAndTheirBaseInterfaces().Contains(interfaceType.OriginalDefinition);
+                                                 currentType.GetOriginalInterfacesAndTheirBaseInterfaces().Contains(interfaceType!.OriginalDefinition);
 
                     if (seenTypeDeclaringInterface)
                     {

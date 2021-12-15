@@ -98,6 +98,7 @@ namespace Microsoft.CodeAnalysis.Rename
                         MethodKind.StaticConstructor or
                         MethodKind.Destructor)
                     {
+                        RoslynDebug.Assert(methodSymbol.ContainingType != null);
                         return methodSymbol.ContainingType;
                     }
                 }
@@ -209,7 +210,7 @@ namespace Microsoft.CodeAnalysis.Rename
                 {
                     return possibleConstructor.IsConstructor()
                         && possibleType is INamedTypeSymbol namedType
-                        && Equals(possibleConstructor.ContainingType.ConstructedFrom, namedType.ConstructedFrom);
+                        && Equals(possibleConstructor.ContainingType?.ConstructedFrom, namedType.ConstructedFrom);
                 }
             }
 
@@ -233,7 +234,7 @@ namespace Microsoft.CodeAnalysis.Rename
                 }
 
                 if (symbol.Kind == SymbolKind.Method &&
-                    symbol.ContainingType.TypeKind == TypeKind.Interface)
+                    symbol.ContainingType.IsTypeKind(TypeKind.Interface))
                 {
                     var methodImplementors = await SymbolFinder.FindImplementationsAsync(
                         symbol, solution, cancellationToken: cancellationToken).ConfigureAwait(false);

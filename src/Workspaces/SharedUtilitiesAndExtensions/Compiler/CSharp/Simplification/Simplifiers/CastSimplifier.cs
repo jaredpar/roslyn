@@ -974,7 +974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Simplification.Simplifiers
             //      (expr).Y
 
             // Next, see if this is a call to an interface method.
-            if (originalMemberSymbol.ContainingType.TypeKind == TypeKind.Interface)
+            if (originalMemberSymbol.ContainingType.IsTypeKind(TypeKind.Interface))
             {
                 var rewrittenType = rewrittenSemanticModel.GetTypeInfo(rewrittenExpression, cancellationToken).Type;
                 if (IsNullOrErrorType(rewrittenType))
@@ -1022,7 +1022,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Simplification.Simplifiers
                     return false;
 
                 // Then look for the current implementation of that interface member.
-                var rewrittenContainingType = rewrittenMemberSymbol.ContainingType;
+                var rewrittenContainingType = rewrittenMemberSymbol.ContainingType!;
                 var implementationMember = rewrittenContainingType.FindImplementationForInterfaceMember(originalMemberSymbol);
                 if (implementationMember is null)
                     return false;

@@ -329,7 +329,7 @@ namespace Microsoft.CodeAnalysis.ChangeSignature
                 }
 
                 // Find and annotate all the relevant definitions
-                if (includeDefinitionLocations)
+                if (includeDefinitionLocations && symbolWithSyntacticParameters is not null)
                 {
                     foreach (var def in symbolWithSyntacticParameters.Locations)
                     {

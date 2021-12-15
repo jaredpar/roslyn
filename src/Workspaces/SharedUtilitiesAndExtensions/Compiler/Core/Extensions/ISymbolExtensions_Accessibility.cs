@@ -168,7 +168,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
                         return IsSymbolAccessibleCore(((IPointerTypeSymbol)symbol.ContainingSymbol).PointedAtType, within, null, out failedThroughTypeCheck);
                     }
 
-                    return IsMemberAccessible(symbol.ContainingType, symbol.DeclaredAccessibility, within, throughType, out failedThroughTypeCheck);
+                    return IsMemberAccessible(symbol.ContainingType!, symbol.DeclaredAccessibility, within, throughType, out failedThroughTypeCheck);
 
                 default:
                     throw ExceptionUtilities.UnexpectedValue(symbol.Kind);
@@ -207,7 +207,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             var containingType = type.ContainingType;
             return containingType == null
                 ? IsNonNestedTypeAccessible(type.ContainingAssembly!, type.DeclaredAccessibility, within)
-                : IsMemberAccessible(type.ContainingType, type.DeclaredAccessibility, within, null, out _);
+                : IsMemberAccessible(type.ContainingType!, type.DeclaredAccessibility, within, null, out _);
         }
 
         // Is a top-level type with accessibility "declaredAccessibility" inside assembly "assembly"

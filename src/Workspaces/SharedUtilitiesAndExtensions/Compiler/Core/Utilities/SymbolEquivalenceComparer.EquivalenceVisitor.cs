@@ -571,7 +571,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
 
             private bool PropertiesAreEquivalent(IPropertySymbol x, IPropertySymbol y, Dictionary<INamedTypeSymbol, INamedTypeSymbol>? equivalentTypesWithDifferingAssemblies)
             {
-                if (x.ContainingType.IsAnonymousType && y.ContainingType.IsAnonymousType)
+                if (x.ContainingType?.IsAnonymousType == true && y.ContainingType?.IsAnonymousType == true)
                 {
                     // We can short circuit here and just use the symbols themselves to determine
                     // equality.  This will properly handle things like the VB case where two
@@ -602,11 +602,11 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
             {
                 Debug.Assert(
                     (x.TypeParameterKind == TypeParameterKind.Method && IsConstructedFromSelf(x.DeclaringMethod!)) ||
-                    (x.TypeParameterKind == TypeParameterKind.Type && IsConstructedFromSelf(x.ContainingType)) ||
+                    (x.TypeParameterKind == TypeParameterKind.Type && IsConstructedFromSelf(x.ContainingType!)) ||
                     x.TypeParameterKind == TypeParameterKind.Cref);
                 Debug.Assert(
                     (y.TypeParameterKind == TypeParameterKind.Method && IsConstructedFromSelf(y.DeclaringMethod!)) ||
-                    (y.TypeParameterKind == TypeParameterKind.Type && IsConstructedFromSelf(y.ContainingType)) ||
+                    (y.TypeParameterKind == TypeParameterKind.Type && IsConstructedFromSelf(y.ContainingType!)) ||
                     y.TypeParameterKind == TypeParameterKind.Cref);
 
                 if (x.Ordinal != y.Ordinal ||
@@ -623,7 +623,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
                     return true;
                 }
 
-                if (x.TypeParameterKind == TypeParameterKind.Type && x.ContainingType.IsAnonymousType)
+                if (x.TypeParameterKind == TypeParameterKind.Type && x.ContainingType?.IsAnonymousType == true)
                 {
                     // Anonymous type type parameters compare by index as well to prevent
                     // recursion.

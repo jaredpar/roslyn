@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.PooledObjects;
+using Microsoft.CodeAnalysis.Shared.Extensions;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Shared.Extensions
@@ -83,7 +84,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             Func<INamedTypeSymbol, ISymbol, bool> isValidImplementation,
             CancellationToken cancellationToken)
         {
-            if (member.ContainingType.TypeKind == TypeKind.Interface)
+            if (member.ContainingType.IsTypeKind(TypeKind.Interface))
             {
                 if (member.Kind == SymbolKind.Property)
                 {
@@ -154,7 +155,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
         {
             var implementation = classOrStructType.FindImplementationForInterfaceMember(member);
 
-            if (implementation?.ContainingType.TypeKind == TypeKind.Interface)
+            if (implementation?.ContainingType.IsTypeKind(TypeKind.Interface) == true)
             {
                 // Treat all implementations in interfaces as explicit, even the original declaration with implementation.
                 // There are no implicit interface implementations in derived interfaces and it feels reasonable to treat
@@ -619,5 +620,12 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
 
         public static INamedTypeSymbol TryConstruct(this INamedTypeSymbol type, ITypeSymbol[] typeArguments)
             => typeArguments.Length > 0 ? type.Construct(typeArguments) : type;
+
+
+        public static bool IsTypeKind([NotNullWhen(true)] this INamedTypeSymbol? symbol, TypeKind typeKind)
+            => symbol?.TypeKind == typeKind;
+
+        public static bool IsSpecialType([NotNullWhen(true)] this INamedTypeSymbol? symbol, SpecialType specialType)
+            => symbol?.SpecialType == specialType;
     }
 }

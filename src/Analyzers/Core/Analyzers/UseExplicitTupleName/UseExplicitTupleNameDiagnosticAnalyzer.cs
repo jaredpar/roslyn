@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.UseExplicitTupleName
             var fieldReferenceOperation = (IFieldReferenceOperation)context.Operation;
 
             var field = fieldReferenceOperation.Field;
-            if (field.ContainingType.IsTupleType)
+            if (field.ContainingType?.IsTupleType == true)
             {
                 if (field.CorrespondingTupleField?.Equals(field) == true)
                 {

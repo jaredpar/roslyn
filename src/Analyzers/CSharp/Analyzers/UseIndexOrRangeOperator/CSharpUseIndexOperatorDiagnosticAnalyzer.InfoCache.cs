@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.UseIndexOrRangeOperator
 {
@@ -61,6 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp.UseIndexOrRangeOperator
 
             private MemberInfo ComputeMemberInfo(IMethodSymbol method)
             {
+                RoslynDebug.Assert(method.ContainingType is not null);
                 Debug.Assert(IsIntIndexingMethod(method));
 
                 // Check that the type has an int32 'Length' or 'Count' property. If not, we don't
