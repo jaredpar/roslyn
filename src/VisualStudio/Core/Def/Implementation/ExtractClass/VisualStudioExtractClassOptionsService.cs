@@ -65,7 +65,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.ExtractClass
             using var cancellationTokenSource = new CancellationTokenSource();
             var memberToDependentsMap = SymbolDependentsBuilder.FindMemberToDependentsMap(membersInType, document.Project, cancellationTokenSource.Token);
 
-            var conflictingTypeNames = selectedType.ContainingNamespace.GetAllTypes(cancellationTokenSource.Token).Select(t => t.Name);
+            var conflictingTypeNames = selectedType.ContainingNamespace!.GetAllTypes(cancellationTokenSource.Token).Select(t => t.Name);
             var candidateName = selectedType.Name + "Base";
             var defaultTypeName = NameGenerator.GenerateUniqueName(candidateName, name => !conflictingTypeNames.Contains(name));
 

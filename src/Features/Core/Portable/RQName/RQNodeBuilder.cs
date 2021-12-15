@@ -28,10 +28,10 @@ namespace Microsoft.CodeAnalysis.Features.RQName
                 _ => null,
             };
 
-        private static RQNamespace BuildNamespace(INamespaceSymbol @namespace)
+        private static RQNamespace BuildNamespace(INamespaceSymbol? @namespace)
             => new(RQNodeBuilder.GetNameParts(@namespace));
 
-        private static IList<string> GetNameParts(INamespaceSymbol @namespace)
+        private static IList<string> GetNameParts(INamespaceSymbol? @namespace)
         {
             var parts = new List<string>();
 
@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.Features.RQName
             while (!@namespace.IsGlobalNamespace)
             {
                 parts.Add(@namespace.Name);
-                @namespace = @namespace.ContainingNamespace;
+                @namespace = @namespace.ContainingNamespace!;
             }
 
             parts.Reverse();

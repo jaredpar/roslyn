@@ -368,8 +368,8 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
                         if (xNamespace.Name == "")
                             break;
 
-                        xNamespace = xNamespace.ContainingNamespace;
-                        yNamespace = yNamespace.ContainingNamespace;
+                        xNamespace = xNamespace.ContainingNamespace!;
+                        yNamespace = yNamespace.ContainingNamespace!;
                     }
                 }
                 else

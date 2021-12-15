@@ -149,7 +149,7 @@ namespace Microsoft.CodeAnalysis.Completion.Providers
                 int overloadCount;
                 var includeInTargetTypedCompletion = ShouldIncludeInTargetTypedCompletion(compilation, symbol, targetTypeSymbols, typeConvertibilityCache);
 
-                var containingNamespacename = GetFullyQualifiedNamespaceName(symbol.ContainingNamespace, namespaceNameCache);
+                var containingNamespacename = GetFullyQualifiedNamespaceName(symbol.ContainingNamespace!, namespaceNameCache);
                 var overloadKey = (containingNamespacename, symbol.Name, isGeneric: symbol.Arity > 0);
 
                 // Select the overload convertable to any targeted type (if any) and with minimum number of parameters to display

@@ -106,7 +106,7 @@ namespace Microsoft.CodeAnalysis.Completion.Providers
                     var typeParameter = target.GetTypeParameters();
                     if (typeParameter.IsEmpty)
                     {
-                        var namespaceOfTarget = target.ContainingNamespace.ToDisplayString(SymbolDisplayFormats.NameFormat);
+                        var namespaceOfTarget = target.ContainingNamespace!.ToDisplayString(SymbolDisplayFormats.NameFormat);
                         var typeNameOfTarget = target.Name;
                         dictionary.Add(namespaceOfTarget, typeNameOfTarget);
                     }

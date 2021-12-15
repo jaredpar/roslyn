@@ -1547,7 +1547,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                 await processContainerOnMemberCompletedAsync(symbol.ContainingType, symbol, analyzer).ConfigureAwait(false);
             }
 
-            async Task processContainerOnMemberCompletedAsync(INamespaceOrTypeSymbol containerSymbol, ISymbol processedMemberSymbol, DiagnosticAnalyzer analyzer)
+            async Task processContainerOnMemberCompletedAsync(INamespaceOrTypeSymbol? containerSymbol, ISymbol processedMemberSymbol, DiagnosticAnalyzer analyzer)
             {
                 if (containerSymbol != null &&
                     AnalyzerExecutor.TryExecuteSymbolEndActionsForContainer(containerSymbol, processedMemberSymbol,

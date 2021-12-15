@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis
                 while (namespaceSymbol != null && namespaceSymbol.Name != "")
                 {
                     builder.Add(namespaceSymbol.Name);
-                    namespaceSymbol = namespaceSymbol.ContainingNamespace;
+                    namespaceSymbol = namespaceSymbol.ContainingNamespace!;
                 }
 
                 return builder.ToImmutable();

@@ -86,15 +86,11 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         INamedTypeSymbol? ContainingType { get; }
 
-#nullable disable // Skipped for now https://github.com/dotnet/roslyn/issues/39166
-#pragma warning disable RS0041 // uses oblivious reference types
         /// <summary>
         /// Gets the <see cref="INamespaceSymbol"/> for the nearest enclosing namespace. Returns null if the
         /// symbol isn't contained in a namespace.
         /// </summary>
-        INamespaceSymbol ContainingNamespace { get; }
-#nullable enable
-#pragma warning restore RS0041 // uses oblivious reference types
+        INamespaceSymbol? ContainingNamespace { get; }
 
         /// <summary>
         /// Gets a value indicating whether the symbol is the original definition. Returns false

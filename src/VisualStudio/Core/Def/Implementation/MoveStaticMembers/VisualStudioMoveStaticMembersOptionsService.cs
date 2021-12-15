@@ -74,6 +74,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.MoveStaticMembe
             IGlyphService? glyphService,
             IUIThreadOperationExecutor uiThreadOperationExecutor)
         {
+            RoslynDebug.Assert(selectedType.ContainingNamespace is not null);
             var membersInType = selectedType.GetMembers().
                WhereAsArray(member => MemberAndDestinationValidator.IsMemberValid(member) && member.IsStatic);
 

@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.Test.Utilities.MoveStaticMembers
         public MoveStaticMembersOptions GetMoveMembersToTypeOptions(Document document, INamedTypeSymbol selectedType, ISymbol? selectedNodeSymbol)
         {
             var selectedMembers = selectedType.GetMembers().WhereAsArray(symbol => SelectedMembers.Contains(symbol.Name));
-            var namespaceDisplay = selectedType.ContainingNamespace.IsGlobalNamespace
+            var namespaceDisplay = selectedType.ContainingNamespace!.IsGlobalNamespace
                 ? string.Empty
                 : selectedType.ContainingNamespace.ToDisplayString();
             // just return all the selected members
