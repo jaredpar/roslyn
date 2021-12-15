@@ -141,7 +141,15 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
             }
 
             private int CombineHashCodes(IModuleSymbol x, int currentHash)
-                => CombineHashCodes(x.ContainingAssembly, Hash.Combine(x.Name, currentHash));
+            {
+                currentHash = Hash.Combine(x.Name, currentHash);
+                if (x.ContainingAssembly is not null)
+                {
+                    currentHash = CombineHashCodes(x.ContainingAssembly, currentHash);
+                }
+
+                return currentHash;
+            }
 
             private int CombineHashCodes(INamedTypeSymbol x, int currentHash)
             {

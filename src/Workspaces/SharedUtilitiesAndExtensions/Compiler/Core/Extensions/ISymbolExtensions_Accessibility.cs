@@ -206,7 +206,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
 
             var containingType = type.ContainingType;
             return containingType == null
-                ? IsNonNestedTypeAccessible(type.ContainingAssembly, type.DeclaredAccessibility, within)
+                ? IsNonNestedTypeAccessible(type.ContainingAssembly!, type.DeclaredAccessibility, within)
                 : IsMemberAccessible(type.ContainingType, type.DeclaredAccessibility, within, null, out _);
         }
 
@@ -219,7 +219,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
         {
             Debug.Assert(within is INamedTypeSymbol or IAssemblySymbol);
             Contract.ThrowIfNull(assembly);
-            var withinAssembly = (within as IAssemblySymbol) ?? ((INamedTypeSymbol)within).ContainingAssembly;
+            var withinAssembly = (within as IAssemblySymbol) ?? ((INamedTypeSymbol)within).ContainingAssembly!;
 
             switch (declaredAccessibility)
             {
@@ -255,6 +255,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             out bool failedThroughTypeCheck)
         {
             Debug.Assert(within is INamedTypeSymbol or IAssemblySymbol);
+            RoslynDebug.Assert(containingType.ContainingAssembly is not null);
             Contract.ThrowIfNull(containingType);
 
             failedThroughTypeCheck = false;
@@ -262,6 +263,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
             var originalContainingType = containingType.OriginalDefinition;
             var withinNamedType = within as INamedTypeSymbol;
             var withinAssembly = (within as IAssemblySymbol) ?? ((INamedTypeSymbol)within).ContainingAssembly;
+            RoslynDebug.Assert(withinAssembly is not null);
 
             // A nested symbol is only accessible to us if its container is accessible as well.
             if (!IsNamedTypeAccessible(containingType, within))

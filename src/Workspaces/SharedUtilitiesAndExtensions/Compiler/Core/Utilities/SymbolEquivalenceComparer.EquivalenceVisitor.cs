@@ -147,7 +147,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
                     NullableAnnotationsEquivalent(x, y);
             }
 
-            private bool AssembliesAreEquivalent(IAssemblySymbol x, IAssemblySymbol y)
+            private bool AssembliesAreEquivalent(IAssemblySymbol? x, IAssemblySymbol? y)
                 => _symbolEquivalenceComparer._assemblyComparerOpt?.Equals(x, y) ?? true;
 
             private bool FieldsAreEquivalent(IFieldSymbol x, IFieldSymbol y, Dictionary<INamedTypeSymbol, INamedTypeSymbol>? equivalentTypesWithDifferingAssemblies)
@@ -383,6 +383,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
                     if (equivalentTypesWithDifferingAssemblies != null &&
                         x.ContainingType == null &&
                         x.ContainingAssembly != null &&
+                        y.ContainingAssembly != null &&
                         !AssemblyIdentityComparer.SimpleNameComparer.Equals(x.ContainingAssembly.Name, y.ContainingAssembly.Name) &&
                         !equivalentTypesWithDifferingAssemblies.ContainsKey(x))
                     {

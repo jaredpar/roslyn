@@ -154,7 +154,7 @@ namespace Microsoft.CodeAnalysis
 
                 // Ensure that the tree we're looking at is actually in this compilation.  It may not be in the
                 // compilation in the case of work done with a speculative model.
-                var compilation = ((ISourceAssemblySymbol)symbol.ContainingAssembly).Compilation;
+                var compilation = ((ISourceAssemblySymbol)symbol.ContainingAssembly!).Compilation;
                 return compilation.SyntaxTrees.Contains(locations.First().SourceTree);
             }
 

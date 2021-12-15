@@ -50,6 +50,7 @@ namespace Microsoft.CodeAnalysis.PdbSourceDocument
 
         public async Task<MetadataAsSourceFile?> GetGeneratedFileAsync(Workspace workspace, Project project, ISymbol symbol, bool signaturesOnly, bool allowDecompilation, string tempPath, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingAssembly is not null);
             // we don't support signatures only mode
             if (signaturesOnly)
                 return null;

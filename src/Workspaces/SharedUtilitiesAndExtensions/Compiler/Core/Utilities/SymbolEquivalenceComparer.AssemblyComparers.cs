@@ -10,7 +10,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
     {
         private sealed class SimpleNameAssemblyComparer : IEqualityComparer<IAssemblySymbol?>
         {
-            public static readonly IEqualityComparer<IAssemblySymbol> Instance = new SimpleNameAssemblyComparer();
+            public static readonly IEqualityComparer<IAssemblySymbol?> Instance = new SimpleNameAssemblyComparer();
 
             public bool Equals(IAssemblySymbol? x, IAssemblySymbol? y)
                 => AssemblyIdentityComparer.SimpleNameComparer.Equals(x?.Name, y?.Name);

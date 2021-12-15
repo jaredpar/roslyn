@@ -704,7 +704,7 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
                 }
             }
 
-            if (!hasPrivateField)
+            if (!hasPrivateField && type.ContainingAssembly is not null)
             {
                 // Some reference assemblies omit information about private fields. If we can't be sure the field is
                 // immutable, treat it as potentially mutable.

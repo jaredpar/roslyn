@@ -55,7 +55,7 @@ namespace Microsoft.CodeAnalysis.LanguageServerIndexFormat
                 return new SymbolMoniker(WellKnownSymbolMonikerSchemes.DotnetNamespace, symbol.ToDisplayString());
             }
 
-            var symbolMoniker = symbol.ContainingAssembly.Name + "#";
+            var symbolMoniker = symbol.ContainingAssembly!.Name + "#";
 
             if (symbol.Kind == SymbolKind.Parameter)
             {

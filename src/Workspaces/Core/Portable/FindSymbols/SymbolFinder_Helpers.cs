@@ -207,7 +207,7 @@ namespace Microsoft.CodeAnalysis.FindSymbols
 
             // Now, find the corresponding reference to type1's assembly in type2's compilation and see if that assembly
             // contains a forward that matches type2.  If so, type1 was forwarded to type2.
-            var candidateAssemblyName = candidate.ContainingAssembly.Name;
+            var candidateAssemblyName = candidate.ContainingAssembly!.Name;
             foreach (var assembly in forwardedToCompilation.GetReferencedAssemblySymbols())
             {
                 if (assembly.Name == candidateAssemblyName)

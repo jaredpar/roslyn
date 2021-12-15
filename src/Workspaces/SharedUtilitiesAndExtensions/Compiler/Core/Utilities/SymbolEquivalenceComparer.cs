@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
         public static readonly SymbolEquivalenceComparer TupleNamesMustMatchInstance = new(SimpleNameAssemblyComparer.Instance, distinguishRefFromOut: false, tupleNamesMustMatch: true, ignoreNullableAnnotations: true);
         public static readonly SymbolEquivalenceComparer IgnoreAssembliesInstance = new(assemblyComparerOpt: null, distinguishRefFromOut: false, tupleNamesMustMatch: false, ignoreNullableAnnotations: true);
 
-        private readonly IEqualityComparer<IAssemblySymbol>? _assemblyComparerOpt;
+        private readonly IEqualityComparer<IAssemblySymbol?>? _assemblyComparerOpt;
         private readonly bool _tupleNamesMustMatch;
         private readonly bool _ignoreNullableAnnotations;
 
@@ -51,7 +51,7 @@ namespace Microsoft.CodeAnalysis.Shared.Utilities
         public SignatureTypeSymbolEquivalenceComparer SignatureTypeEquivalenceComparer { get; }
 
         internal SymbolEquivalenceComparer(
-            IEqualityComparer<IAssemblySymbol>? assemblyComparerOpt,
+            IEqualityComparer<IAssemblySymbol?>? assemblyComparerOpt,
             bool distinguishRefFromOut,
             bool tupleNamesMustMatch,
             bool ignoreNullableAnnotations)

@@ -117,7 +117,7 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// Gets the <see cref="Project"/> associated with an assembly symbol.
         /// </summary>
-        public Project? GetProject(IAssemblySymbol assemblySymbol,
+        public Project? GetProject(IAssemblySymbol? assemblySymbol,
             CancellationToken cancellationToken = default)
 #pragma warning restore IDE0060 // Remove unused parameter
         {

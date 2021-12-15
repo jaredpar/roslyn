@@ -689,6 +689,7 @@ namespace Microsoft.CodeAnalysis.ExtractMethod
                 }
 
                 return parameter.IsImplicitlyDeclared &&
+                       parameter.ContainingAssembly != null &&
                        parameter.ContainingAssembly.IsInteractive &&
                        parameter.ContainingSymbol != null &&
                        parameter.ContainingSymbol.ContainingType != null &&

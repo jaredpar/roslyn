@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis
                 int GetOrdinal()
                 {
                     var syntaxTree = locations[0].SourceTree;
-                    var compilation = ((ISourceAssemblySymbol)symbol.ContainingAssembly).Compilation;
+                    var compilation = ((ISourceAssemblySymbol)symbol.ContainingAssembly!).Compilation;
 
                     // Ensure that the tree we're looking at is actually in this compilation.  It may not be in the
                     // compilation in the case of work done with a speculative model.

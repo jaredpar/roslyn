@@ -46,7 +46,7 @@ namespace Microsoft.CodeAnalysis.ImplementAbstractClass
                 return;
 
             var abstractClassType = data.AbstractClassType;
-            var id = GetCodeActionId(abstractClassType.ContainingAssembly.Name, abstractClassType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+            var id = GetCodeActionId(abstractClassType.ContainingAssembly!.Name, abstractClassType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
             context.RegisterCodeFix(
                 new MyCodeAction(
                     FeaturesResources.Implement_abstract_class,

@@ -56,7 +56,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Telemetry
             const string ProjectIdPropertyName = "vs.solution.project.projectid";
             const string SessionIdPropertyName = "vs.solution.solutionsessionid";
 
-            var groupByAssembly = symbols.GroupBy(symbol => symbol.ContainingAssembly);
+            var groupByAssembly = symbols.GroupBy(symbol => symbol.ContainingAssembly!);
 
             var apiPerAssembly = groupByAssembly.Select(assemblyGroup => new
             {

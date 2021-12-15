@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Text;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.MetadataAsSource
 {
@@ -26,6 +27,7 @@ namespace Microsoft.CodeAnalysis.MetadataAsSource
 
         public MetadataAsSourceGeneratedFileInfo(string rootPath, Project sourceProject, INamedTypeSymbol topLevelNamedType, bool signaturesOnly)
         {
+            RoslynDebug.Assert(topLevelNamedType.ContainingAssembly is not null);
             this.SourceProjectId = sourceProject.Id;
             this.Workspace = sourceProject.Solution.Workspace;
             this.LanguageName = signaturesOnly ? sourceProject.Language : LanguageNames.CSharp;

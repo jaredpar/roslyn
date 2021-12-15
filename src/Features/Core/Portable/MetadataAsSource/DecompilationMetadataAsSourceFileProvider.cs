@@ -37,6 +37,7 @@ namespace Microsoft.CodeAnalysis.MetadataAsSource
 
         public async Task<MetadataAsSourceFile?> GetGeneratedFileAsync(Workspace workspace, Project project, ISymbol symbol, bool signaturesOnly, bool allowDecompilation, string tempPath, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(symbol.ContainingAssembly is not null);
             MetadataAsSourceGeneratedFileInfo fileInfo;
             Location? navigateLocation = null;
             var topLevelNamedType = MetadataAsSourceHelpers.GetTopLevelContainingNamedType(symbol);
@@ -249,6 +250,7 @@ namespace Microsoft.CodeAnalysis.MetadataAsSource
 
         private static async Task<UniqueDocumentKey> GetUniqueDocumentKeyAsync(Project project, INamedTypeSymbol topLevelNamedType, bool signaturesOnly, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(topLevelNamedType.ContainingAssembly is not null);
             var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
             Contract.ThrowIfNull(compilation, "We are trying to produce a key for a language that doesn't support compilations.");
 

@@ -518,6 +518,8 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
                 return Accessibility.Private;
             }
 
+            RoslynDebug.Assert(symbol.ContainingAssembly is not null);
+            RoslynDebug.Assert(finalDestination.ContainingAssembly is not null);
             switch (symbol.DeclaredAccessibility)
             {
                 default:

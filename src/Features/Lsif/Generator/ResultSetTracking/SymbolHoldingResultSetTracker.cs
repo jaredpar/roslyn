@@ -103,7 +103,7 @@ namespace Microsoft.CodeAnalysis.LanguageServerIndexFormat.Generator.ResultSetTr
             {
                 kind = null;
             }
-            else if (symbol.ContainingAssembly.Equals(_sourceCompilation.Assembly))
+            else if (symbol.ContainingAssembly != null && symbol.ContainingAssembly.Equals(_sourceCompilation.Assembly))
             {
                 kind = "export";
             }
