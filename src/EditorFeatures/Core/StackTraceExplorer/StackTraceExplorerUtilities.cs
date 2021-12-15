@@ -111,6 +111,7 @@ namespace Microsoft.CodeAnalysis.Editor.StackTraceExplorer
                 ISymbol symbol = method;
                 if (symbolPart == StackFrameSymbolPart.ContainingType)
                 {
+                    RoslynDebug.Assert(method.ContainingType is not null);
                     symbol = method.ContainingType;
                 }
 

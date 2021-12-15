@@ -2786,7 +2786,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 
                                     editKind = SemanticEditKind.Insert;
                                     INamedTypeSymbol? oldContainingType;
-                                    var newContainingType = newSymbol.ContainingType;
+                                    var newContainingType = newSymbol.ContainingType!;
 
                                     // Check if the declaration has been moved from one document to another.
                                     if (oldSymbol != null)
@@ -3076,7 +3076,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                                             AnalyzeSymbolUpdate(oldSymbol, newSymbol, edit.NewNode, newCompilation, editScript.Match, capabilities, diagnostics, semanticEdits, syntaxMap, cancellationToken);
                                         }
 
-                                        DeferConstructorEdit(oldSymbol.ContainingType, newSymbol.ContainingType, newDeclaration, syntaxMap, newSymbol.IsStatic, ref instanceConstructorEdits, ref staticConstructorEdits);
+                                        DeferConstructorEdit(oldSymbol.ContainingType!, newSymbol.ContainingType!, newDeclaration, syntaxMap, newSymbol.IsStatic, ref instanceConstructorEdits, ref staticConstructorEdits);
 
                                         // Don't add a separate semantic edit.
                                         // Updates of data members with initializers and constructors that emit initializers will be aggregated and added later.
@@ -3381,7 +3381,7 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
                 // Report rude edit for updating const fields and values of enums. 
                 // The latter is only reported whne the enum underlying type does not change to avoid cascading rude edits.
                 if (oldField.IsConst && newField.IsConst && !Equals(oldField.ConstantValue, newField.ConstantValue) &&
-                    TypesEquivalent(oldField.ContainingType.EnumUnderlyingType, newField.ContainingType.EnumUnderlyingType, exact: false))
+                    TypesEquivalent(oldField.ContainingType?.EnumUnderlyingType, newField.ContainingType?.EnumUnderlyingType, exact: false))
                 {
                     rudeEdit = RudeEditKind.InitializerUpdate;
                 }

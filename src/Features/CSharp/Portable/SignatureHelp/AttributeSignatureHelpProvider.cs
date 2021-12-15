@@ -125,6 +125,7 @@ namespace Microsoft.CodeAnalysis.CSharp.SignatureHelp
             IDocumentationCommentFormattingService documentationCommentFormatter,
             CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(constructor.ContainingType is not null);
             var position = attribute.SpanStart;
             var namedParameters = constructor.ContainingType.GetAttributeNamedParameters(semanticModel.Compilation, within)
                 .OrderBy(s => s.Name)

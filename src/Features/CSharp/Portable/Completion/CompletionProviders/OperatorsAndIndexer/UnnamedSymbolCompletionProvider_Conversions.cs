@@ -63,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Completion.Providers
             var properties = s_conversionProperties
                 .Add(RehydrateName, RehydrateName)
                 .Add(DocumentationCommentXmlName, conversion.GetDocumentationCommentXml(cancellationToken: context.CancellationToken) ?? "");
-            var symbols = ImmutableArray.Create<ISymbol>(conversion.ContainingType, conversion.Parameters.First().Type, conversion.ReturnType);
+            var symbols = ImmutableArray.Create<ISymbol>(conversion.ContainingType!, conversion.Parameters.First().Type, conversion.ReturnType);
             return (symbols, properties);
         }
 

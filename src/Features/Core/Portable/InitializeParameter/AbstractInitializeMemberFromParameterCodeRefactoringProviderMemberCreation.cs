@@ -266,7 +266,7 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
                     var accessibilityLevel = Accessibility.Private;
                     if (requireAccessibilityModifiers.Value is AccessibilityModifiersRequired.Never or AccessibilityModifiersRequired.OmitIfDefault)
                     {
-                        var defaultAccessibility = DetermineDefaultFieldAccessibility(parameter.ContainingType);
+                        var defaultAccessibility = DetermineDefaultFieldAccessibility(parameter.ContainingType!);
                         if (defaultAccessibility == Accessibility.Private)
                         {
                             accessibilityLevel = Accessibility.NotApplicable;
@@ -574,6 +574,7 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
         {
             if (blockStatementOpt != null)
             {
+                RoslynDebug.Assert(parameter.ContainingType is not null);
                 var containingType = parameter.ContainingType;
                 foreach (var statement in blockStatementOpt.Operations)
                 {
@@ -614,6 +615,7 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
         private async Task<ISymbol?> TryFindMatchingUninitializedFieldOrPropertySymbolAsync(
             Document document, IParameterSymbol parameter, IBlockOperation? blockStatementOpt, ImmutableArray<NamingRule> rules, ImmutableArray<string> parameterWords, CancellationToken cancellationToken)
         {
+            RoslynDebug.Assert(parameter.ContainingType is not null);
             // Look for a field/property that really looks like it corresponds to this parameter.
             // Use a variety of heuristics around the name/type to see if this is a match.
 
@@ -668,7 +670,7 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
             {
                 foreach (var statement in blockStatementOpt.Operations)
                 {
-                    if (IsFieldOrPropertyAssignment(statement, member.ContainingType, out var assignmentExpression) &&
+                    if (IsFieldOrPropertyAssignment(statement, member.ContainingType!, out var assignmentExpression) &&
                         UnwrapImplicitConversion(assignmentExpression.Target) is IMemberReferenceOperation memberReference &&
                         member.Equals(memberReference.Member))
                     {

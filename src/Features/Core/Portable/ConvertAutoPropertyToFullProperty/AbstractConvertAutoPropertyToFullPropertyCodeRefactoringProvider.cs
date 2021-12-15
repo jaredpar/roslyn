@@ -61,7 +61,7 @@ namespace Microsoft.CodeAnalysis.ConvertAutoPropertyToFullProperty
 
         internal static bool IsValidAutoProperty(IPropertySymbol propertySymbol)
         {
-            RoslsynDebug.Assert(propertySymbol.ContainingType is not null);
+            RoslynDebug.Assert(propertySymbol.ContainingType is not null);
             var fields = propertySymbol.ContainingType.GetMembers().OfType<IFieldSymbol>();
             var field = fields.FirstOrDefault(f => propertySymbol.Equals(f.AssociatedSymbol));
             return field != null;

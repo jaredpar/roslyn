@@ -515,7 +515,7 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
 
             // Look through all the top level statements in the block to see if we can
             // find an existing field/property assignment involving this parameter.
-            var containingType = parameter.ContainingType;
+            var containingType = parameter.ContainingType!;
             foreach (var statement in blockStatementOpt.Operations)
             {
                 if (IsFieldOrPropertyAssignment(statement, containingType, out var assignmentExpression) &&

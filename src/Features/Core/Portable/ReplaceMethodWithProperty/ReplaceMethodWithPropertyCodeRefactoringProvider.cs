@@ -101,7 +101,7 @@ namespace Microsoft.CodeAnalysis.ReplaceMethodWithProperty
 
         private static IMethodSymbol? FindSetMethod(IMethodSymbol getMethod)
         {
-            RoslynDebug.Assert(gethMethod.ContainingType is not null);
+            RoslynDebug.Assert(getMethod.ContainingType is not null);
             var containingType = getMethod.ContainingType;
             var setMethodName = "Set" + getMethod.Name[GetPrefix.Length..];
             var setMethod = containingType.GetMembers()

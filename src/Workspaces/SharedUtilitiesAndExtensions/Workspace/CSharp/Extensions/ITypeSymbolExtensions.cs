@@ -110,7 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
                     }
                 }
 
-                containingType = containingType.ContainingType;
+                containingType = containingType.ContainingType!;
             }
             while (containingType != null);
             return false;

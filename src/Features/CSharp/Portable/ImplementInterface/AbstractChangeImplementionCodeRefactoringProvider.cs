@@ -75,9 +75,9 @@ namespace Microsoft.CodeAnalysis.CSharp.ImplementInterface
                 string.Format(Implement_0, member.ExplicitOrImplicitInterfaceImplementations().First().Name),
                 c => ChangeImplementationAsync(project, directlyImplementedMembers, c));
 
-            var containingType = member.ContainingType;
+            var containingType = member.ContainingType!;
             var interfaceTypes = directlyImplementedMembers.SelectMany(kvp => kvp.Value).Select(
-                s => s.ContainingType).Distinct().ToImmutableArray();
+                s => s.ContainingType!).Distinct().ToImmutableArray();
 
             var implementedMembersFromSameInterfaces = GetImplementedMembers(containingType, interfaceTypes);
             var implementedMembersFromAllInterfaces = GetImplementedMembers(containingType, containingType.AllInterfaces);
@@ -214,7 +214,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ImplementInterface
             {
                 await UpdateReferencesAsync(
                     project, solutionEditor, implMember,
-                    interfaceMembers.First().ContainingType,
+                    interfaceMembers.First().ContainingType!,
                     cancellationToken).ConfigureAwait(false);
             }
 

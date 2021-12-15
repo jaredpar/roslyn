@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis.CodeGeneration;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Recommendations
 {
@@ -180,11 +181,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Recommendations
         }
 
         private IMethodSymbol LiftConversion(Compilation compilation, IMethodSymbol method)
-            => CreateConversion(
-                method.ContainingType,
-                TryMakeNullable(compilation, method.Parameters.Single().Type),
-                TryMakeNullable(compilation, method.ReturnType),
-                method.GetDocumentationCommentXml(cancellationToken: _cancellationToken));
+        {
+            RoslynDebug.Assert(method.ContainingType is not null);
+            return CreateConversion(
+                    method.ContainingType,
+                    TryMakeNullable(compilation, method.Parameters.Single().Type),
+                    TryMakeNullable(compilation, method.ReturnType),
+                    method.GetDocumentationCommentXml(cancellationToken: _cancellationToken));
+        }
 
         private void AddBuiltInNumericConversions(
             ITypeSymbol container, INamedTypeSymbol containerWithoutNullable, ArrayBuilder<ISymbol> symbols)
