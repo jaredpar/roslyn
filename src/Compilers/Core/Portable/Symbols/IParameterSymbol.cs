@@ -91,5 +91,10 @@ namespace Microsoft.CodeAnalysis
         /// source or metadata.
         /// </summary>
         new IParameterSymbol OriginalDefinition { get; }
+
+        /// <summary>
+        /// Gets the <see cref="ISymbol"/> for the immediately containing symbol.
+        /// </summary>
+        new ISymbol ContainingSymbol { get; }
     }
 }

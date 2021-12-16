@@ -59,8 +59,7 @@ namespace Microsoft.CodeAnalysis.LanguageServerIndexFormat
 
             if (symbol.Kind == SymbolKind.Parameter)
             {
-                RoslynDebug.Assert(symbol.ContainingSymbol is not null);
-                symbolMoniker += GetRequiredDocumentationCommentId(symbol.ContainingSymbol) + "#" + symbol.Name;
+                symbolMoniker += GetRequiredDocumentationCommentId(symbol.ContainingSymbol!) + "#" + symbol.Name;
             }
             else
             {

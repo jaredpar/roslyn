@@ -56,6 +56,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel
             }
         }
 
+        ISymbol IParameterSymbol.ContainingSymbol => ((ISymbol)this).ContainingSymbol;
+
         RefKind IParameterSymbol.RefKind => _underlying.RefKind;
 
         bool IParameterSymbol.IsDiscard => _underlying.IsDiscard;

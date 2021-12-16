@@ -196,7 +196,6 @@ namespace Microsoft.CodeAnalysis.Shared.Extensions
 
         public static DocumentationComment? GetParameterDocumentation(IParameterSymbol parameter, Compilation compilation, CancellationToken cancellationToken)
         {
-            RoslynDebug.Assert(parameter.ContainingSymbol is not null);
             var containingSymbol = parameter.ContainingSymbol;
             if (containingSymbol.ContainingSymbol.IsDelegateType() && containingSymbol is IMethodSymbol methodSymbol)
             {

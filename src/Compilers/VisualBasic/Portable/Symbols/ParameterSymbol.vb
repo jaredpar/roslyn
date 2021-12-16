@@ -297,6 +297,12 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
             End Get
         End Property
 
+        Private ReadOnly Property IParameterSymbol_ContainingSymbol As ISymbol Implements IParameterSymbol.ContainingSymbol
+            Get
+                Return ContainingSymbol
+            End Get
+        End Property
+
         Private ReadOnly Property IParameterSymbol_RefKind As RefKind Implements IParameterSymbol.RefKind
             Get
                 ' TODO: Should we check if it has the <Out> attribute and return 'RefKind.Out' in

@@ -3750,7 +3750,6 @@ namespace Microsoft.CodeAnalysis.EditAndContinue
 
         private static void AddParameterUpdateSemanticEdit(ArrayBuilder<SemanticEditInfo> semanticEdits, IParameterSymbol newParameterSymbol, Func<SyntaxNode, SyntaxNode?>? syntaxMap, CancellationToken cancellationToken)
         {
-            RoslynDebug.Assert(newParameterSymbol.ContainingSymbol is not null);
             var newContainingSymbol = newParameterSymbol.ContainingSymbol;
             semanticEdits.Add(new SemanticEditInfo(SemanticEditKind.Update, SymbolKey.Create(newContainingSymbol, cancellationToken), syntaxMap, syntaxMapTree: null, partialType: null));
 

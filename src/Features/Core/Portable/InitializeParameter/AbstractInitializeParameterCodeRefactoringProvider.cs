@@ -94,7 +94,6 @@ namespace Microsoft.CodeAnalysis.InitializeParameter
                 return;
             }
 
-            RoslynDebug.Assert(parameter.ContainingSymbol is not null);
             var methodSymbol = (IMethodSymbol)parameter.ContainingSymbol;
             if (methodSymbol.IsAbstract ||
                 methodSymbol.IsExtern ||
