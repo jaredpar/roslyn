@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
@@ -94,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return GetSyntax().ParameterList;
         }
 
-        protected override CSharpSyntaxNode GetInitializer()
+        protected override CSharpSyntaxNode? GetInitializer()
         {
             return GetSyntax().Initializer;
         }
