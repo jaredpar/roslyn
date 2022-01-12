@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -44,7 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// This should be set, if at all, before this symbol appears among the members of its owner.  
         /// The implementation part is not listed among the "members" of the enclosing type.
         /// </summary>
-        private SourceOrdinaryMethodSymbol _otherPartOfPartial;
+        private SourceOrdinaryMethodSymbol? _otherPartOfPartial;
 
         public static SourceOrdinaryMethodSymbol CreateMethodSymbol(
             NamedTypeSymbol containingType,
@@ -173,6 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // implemented.
                 if (syntax.ConstraintClauses.Count > 0)
                 {
+                    Debug.Assert(syntax.TypeParameterList is not null);
                     Binder.CheckFeatureAvailability(syntax.SyntaxTree, MessageID.IDS_OverrideWithConstraints, diagnostics,
                                                     syntax.ConstraintClauses[0].WhereKeyword.GetLocation());
 
@@ -259,6 +258,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if ((object)attributeConstructor == null)
                     {
                         var memberDescriptor = WellKnownMembers.GetDescriptor(WellKnownMember.System_Runtime_CompilerServices_ExtensionAttribute__ctor);
+                        Debug.Assert(memberDescriptor.DeclaringTypeMetadataName is not null);
+
                         // do not use Binder.ReportUseSiteErrorForAttributeCtor in this case, because we'll need to report a special error id, not a generic use site error.
                         diagnostics.Add(
                             ErrorCode.ERR_ExtensionAttrNotFound,
@@ -371,8 +372,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             Debug.Assert(definition.IsPartialDefinition);
             Debug.Assert(implementation.IsPartialImplementation);
-            Debug.Assert((object)definition._otherPartOfPartial == null || (object)definition._otherPartOfPartial == implementation);
-            Debug.Assert((object)implementation._otherPartOfPartial == null || (object)implementation._otherPartOfPartial == definition);
+            Debug.Assert(definition._otherPartOfPartial is null || (object)definition._otherPartOfPartial == implementation);
+            Debug.Assert(implementation._otherPartOfPartial is null || (object)implementation._otherPartOfPartial == definition);
 
             definition._otherPartOfPartial = implementation;
             implementation._otherPartOfPartial = definition;
@@ -381,7 +382,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// <summary>
         /// If this is a partial implementation part returns the definition part and vice versa.
         /// </summary>
-        internal SourceOrdinaryMethodSymbol OtherPartOfPartial
+        internal SourceOrdinaryMethodSymbol? OtherPartOfPartial
         {
             get { return _otherPartOfPartial; }
         }
@@ -415,7 +416,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
-                return this.IsPartialDefinition && (object)_otherPartOfPartial == null;
+                return this.IsPartialDefinition && _otherPartOfPartial is null;
             }
         }
 
@@ -423,7 +424,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// Returns the implementation part of a partial method definition, 
         /// or null if this is not a partial method or it is the definition part.
         /// </summary>
-        internal SourceOrdinaryMethodSymbol SourcePartialDefinition
+        internal SourceOrdinaryMethodSymbol? SourcePartialDefinition
         {
             get
             {
@@ -435,7 +436,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// Returns the definition part of a partial method implementation, 
         /// or null if this is not a partial method or it is the implementation part.
         /// </summary>
-        internal SourceOrdinaryMethodSymbol SourcePartialImplementation
+        internal SourceOrdinaryMethodSymbol? SourcePartialImplementation
         {
             get
             {
@@ -443,7 +444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        public override MethodSymbol PartialDefinitionPart
+        public override MethodSymbol? PartialDefinitionPart
         {
             get
             {
@@ -451,7 +452,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        public override MethodSymbol PartialImplementationPart
+        public override MethodSymbol? PartialImplementationPart
         {
             get
             {
@@ -469,13 +470,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        public override string GetDocumentationCommentXml(CultureInfo preferredCulture = null, bool expandIncludes = false, CancellationToken cancellationToken = default(CancellationToken))
+        public override string GetDocumentationCommentXml(CultureInfo? preferredCulture = null, bool expandIncludes = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             ref var lazyDocComment = ref expandIncludes ? ref this.lazyExpandedDocComment : ref this.lazyDocComment;
             return SourceDocumentationCommentUtils.GetAndCacheDocumentationComment(this, expandIncludes, ref lazyDocComment);
         }
 
-        protected override SourceMemberMethodSymbol BoundAttributesSource
+        protected override SourceMemberMethodSymbol? BoundAttributesSource
         {
             get
             {
@@ -485,7 +486,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal override OneOrMany<SyntaxList<AttributeListSyntax>> GetAttributeDeclarations()
         {
-            if ((object)this.SourcePartialImplementation != null)
+            if (this.SourcePartialImplementation is not null)
             {
                 return OneOrMany.Create(ImmutableArray.Create(AttributeDeclarationSyntaxList, this.SourcePartialImplementation.AttributeDeclarationSyntaxList));
             }
@@ -500,7 +501,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get
             {
                 var sourceContainer = this.ContainingType as SourceMemberContainerTypeSymbol;
-                if ((object)sourceContainer != null && sourceContainer.AnyMemberHasAttributes)
+                if (sourceContainer is not null && sourceContainer.AnyMemberHasAttributes)
                 {
                     return this.GetSyntax().AttributeLists;
                 }
@@ -524,7 +525,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             Debug.Assert(syntax.TypeParameterList != null);
 
-            OverriddenMethodTypeParameterMapBase typeMap = null;
+            OverriddenMethodTypeParameterMapBase? typeMap = null;
             if (this.IsOverride)
             {
                 typeMap = new OverriddenMethodTypeParameterMap(this);
@@ -563,7 +564,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 SourceMemberContainerTypeSymbol.ReportReservedTypeName(identifier.Text, this.DeclaringCompilation, diagnostics.DiagnosticBag, location);
 
                 var tpEnclosing = ContainingType.FindEnclosingTypeParameter(name);
-                if ((object)tpEnclosing != null)
+                if (tpEnclosing is not null)
                 {
                     // Type parameter '{0}' has the same name as the type parameter from outer type '{1}'
                     diagnostics.Add(ErrorCode.WRN_TypeParameterSameAsOuterTypeParameter, location, name, tpEnclosing.ContainingType);
@@ -594,7 +595,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal override void ForceComplete(SourceLocation locationOpt, CancellationToken cancellationToken)
         {
             var implementingPart = this.SourcePartialImplementation;
-            if ((object)implementingPart != null)
+            if (implementingPart is not null)
             {
                 implementingPart.ForceComplete(locationOpt, cancellationToken);
             }
@@ -627,7 +628,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         protected override void PartialMethodChecks(BindingDiagnosticBag diagnostics)
         {
             var implementingPart = this.SourcePartialImplementation;
-            if ((object)implementingPart != null)
+            if (implementingPart is not null)
             {
                 PartialMethodChecks(this, implementingPart, diagnostics);
             }
@@ -714,7 +715,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     diagnostics.Add(ErrorCode.WRN_NullabilityMismatchInParameterTypeOnPartial, implementingMethod.Locations[0], new FormattedSymbol(implementingParameter, SymbolDisplayFormat.ShortFormat));
                 },
-                extraArgument: (object)null))
+                extraArgument: (object?)null))
             {
                 hasTypeDifferences = true;
             }

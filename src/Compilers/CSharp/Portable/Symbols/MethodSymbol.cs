@@ -760,12 +760,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return null; }
         }
 
+#nullable enable
         /// <summary>
         /// If this is a partial method declaration without a body, and the method also
         /// has a part that implements it with a body, returns that implementing
         /// definition.  Otherwise null.
         /// </summary>
-        public virtual MethodSymbol PartialImplementationPart
+        public virtual MethodSymbol? PartialImplementationPart
         {
             get { return null; }
         }
@@ -774,10 +775,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// If this is a partial method with a body, returns the corresponding
         /// definition part (without a body).  Otherwise null.
         /// </summary>
-        public virtual MethodSymbol PartialDefinitionPart
+        public virtual MethodSymbol? PartialDefinitionPart
         {
             get { return null; }
         }
+#nullable disable
 
         /// <summary>
         /// If this method is a reduced extension method, gets the extension method definition that
