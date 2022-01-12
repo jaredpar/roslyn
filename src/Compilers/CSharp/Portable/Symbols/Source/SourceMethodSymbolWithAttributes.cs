@@ -106,6 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public override ImmutableHashSet<string> ReturnNotNullIfParameterNotNull
             => GetDecodedReturnTypeWellKnownAttributeData()?.NotNullIfParameterNotNull ?? ImmutableHashSet<string>.Empty;
 
+#nullable enable
         /// <summary>
         /// Symbol to copy bound attributes from, or null if the attributes are not shared among multiple source method symbols.
         /// </summary>
@@ -113,13 +114,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// Used for example for event accessors. The "remove" method delegates attribute binding to the "add" method.
         /// The bound attribute data are then applied to both accessors.
         /// </remarks>
-        protected virtual SourceMemberMethodSymbol BoundAttributesSource
+        protected virtual SourceMemberMethodSymbol? BoundAttributesSource
         {
             get
             {
                 return null;
             }
         }
+#nullable disable
 
         protected virtual IAttributeTargetSymbol AttributeOwner
         {

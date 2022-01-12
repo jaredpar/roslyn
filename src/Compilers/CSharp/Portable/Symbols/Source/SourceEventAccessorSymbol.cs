@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Collections.Immutable;
 using System.Diagnostics;
 
@@ -23,10 +21,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public SourceEventAccessorSymbol(
             SourceEventSymbol @event,
-            SyntaxReference syntaxReference,
+            SyntaxReference? syntaxReference,
             ImmutableArray<Location> locations,
-            EventSymbol explicitlyImplementedEventOpt,
-            string aliasQualifierOpt,
+            EventSymbol? explicitlyImplementedEventOpt,
+            string? aliasQualifierOpt,
             bool isAdder,
             bool isIterator,
             bool isNullableAnalysisEnabled)
@@ -36,18 +34,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             string name;
             ImmutableArray<MethodSymbol> explicitInterfaceImplementations;
-            if ((object)explicitlyImplementedEventOpt == null)
+            if (explicitlyImplementedEventOpt is null)
             {
                 name = SourceEventSymbol.GetAccessorName(@event.Name, isAdder);
                 explicitInterfaceImplementations = ImmutableArray<MethodSymbol>.Empty;
             }
             else
             {
-                MethodSymbol implementedAccessor = isAdder ? explicitlyImplementedEventOpt.AddMethod : explicitlyImplementedEventOpt.RemoveMethod;
-                string accessorName = (object)implementedAccessor != null ? implementedAccessor.Name : SourceEventSymbol.GetAccessorName(explicitlyImplementedEventOpt.Name, isAdder);
+                MethodSymbol? implementedAccessor = isAdder ? explicitlyImplementedEventOpt.AddMethod : explicitlyImplementedEventOpt.RemoveMethod;
+                string accessorName = implementedAccessor is not null ? implementedAccessor.Name : SourceEventSymbol.GetAccessorName(explicitlyImplementedEventOpt.Name, isAdder);
 
                 name = ExplicitInterfaceHelpers.GetMemberName(accessorName, explicitlyImplementedEventOpt.ContainingType, aliasQualifierOpt);
-                explicitInterfaceImplementations = (object)implementedAccessor == null ? ImmutableArray<MethodSymbol>.Empty : ImmutableArray.Create<MethodSymbol>(implementedAccessor);
+                explicitInterfaceImplementations = implementedAccessor is null ? ImmutableArray<MethodSymbol>.Empty : ImmutableArray.Create<MethodSymbol>(implementedAccessor);
             }
 
             _explicitInterfaceImplementations = explicitInterfaceImplementations;
@@ -221,7 +219,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        protected string GetOverriddenAccessorName(SourceEventSymbol @event, bool isAdder)
+        protected string? GetOverriddenAccessorName(SourceEventSymbol @event, bool isAdder)
         {
             if (this.IsOverride)
             {
@@ -233,14 +231,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // we inline part of the implementation of OverriddenMethod - we look for the
                 // overridden event (which does not depend on WinRT-ness) and then grab the corresponding
                 // accessor.
-                EventSymbol overriddenEvent = @event.OverriddenEvent;
-                if ((object)overriddenEvent != null)
+                EventSymbol? overriddenEvent = @event.OverriddenEvent;
+                if (overriddenEvent is not null)
                 {
                     // If this accessor is overriding an accessor from metadata, it is possible that
                     // the name of the overridden accessor doesn't follow the C# add_X/remove_X pattern.
                     // We should copy the name so that the runtime will recognize this as an override.
                     MethodSymbol overriddenAccessor = overriddenEvent.GetOwnOrInheritedAccessor(isAdder);
-                    return (object)overriddenAccessor == null ? null : overriddenAccessor.Name;
+                    return overriddenAccessor?.Name;
                 }
             }
 

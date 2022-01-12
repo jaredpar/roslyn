@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable disable
-
 using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -24,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         // Since we don't have a syntax reference, we'll have to use another object for locking.
         private readonly object _methodChecksLockObject = new object();
 
-        internal SynthesizedEventAccessorSymbol(SourceEventSymbol @event, bool isAdder, EventSymbol explicitlyImplementedEventOpt = null, string aliasQualifierOpt = null)
+        internal SynthesizedEventAccessorSymbol(SourceEventSymbol @event, bool isAdder, EventSymbol? explicitlyImplementedEventOpt = null, string? aliasQualifierOpt = null)
             : base(@event, null, @event.Locations, explicitlyImplementedEventOpt, aliasQualifierOpt, isAdder, isIterator: false, isNullableAnalysisEnabled: false)
         {
         }
@@ -39,12 +37,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return false; }
         }
 
-        protected override SourceMemberMethodSymbol BoundAttributesSource
+        protected override SourceMemberMethodSymbol? BoundAttributesSource
         {
             get
             {
                 return this.MethodKind == MethodKind.EventAdd
-                    ? (SourceMemberMethodSymbol)this.AssociatedEvent.RemoveMethod
+                    ? (SourceMemberMethodSymbol?)this.AssociatedEvent.RemoveMethod
                     : null;
             }
         }
@@ -83,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 MethodImplAttributes result = base.ImplementationAttributes;
 
                 if (!IsAbstract && !AssociatedEvent.IsWindowsRuntimeEvent && !ContainingType.IsStructType() &&
-                    (object)DeclaringCompilation.GetWellKnownTypeMember(WellKnownMember.System_Threading_Interlocked__CompareExchange_T) == null)
+                    DeclaringCompilation.GetWellKnownTypeMember(WellKnownMember.System_Threading_Interlocked__CompareExchange_T) is null)
                 {
                     // Under these conditions, this method needs to be synchronized.
                     result |= MethodImplAttributes.Synchronized;
