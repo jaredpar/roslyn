@@ -24,7 +24,29 @@ namespace Roslyn.Utilities
     /// </summary>
     internal sealed class JsonWriter : IDisposable
     {
-        private readonly TextWriter _output;
+        internal interface IJsonOutput : IDisposable
+        {
+            void Write(string data);
+            void Write(char data);
+            void WriteLine();
+        }
+
+        private sealed class TextWriterJsonOutput : IJsonOutput
+        {
+            private TextWriter TextWriter { get; }
+
+            public TextWriterJsonOutput(TextWriter textWriter)
+            {
+                TextWriter = textWriter;
+            }
+
+            public void Write(string data) => TextWriter.Write(data);
+            public void Write(char data) => TextWriter.Write(data);
+            public void WriteLine() => TextWriter.WriteLine();
+            public void Dispose() => TextWriter.Dispose();
+        }
+
+        private readonly IJsonOutput _output;
         private int _indent;
         private Pending _pending;
 
@@ -33,7 +55,7 @@ namespace Roslyn.Utilities
 
         public JsonWriter(TextWriter output)
         {
-            _output = output;
+            _output = new TextWriterJsonOutput(output);
             _pending = Pending.None;
         }
 
