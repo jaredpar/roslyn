@@ -9,6 +9,10 @@ using System.IO;
 using System.Text;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis;
+using System.Security.Cryptography;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using System.Diagnostics.Tracing;
 
 namespace Roslyn.Utilities
 {
@@ -27,7 +31,6 @@ namespace Roslyn.Utilities
         internal interface IJsonOutput : IDisposable
         {
             void Write(string data);
-            void Write(char data);
             void WriteLine();
         }
 
@@ -41,9 +44,54 @@ namespace Roslyn.Utilities
             }
 
             public void Write(string data) => TextWriter.Write(data);
-            public void Write(char data) => TextWriter.Write(data);
             public void WriteLine() => TextWriter.WriteLine();
             public void Dispose() => TextWriter.Dispose();
+        }
+
+        private sealed class ContentJsonOutput : IJsonOutput
+        {
+            private static Encoding Encoding { get; } = Encoding.UTF8;
+            private IncrementalHash IncrementalHash { get; }
+            private byte[] Buffer { get; set; } = new byte[500];
+
+            public ContentJsonOutput(IncrementalHash incrementalHash)
+            {
+                IncrementalHash = incrementalHash;
+            }
+
+            public void Write(string data)
+            {
+                int written;
+                while (true)
+                {
+                    try
+                    {
+                        written = Encoding.GetBytes(data, 0, data.Length, Buffer, 0);
+                        break;
+                    }
+                    catch (ArgumentException)
+                    {
+                        Buffer = new byte[Buffer.Length * 2];
+                        continue;
+                    }
+                }
+
+                // Remove #if false to debug why the content is different between .NET Framework and .NET Core
+#if false
+#if NETCOREAPP
+                string filePath = @"c:\users\jaredpar\temp\netcore.txt";
+#else
+                string filePath = @"c:\users\jaredpar\temp\netframework.txt";
+#endif
+
+                File.AppendAllLines(filePath, new[] { data, BitConverter.ToString(Buffer, 0, written) });
+#endif
+
+                IncrementalHash.AppendData(Buffer, 0, written);
+            }
+
+            public void WriteLine() => Write(Environment.NewLine);
+            public void Dispose() { }
         }
 
         private readonly IJsonOutput _output;
@@ -59,9 +107,15 @@ namespace Roslyn.Utilities
             _pending = Pending.None;
         }
 
+        public JsonWriter(IncrementalHash incrementalHash)
+        {
+            _output = new ContentJsonOutput(incrementalHash);
+            _pending = Pending.None;
+        }
+
         public void WriteObjectStart()
         {
-            WriteStart('{');
+            WriteStart("{");
         }
 
         public void WriteObjectStart(string key)
@@ -72,12 +126,12 @@ namespace Roslyn.Utilities
 
         public void WriteObjectEnd()
         {
-            WriteEnd('}');
+            WriteEnd("}");
         }
 
         public void WriteArrayStart()
         {
-            WriteStart('[');
+            WriteStart("[");
         }
 
         public void WriteArrayStart(string key)
@@ -88,7 +142,7 @@ namespace Roslyn.Utilities
 
         public void WriteArrayEnd()
         {
-            WriteEnd(']');
+            WriteEnd("]");
         }
 
         public void WriteKey(string key)
@@ -169,9 +223,9 @@ namespace Roslyn.Utilities
             }
             else
             {
-                _output.Write('"');
+                _output.Write(@"""");
                 _output.Write(EscapeString(value));
-                _output.Write('"');
+                _output.Write(@"""");
             }
             _pending = Pending.CommaNewLineAndIndent;
         }
@@ -241,7 +295,7 @@ namespace Roslyn.Utilities
             Debug.Assert(_pending == Pending.NewLineAndIndent || _pending == Pending.CommaNewLineAndIndent);
             if (_pending == Pending.CommaNewLineAndIndent)
             {
-                _output.Write(',');
+                _output.Write(",");
             }
 
             _output.WriteLine();
@@ -252,7 +306,7 @@ namespace Roslyn.Utilities
             }
         }
 
-        private void WriteStart(char c)
+        private void WriteStart(string c)
         {
             WritePending();
             _output.Write(c);
@@ -260,7 +314,7 @@ namespace Roslyn.Utilities
             _indent++;
         }
 
-        private void WriteEnd(char c)
+        private void WriteEnd(string c)
         {
             _pending = Pending.NewLineAndIndent;
             _indent--;

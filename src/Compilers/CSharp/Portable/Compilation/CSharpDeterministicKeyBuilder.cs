@@ -17,14 +17,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
         }
 
-        protected override void WriteCompilationOptionsCore(JsonWriter writer, CompilationOptions options)
+        protected override void WriteCompilationOptionsCore(JsonWriter writer, CompilationOptions options, DeterministicKeyOptions deterministicKeyOptions)
         {
             if (options is not CSharpCompilationOptions csharpOptions)
             {
                 throw new ArgumentException(null, nameof(options));
             }
 
-            base.WriteCompilationOptionsCore(writer, options);
+            base.WriteCompilationOptionsCore(writer, options, deterministicKeyOptions);
 
             writer.Write("unsafe", csharpOptions.AllowUnsafe);
             writer.Write("topLevelBinderFlags", csharpOptions.TopLevelBinderFlags);

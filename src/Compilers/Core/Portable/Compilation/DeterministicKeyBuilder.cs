@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -110,11 +111,23 @@ namespace Microsoft.CodeAnalysis
             writer.WriteObjectEnd();
         }
 
-        private (JsonWriter, PooledStringBuilder) CreateWriter()
+        private (JsonWriter JsonWriter, Func<string> GetKey) CreateWriter(DeterministicKeyOptions options)
         {
-            var builder = PooledStringBuilder.GetInstance();
-            var writer = new StringWriter(builder);
-            return (new JsonWriter(writer), builder);
+            if (0 != (options & DeterministicKeyOptions.MinimalContentKey))
+            {
+                var hash = IncrementalHash.CreateHash(SourceHashAlgorithmUtils.DefaultHashAlgorithmName);
+                var writer = new JsonWriter(hash);
+                var getKey = () => BitConverter.ToString(hash.GetHashAndReset());
+                return (writer, getKey);
+            }
+            else
+            {
+                var builder = PooledStringBuilder.GetInstance();
+                var writer = new StringWriter(builder);
+                var getKey = () => builder.ToStringAndFree();
+                return (new JsonWriter(writer), getKey);
+            }
+
         }
 
         internal string GetKey(
@@ -134,7 +147,7 @@ namespace Microsoft.CodeAnalysis
             analyzers = analyzers.NullToEmpty();
             generators = generators.NullToEmpty();
 
-            var (writer, builder) = CreateWriter();
+            var (writer, getKey) = CreateWriter(options);
 
             writer.WriteObjectStart();
 
@@ -151,7 +164,7 @@ namespace Microsoft.CodeAnalysis
 
             writer.WriteObjectEnd();
 
-            return builder.ToStringAndFree();
+            return getKey();
 
             void writeAdditionalTexts()
             {
@@ -209,7 +222,7 @@ namespace Microsoft.CodeAnalysis
 
             WriteByteArrayValue(writer, "publicKey", publicKey.AsSpan());
             writer.WriteKey("options");
-            WriteCompilationOptions(writer, compilationOptions);
+            WriteCompilationOptions(writer, compilationOptions, options);
 
             writer.WriteKey("syntaxTrees");
             writer.WriteArrayStart();
@@ -429,14 +442,14 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        private void WriteCompilationOptions(JsonWriter writer, CompilationOptions options)
+        private void WriteCompilationOptions(JsonWriter writer, CompilationOptions options, DeterministicKeyOptions deterministicKeyOptions)
         {
             writer.WriteObjectStart();
-            WriteCompilationOptionsCore(writer, options);
+            WriteCompilationOptionsCore(writer, options, deterministicKeyOptions);
             writer.WriteObjectEnd();
         }
 
-        protected virtual void WriteCompilationOptionsCore(JsonWriter writer, CompilationOptions options)
+        protected virtual void WriteCompilationOptionsCore(JsonWriter writer, CompilationOptions options, DeterministicKeyOptions deterministicKeyOptions)
         {
             // CompilationOption values
             writer.Write("outputKind", options.OutputKind);
@@ -491,19 +504,22 @@ namespace Microsoft.CodeAnalysis
             // - Options.Features: deprecated
             // 
 
-            // Not really options but they can impact compilation so we record the types. For the majority
-            // of compilations this is roughly the equivalent of recording the compiler version but it 
-            // could differ when customers host the compiler via the API.
-            writer.WriteKey("extensions");
-            writer.WriteObjectStart();
+            if ((deterministicKeyOptions & DeterministicKeyOptions.IgnoreExtensions) == 0)
+            {
+                // Not really options but they can impact compilation so we record the types. For the majority
+                // of compilations this is roughly the equivalent of recording the compiler version but it 
+                // could differ when customers host the compiler via the API.
+                writer.WriteKey("extensions");
+                writer.WriteObjectStart();
 
-            WriteType(writer, "syntaxTreeOptionsProvider", options.SyntaxTreeOptionsProvider?.GetType());
-            WriteType(writer, "metadataReferenceResolver", options.MetadataReferenceResolver?.GetType());
-            WriteType(writer, "xmlReferenceResolver", options.XmlReferenceResolver?.GetType());
-            WriteType(writer, "sourceReferenceResolver", options.SourceReferenceResolver?.GetType());
-            WriteType(writer, "strongNameProvider", options.StrongNameProvider?.GetType());
-            WriteType(writer, "assemblyIdentityComparer", options.AssemblyIdentityComparer?.GetType());
-            writer.WriteObjectEnd();
+                WriteType(writer, "syntaxTreeOptionsProvider", options.SyntaxTreeOptionsProvider?.GetType());
+                WriteType(writer, "metadataReferenceResolver", options.MetadataReferenceResolver?.GetType());
+                WriteType(writer, "xmlReferenceResolver", options.XmlReferenceResolver?.GetType());
+                WriteType(writer, "sourceReferenceResolver", options.SourceReferenceResolver?.GetType());
+                WriteType(writer, "strongNameProvider", options.StrongNameProvider?.GetType());
+                WriteType(writer, "assemblyIdentityComparer", options.AssemblyIdentityComparer?.GetType());
+                writer.WriteObjectEnd();
+            }
         }
 
         protected void WriteParseOptions(JsonWriter writer, ParseOptions parseOptions)

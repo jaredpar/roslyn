@@ -61,13 +61,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
 
         End Sub
 
-        Protected Overrides Sub WriteCompilationOptionsCore(writer As JsonWriter, options As CompilationOptions)
+        Protected Overrides Sub WriteCompilationOptionsCore(writer As JsonWriter, options As CompilationOptions, deterministicKeyOptions As DeterministicKeyOptions)
             Dim basicOptions = TryCast(options, VisualBasicCompilationOptions)
             If basicOptions Is Nothing Then
                 Throw New InvalidOperationException()
             End If
 
-            MyBase.WriteCompilationOptionsCore(writer, options)
+            MyBase.WriteCompilationOptionsCore(writer, options, deterministicKeyOptions)
 
             writer.Write("rootNamespace", basicOptions.RootNamespace)
             writer.Write("optionStrict", basicOptions.OptionStrict)

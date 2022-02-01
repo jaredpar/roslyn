@@ -585,5 +585,17 @@ namespace Microsoft.CodeAnalysis.Rebuild.UnitTests
 }}";
             AssertJson(expected, json, "toolsVersions", "references", "extensions");
         }
+
+        [Fact]
+        public void MinimalContentKey()
+        {
+            var compilation = CSharpTestBase.CreateCompilation(
+                @"System.Console.WriteLine(""Hello World"");",
+                targetFramework: TargetFramework.NetFramework,
+                options: Options);
+
+            var key = compilation.GetDeterministicKey(options: DeterministicKeyOptions.IgnoreToolVersions | DeterministicKeyOptions.IgnoreExtensions | DeterministicKeyOptions.MinimalContentKey);
+            Assert.Equal("BC-11-3A-A6-B5-F1-73-4D-36-97-D8-80-5B-45-01-9D-5D-47-BA-AE-82-04-65-54-B8-32-34-52-3F-AA-06-0B", key);
+        }
     }
 }

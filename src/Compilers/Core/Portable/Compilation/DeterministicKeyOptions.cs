@@ -16,6 +16,12 @@ namespace Microsoft.CodeAnalysis
         Default = 0b0,
 
         /// <summary>
+        /// Return a minimal content key. This key will not be human readable but will be a content
+        /// hash of the compilers choosing (and the hash can change between compiler versions).
+        /// </summary>
+        MinimalContentKey = 0b0001,
+
+        /// <summary>
         /// Ignore all file paths, but still include file names, in the deterministic key.
         /// </summary>
         /// <remarks>
@@ -24,7 +30,7 @@ namespace Microsoft.CodeAnalysis
         /// path of the content. A typical example of this type of consumer is one that operates 
         /// in CI where the path changes frequently.
         /// </remarks>
-        IgnorePaths = 0b0001,
+        IgnorePaths = 0b0010,
 
         /// <summary>
         /// Ignore the versions of the tools contributing to the build (compiler and runtime)
@@ -34,6 +40,17 @@ namespace Microsoft.CodeAnalysis
         /// but very often is for wide ranges of versions. This option is useful for consumers 
         /// who are comfortable ignoring the versions when looking at compiler output. 
         /// </remarks>
-        IgnoreToolVersions = 0b0010,
+        IgnoreToolVersions = 0b0100,
+
+        /// <summary>
+        /// Ignore the extension types to the compiler (like assembly comparer, strong name provider,
+        /// etc ...).
+        /// </summary>
+        /// <remarks>
+        /// These include type information and can cause key differences between .NET Core and .NET 
+        /// Framework. These types are similar to tools in terms of how they do / don't impact 
+        /// determinism
+        /// </remarks>
+        IgnoreExtensions = 0b0100,
     }
 }

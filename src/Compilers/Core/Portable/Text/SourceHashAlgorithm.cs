@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Security.Cryptography;
+
 namespace Microsoft.CodeAnalysis.Text
 {
     /// <summary>
@@ -28,5 +30,6 @@ namespace Microsoft.CodeAnalysis.Text
     internal static class SourceHashAlgorithmUtils
     {
         public const SourceHashAlgorithm DefaultContentHashAlgorithm = SourceHashAlgorithm.Sha256;
+        public static readonly HashAlgorithmName DefaultHashAlgorithmName = HashAlgorithmName.SHA256;
     }
 }
