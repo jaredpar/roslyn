@@ -3,9 +3,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net6.0;net472</TargetFrameworks>
-    <UseAppHost>false</UseAppHost>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AssemblyName>csc</AssemblyName>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <TargetFramework>net472</TargetFramework>
+    <DisableNullableWarnings>true</DisableNullableWarnings>
   </PropertyGroup>
   <Import Project="..\CommandLine\CscCommandLine.projitems" Label="Shared" />
 </Project>
