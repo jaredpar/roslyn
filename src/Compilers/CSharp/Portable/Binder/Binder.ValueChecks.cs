@@ -2075,6 +2075,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return true;
         }
 
+        /*
         private bool CheckInvocationArgMixingWithUpdatedRules(
             SyntaxNode syntax,
             Symbol symbol,
@@ -2183,6 +2184,148 @@ namespace Microsoft.CodeAnalysis.CSharp
             argsAndParams.Free();
 
             return result;
+        }
+        */
+
+        private bool CheckInvocationArgMixingWithUpdatedRules(
+             SyntaxNode syntax,
+             Symbol invokedSymbol,
+             BoundExpression? receiverOpt,
+             ImmutableArray<ParameterSymbol> parameters,
+             ImmutableArray<BoundExpression> argsOpt,
+             ImmutableArray<RefKind> argRefKindsOpt,
+             ImmutableArray<int> argsToParamsOpt,
+             uint scopeOfTheContainingExpression,
+             BindingDiagnosticBag diagnostics)
+        {
+            if (argsOpt.IsDefault)
+            {
+                // no arguments to mix.
+                return true;
+            }
+
+            var (narrowestCallingMethod, narrowestCallingMethodSyntax, narrowestReturnOnly, narrowestReturnOnlySyntax) = GetNarrowestScopes();
+            var allGood = true;
+
+            // find all parameters and corresponding arguments where assignment could change refs visible to the caller
+            for (int argIndex = 0; argIndex < argsOpt.Length; argIndex++)
+            {
+                var parameter = argIndex < parameters.Length ?
+                    parameters[argsToParamsOpt.IsDefault ? argIndex : argsToParamsOpt[argIndex]] :
+                    null;
+
+                if (parameter != null
+                    && parameter.RefKind.IsWritableReference()
+                    && parameter.Type.IsRefLikeType)
+                {
+                    var argument = argsOpt[argIndex];
+                    if ((object)argument == receiverOpt)
+                    {
+                        continue;
+                    }
+
+                    var argValEscape = GetValEscape(argument, scopeOfTheContainingExpression);
+                    if (parameter.RefKind == RefKind.Out && narrowestReturnOnly > argValEscape)
+                    {
+                        string parameterName = GetInvocationParameterName(parameter);
+                        Error(diagnostics, ErrorCode.ERR_CallArgMixing, narrowestReturnOnlySyntax, invokedSymbol, parameterName);
+                        allGood = false;
+                    }
+
+                    if (parameter.RefKind == RefKind.Ref && narrowestCallingMethod > argValEscape)
+                    {
+                        string parameterName = GetInvocationParameterName(parameter);
+                        Error(diagnostics, ErrorCode.ERR_CallArgMixing, narrowestCallingMethodSyntax, invokedSymbol, parameterName);
+                        allGood = false;
+                    }
+                }
+            }
+
+            return allGood;
+
+            (uint NarrowestCallingMethod, SyntaxNode? narrowestCallingMethodSyntax, uint NarrowestReturnOnly, SyntaxNode? narrowestReturnOnlySyntax) GetNarrowestScopes()
+            {
+                uint narrowestCallingMethod = CallingMethod;
+                SyntaxNode? narrowestCallingMethodSyntax = null;
+                uint narrowestReturnOnly = CallingMethod;
+                SyntaxNode? narrowestReturnOnlySyntax = null;
+
+                for (int argIndex = 0; argIndex < argsOpt.Length; argIndex++)
+                {
+                    var parameter = argIndex < parameters.Length ?
+                        parameters[argsToParamsOpt.IsDefault ? argIndex : argsToParamsOpt[argIndex]] :
+                        null;
+
+                    if (parameter is null)
+                        continue;
+
+                    var argument = argsOpt[argIndex];
+                    if (parameter.RefKind != RefKind.Out && IsReturnableScope(GetParameterValEscape(parameter)))
+                    {
+                        var valArgEscape = GetValEscape(argument, scopeOfTheContainingExpression);
+                        Update(ref narrowestReturnOnly, ref narrowestReturnOnlySyntax, valArgEscape, argument.Syntax);
+                        Update(ref narrowestCallingMethod, ref narrowestCallingMethodSyntax, valArgEscape, argument.Syntax);
+                    }
+
+                    var refParamScope = GetParameterRefEscape(parameter);
+                    if (IsReturnableScope(refParamScope))
+                    {
+                        var refArgEscape = GetRefEscape(argument, scopeOfTheContainingExpression);
+                        Update(ref narrowestReturnOnly, ref narrowestReturnOnlySyntax, refArgEscape, argument.Syntax);
+                        if (refParamScope == ContainingMethod)
+                        {
+                            Update(ref narrowestCallingMethod, ref narrowestCallingMethodSyntax, refArgEscape, argument.Syntax);
+                        }
+                    }
+                }
+
+                if (receiverOpt is not null)
+                {
+                    var thisValScope = GetValEscape(receiverOpt, scopeOfTheContainingExpression);
+                    Update(ref narrowestCallingMethod, ref narrowestCallingMethodSyntax, thisValScope, receiverOpt.Syntax);
+                    Update(ref narrowestReturnOnly, ref narrowestReturnOnlySyntax, thisValScope, receiverOpt.Syntax);
+
+                    if (IsThisRefReturnable())
+                    {
+                        var thisRefScope = GetRefEscape(receiverOpt, scopeOfTheContainingExpression);
+                        Update(ref narrowestReturnOnly, ref narrowestReturnOnlySyntax, thisRefScope, receiverOpt.Syntax);
+                    }
+                }
+
+                return (narrowestCallingMethod, narrowestCallingMethodSyntax, narrowestReturnOnly, narrowestReturnOnlySyntax);
+
+                static void Update(ref uint scope, ref SyntaxNode? syntaxNode, uint arg, SyntaxNode? argSyntax)
+                {
+                    if (arg > scope)
+                    {
+                        scope = arg;
+                        syntaxNode = argSyntax;
+                    }
+                }
+
+                bool IsThisRefReturnable()
+                {
+                    var method = invokedSymbol switch
+                    {
+                        MethodSymbol m => m,
+                        PropertySymbol p => p.GetMethod ?? p.SetMethod,
+                        _ => throw ExceptionUtilities.UnexpectedValue(invokedSymbol)
+                    };
+
+                    if (method is not null &&
+                        method.ContainingType is { IsValueType: true } &&
+                        method.TryGetThisParameter(out ParameterSymbol thisParameter) &&
+                        thisParameter is not null)
+                    {
+                        return thisParameter.EffectiveScope == DeclarationScope.Unscoped;
+                    }
+
+                    return false;
+                }
+            }
+
+            static bool IsReturnableScope(uint scope) => scope <= ReturnOnlyScope;
+
         }
 
         private static bool IsReceiverRefReadOnly(Symbol methodOrPropertySymbol) => methodOrPropertySymbol switch

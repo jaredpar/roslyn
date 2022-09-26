@@ -15506,13 +15506,20 @@ class Program
     }
 }";
             var comp = CreateCompilationWithSpanAndMemoryExtensions(source, parseOptions: TestOptions.Regular.WithLanguageVersion(languageVersion));
-            comp.VerifyDiagnostics(
-                // (12,9): error CS8350: This combination of arguments to 'R.F(out Span<int>)' is disallowed because it may expose variables referenced by parameter 's' outside of their declaration scope
-                //         r.F(out s);
-                Diagnostic(ErrorCode.ERR_CallArgMixing, "r.F(out s)").WithArguments("R.F(out System.Span<int>)", "s").WithLocation(12, 9),
-                // (12,17): error CS8352: Cannot use variable 's' in this context because it may expose referenced variables outside of their declaration scope
-                //         r.F(out s);
-                Diagnostic(ErrorCode.ERR_EscapeVariable, "s").WithArguments("s").WithLocation(12, 17));
+            if (languageVersion == LanguageVersion.CSharp10)
+            {
+                comp.VerifyDiagnostics(
+                    // (12,9): error CS8350: This combination of arguments to 'R.F(out Span<int>)' is disallowed because it may expose variables referenced by parameter 's' outside of their declaration scope
+                    //         r.F(out s);
+                    Diagnostic(ErrorCode.ERR_CallArgMixing, "r.F(out s)").WithArguments("R.F(out System.Span<int>)", "s").WithLocation(12, 9),
+                    // (12,17): error CS8352: Cannot use variable 's' in this context because it may expose referenced variables outside of their declaration scope
+                    //         r.F(out s);
+                    Diagnostic(ErrorCode.ERR_EscapeVariable, "s").WithArguments("s").WithLocation(12, 17));
+            }
+            else
+            {
+                comp.VerifyDiagnostics();
+            }
         }
 
         [WorkItem(63016, "https://github.com/dotnet/roslyn/issues/63016")]
