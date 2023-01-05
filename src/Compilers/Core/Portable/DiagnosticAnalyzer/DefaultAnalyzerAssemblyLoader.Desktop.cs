@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using Roslyn.Utilities;
@@ -54,8 +55,29 @@ namespace Microsoft.CodeAnalysis
                 }
             }
 
-            var pathToLoad = GetPathToLoad(fullPath);
-            var loadedAssembly = Assembly.LoadFrom(pathToLoad);
+            Assembly loadedAssembly = null;
+            if (identity.Name.StartsWith("Microsoft.") || identity.Name.StartsWith("System."))
+            {
+                var compilerDir = Path.GetDirectoryName(typeof(DefaultAnalyzerAssemblyLoader).Assembly.Location);
+                if (File.Exists(Path.Combine(compilerDir, $"{identity.Name}.dll")))
+                {
+                    try
+                    {
+                        var name = new AssemblyName(identity.GetDisplayName());
+                        loadedAssembly = Assembly.Load(name);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+
+            if (loadedAssembly is null)
+            {
+                var pathToLoad = GetPathToLoad(fullPath);
+                loadedAssembly = Assembly.LoadFrom(pathToLoad);
+            }
 
             lock (_guard)
             {
@@ -78,6 +100,11 @@ namespace Microsoft.CodeAnalysis
 
         private Assembly? CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
+            if (args.RequestingAssembly == null)
+            {
+                return null;
+            }
+
             // In the .NET Framework, if a handler to AssemblyResolve throws an exception, other handlers
             // are not called. To avoid any bug in our handler breaking other handlers running in the same process
             // we catch exceptions here. We do not expect exceptions to be thrown though.
