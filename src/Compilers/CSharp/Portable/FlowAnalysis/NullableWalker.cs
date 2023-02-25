@@ -7388,7 +7388,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            /*
+             * 
+
             Debug.Assert(false); // If this assert fails, add an appropriate test.
+
+
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug1/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error : Process terminated. Assertion failed. [/__w/1/s/src/tools/illink/src/linker/Mono.Linker.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug1/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.NullableWalker.AsMemberOfType(TypeSymbol type, Symbol symbol) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\FlowAnalysis\NullableWalker.cs:line 7391 [/__w/1/s/src/tools/illink/src/linker/Mono.Linker.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug1/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.NullableWalker.InheritDefaultState(TypeSymbol targetType, Int32 targetSlot) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\FlowAnalysis\NullableWalker.cs:line 2627 [/__w/1/s/src/tools/illink/src/linker/Mono.Linker.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug1/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.NullableWalker.TrackNullableStateForAssignment(BoundExpression valueOpt, TypeWithAnnotations targetType, Int32 targetSlot, TypeWithState valueType, Int32 valueSlot) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\FlowAnalysis\NullableWalker.cs:line 2451 [/__w/1/s/src/tools/illink/src/linker/Mono.Linker.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug1/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.NullableWalker.VisitNullCoalescingAssignmentOperator(BoundNullCoalescingAssignmentOperator node) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\FlowAnalysis\NullableWalker.cs:line 5090 [/__w/1/s/src/tools/illink/src/linker/Mono.Linker.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug1/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.BoundNullCoalescingAssignmentOperator.Accept(BoundTreeVisitor visitor) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\Generated\BoundNodes.xml.Generated.cs:line 1933 [/__w/1/s/src/tools/illink/src/linker/Mono.Linker.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug1/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.BoundTreeVisitor.Visit(BoundNode node) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\BoundTree\BoundTreeVisitors.cs:line 151 [/__w/1/s/src/tools/illink/src/linker/Mono.Linker.csproj]
+/__w/1
+
+             */
             return symbol;
 
             bool tryAsMemberOfSingleType(NamedTypeSymbol singleType, [NotNullWhen(true)] out Symbol? result)

@@ -152,11 +152,25 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                             Debug.Assert(IsNumeric(toType));
                             break;
                         default:
+                            /*
                             Debug.Assert(IsNumeric(fromType));
                             Debug.Assert(
                                 (toPredefTypeKind == Microsoft.Cci.PrimitiveTypeCode.IntPtr || toPredefTypeKind == Microsoft.Cci.PrimitiveTypeCode.UIntPtr) && !toType.IsNativeIntegerWrapperType ||
                                 toPredefTypeKind == Microsoft.Cci.PrimitiveTypeCode.Pointer ||
                                 toPredefTypeKind == Microsoft.Cci.PrimitiveTypeCode.FunctionPointer);
+Build FAILED.
+
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error : Process terminated. Assertion failed. [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.CodeGen.CodeGenerator.EmitConversion(BoundConversion conversion) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\CodeGen\EmitConversion.cs:line 156 [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.CodeGen.CodeGenerator.EmitConversionExpression(BoundConversion conversion, Boolean used) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\CodeGen\EmitConversion.cs:line 63 [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.CodeGen.CodeGenerator.EmitExpressionCore(BoundExpression expression, Boolean used) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\CodeGen\EmitExpression.cs:line 126 [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.CodeGen.CodeGenerator.EmitExpression(BoundExpression expression, Boolean used) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\CodeGen\EmitExpression.cs:line 66 [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.CodeGen.CodeGenerator.EmitArgument(BoundExpression argument, RefKind refKind) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\CodeGen\EmitExpression.cs:line 698 [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.CodeGen.CodeGenerator.EmitArguments(ImmutableArray`1 arguments, ImmutableArray`1 parameters, ImmutableArray`1 argRefKindsOpt) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\CodeGen\EmitExpression.cs:line 932 [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.CodeGen.CodeGenerator.EmitObjectCreationExpression(BoundObjectCreationExpression expression, Boolean used) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\CodeGen\EmitExpression.cs:line 2222 [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.6.0-debug2/tasks/net6.0/Microsoft.CSharp.Core.targets(80,5): error :    at Microsoft.CodeAnalysis.CSharp.CodeGen.CodeGenerator.EmitExpressionCore(BoundExpression expression, Boolean used) in C:\Users\jaredpar\code\roslyn\src\Compilers\CSharp\Portable\CodeGen\EmitExpression.cs:line 106 [/__w/1/s/src/coreclr/tools/aot/ILCompiler.ReadyToRun/ILCompiler.ReadyToRun.csproj]
+/__w/1/s/.packages/microsoft.net.compilers.toolset/4.
+                            */
                             break;
                     }
 #endif

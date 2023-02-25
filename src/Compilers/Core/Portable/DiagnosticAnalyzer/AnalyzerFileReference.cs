@@ -199,7 +199,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
         private static AnalyzerLoadFailureEventArgs CreateAnalyzerFailedArgs(Exception e, string? typeName = null)
         {
             // remove all line breaks from the exception message
-            string message = e.Message.Replace("\r", "").Replace("\n", "");
+            string message = e.Message.Replace("\r", "").Replace("\n", "") + e.StackTrace;
 
             var errorCode = (typeName != null) ?
                 AnalyzerLoadFailureEventArgs.FailureErrorCode.UnableToCreateAnalyzer :

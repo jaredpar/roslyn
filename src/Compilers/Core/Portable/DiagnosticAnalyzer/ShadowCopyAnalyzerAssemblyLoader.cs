@@ -67,7 +67,7 @@ namespace Microsoft.CodeAnalysis
             _shadowCopyDirectoryAndMutex = new Lazy<(string directory, Mutex)>(
                 () => CreateUniqueDirectoryForProcess(), LazyThreadSafetyMode.ExecutionAndPublication);
 
-            DeleteLeftoverDirectoriesTask = Task.Run(DeleteLeftoverDirectories);
+            // DeleteLeftoverDirectoriesTask = Task.Run(DeleteLeftoverDirectories);
         }
 
         private void DeleteLeftoverDirectories()
