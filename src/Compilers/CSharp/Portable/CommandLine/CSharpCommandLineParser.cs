@@ -137,6 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             string? sourceLink = null;
             string? ruleSetPath = null;
             bool reportIVTs = false;
+            Span<char> nameBuffer = stackalloc char[512];
 
             // Process ruleset files first so that diagnostic severity settings specified on the command line via
             // /nowarn and /warnaserror can override diagnostic severity settings specified in the ruleset file.
@@ -247,7 +248,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     continue;
                 }
 
-                string name = nameMemory.Span.ToString().ToLowerInvariant();
+                ReadOnlySpan<char> name = -1 == nameMemory.Span.ToLowerInvariant(nameBuffer)
+                    ? nameMemory.Span.ToString().ToLowerInvariant().AsSpan()
+                    : nameBuffer;
                 switch (name)
                 {
                     case "?":
@@ -414,7 +417,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 if (value.IsEmpty())
                                 {
-                                    AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), name);
+                                    AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), name.ToString());
                                     continue;
                                 }
 
@@ -788,7 +791,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 if (value.IsEmpty())
                                 {
-                                    AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), name);
+                                    AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), name.ToString());
                                     continue;
                                 }
                                 switch (value.ToLower())
@@ -1596,12 +1599,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             };
         }
 
-        private static void ParseAndResolveReferencePaths(string? switchName, ReadOnlyMemory<char>? switchValue, string? baseDirectory, List<string> builder, MessageID origin, List<Diagnostic> diagnostics)
+        private static void ParseAndResolveReferencePaths(ReadOnlySpan<char> switchName, ReadOnlyMemory<char>? switchValue, string? baseDirectory, List<string> builder, MessageID origin, List<Diagnostic> diagnostics)
         {
             if (switchValue is not { Length: > 0 })
             {
-                RoslynDebug.Assert(!RoslynString.IsNullOrEmpty(switchName));
-                AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_PathList.Localize(), switchName);
+                AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_PathList.Localize(), switchName.ToString());
                 return;
             }
 
@@ -2150,9 +2152,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             idsBuilder.Free();
         }
 
-        private static void UnimplementedSwitch(IList<Diagnostic> diagnostics, string switchName)
+        private static void UnimplementedSwitch(IList<Diagnostic> diagnostics, ReadOnlySpan<char> switchName)
         {
-            AddDiagnostic(diagnostics, ErrorCode.WRN_UnimplementedCommandLineSwitch, "/" + switchName);
+            AddDiagnostic(diagnostics, ErrorCode.WRN_UnimplementedCommandLineSwitch, "/" + switchName.ToString());
         }
 
         internal override void GenerateErrorForNoFilesFoundInRecurse(string path, IList<Diagnostic> diagnostics)
@@ -2163,6 +2165,21 @@ namespace Microsoft.CodeAnalysis.CSharp
         private static void AddDiagnostic(IList<Diagnostic> diagnostics, ErrorCode errorCode)
         {
             diagnostics.Add(Diagnostic.Create(CSharp.MessageProvider.Instance, (int)errorCode));
+        }
+
+        private static void AddDiagnostic(IList<Diagnostic> diagnostics, ErrorCode errorCode, ReadOnlySpan<char> span)
+        {
+            AddDiagnostic(diagnostics, errorCode, span.ToString());
+        }
+
+        private static void AddDiagnostic(IList<Diagnostic> diagnostics, ErrorCode errorCode, string arg1, ReadOnlySpan<char> arg2)
+        {
+            AddDiagnostic(diagnostics, errorCode, new[] { arg1, arg2.ToString() });
+        }
+
+        private static void AddDiagnostic(IList<Diagnostic> diagnostics, ErrorCode errorCode, params string[] arguments)
+        {
+            diagnostics.Add(Diagnostic.Create(CSharp.MessageProvider.Instance, (int)errorCode, arguments));
         }
 
         private static void AddDiagnostic(IList<Diagnostic> diagnostics, ErrorCode errorCode, params object[] arguments)
