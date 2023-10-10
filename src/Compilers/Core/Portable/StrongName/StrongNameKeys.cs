@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -100,7 +101,7 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        internal static StrongNameKeys Create(string? keyFilePath, CommonMessageProvider messageProvider)
+        internal static StrongNameKeys Create(ICompilerFileSystem fileSystem, string? keyFilePath, CommonMessageProvider messageProvider)
         {
             if (string.IsNullOrEmpty(keyFilePath))
             {
@@ -109,7 +110,7 @@ namespace Microsoft.CodeAnalysis
 
             try
             {
-                var fileContent = ImmutableArray.Create(File.ReadAllBytes(keyFilePath));
+                var fileContent = ImmutableArray.Create(fileSystem.FileReadAllBytes(keyFilePath));
                 return CreateHelper(fileContent, keyFilePath, hasCounterSignature: false);
             }
             catch (IOException ex)

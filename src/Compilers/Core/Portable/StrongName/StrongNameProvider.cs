@@ -5,6 +5,7 @@
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using Microsoft.Cci;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -21,6 +22,8 @@ namespace Microsoft.CodeAnalysis
         public abstract override bool Equals(object? other);
 
         internal abstract StrongNameFileSystem FileSystem { get; }
+
+        internal ICompilerFileSystem CompilerFileSystem => FileSystem.CompilerFileSystem;
 
         /// <summary>
         /// Signs the <paramref name="filePath"/> value using <paramref name="keys"/>.

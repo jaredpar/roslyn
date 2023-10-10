@@ -225,6 +225,7 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// Provides strong name and signature the source assembly.
         /// Null if assembly signing is not supported.
+        /// TODO2: need to plumb the correct ICompilerFileSystem through the construction of this member
         /// </summary>
         public StrongNameProvider? StrongNameProvider { get; protected set; }
 
@@ -242,6 +243,14 @@ namespace Microsoft.CodeAnalysis
         /// by default in those locations.
         /// </remarks>
         public abstract NullableContextOptions NullableContextOptions { get; protected set; }
+
+        /// <summary>
+        /// !!!WARNING!!!
+        /// This member should _only_ be used in legacy scenarios where file I/O is forced to be done 
+        /// within a <see cref="Compilation"/> instead of before construction of a <see cref="Compilation"/>
+        /// instance. This is primarily to support legacy strong name key reading.
+        /// </summary>
+        internal ICompilerFileSystem LegacyCompilerFileSystem => StrongNameProvider?.CompilerFileSystem ?? StandardFileSystem.Instance;
 
         /// <summary>
         /// A set of strings designating experimental compiler features that are to be enabled.

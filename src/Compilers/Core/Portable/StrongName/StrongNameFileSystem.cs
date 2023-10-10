@@ -19,6 +19,8 @@ namespace Microsoft.CodeAnalysis
         private readonly string? _signingTempPath;
         private readonly ICompilerFileSystem _fileSystem;
 
+        internal ICompilerFileSystem CompilerFileSystem => _fileSystem;
+
         internal StrongNameFileSystem(string? signingTempPath = null, ICompilerFileSystem? fileSystem = null)
         {
             _signingTempPath = signingTempPath;

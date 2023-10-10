@@ -1674,7 +1674,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Symbols
                     Debug.Assert(Not DeclaringCompilation.Options.Errors.IsEmpty)
                     keys = StrongNameKeys.None
                 Else
-                    keys = StrongNameKeys.Create(keyFile, MessageProvider.Instance)
+                    keys = StrongNameKeys.Create(_compilation.Options.LegacyCompilerFileSystem, keyFile, MessageProvider.Instance)
                 End If
 
                 ' Public signing doesn't require a strong name provider to be used. 

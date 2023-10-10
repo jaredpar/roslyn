@@ -492,7 +492,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 // If we're public signing, we don't need a strong name provider
-                return StrongNameKeys.Create(keyFile, MessageProvider.Instance);
+                return StrongNameKeys.Create(_compilation.Options.LegacyCompilerFileSystem, keyFile, MessageProvider.Instance);
             }
 
             if (string.IsNullOrEmpty(keyFile))
