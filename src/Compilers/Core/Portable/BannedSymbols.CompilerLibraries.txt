@@ -7,3 +7,4 @@ M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAcce
 M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,bool); Use ICompilerFileSystem
 M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions); Use ICompilerFileSystem
 M:System.IO.File.ReadAllBytes(System.String); Use ICompilerFileSystem
+M:System.IO.File.Delete(System.String); Use ICompilerFileSystem

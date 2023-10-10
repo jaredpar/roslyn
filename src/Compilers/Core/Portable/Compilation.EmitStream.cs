@@ -183,7 +183,7 @@ namespace Microsoft.CodeAnalysis
 
                             _strongNameProvider.SignFile(_strongNameKeys, tempFilePath);
 
-                            using (var tempFileStream = new FileStream(tempFilePath, FileMode.Open))
+                            using (var tempFileStream = _strongNameProvider.CompilerFileSystem.NewFileStream(tempFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                             {
                                 tempFileStream.CopyTo(emitStream);
                             }

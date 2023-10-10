@@ -78,16 +78,6 @@ namespace Microsoft.CodeAnalysis.UnitTests
         }
 
         [Fact]
-        public void ReadMVid()
-        {
-            var assembly = Assembly.Load(File.ReadAllBytes(_testFixture.Alpha));
-
-            var result = AssemblyUtilities.ReadMvid(_testFixture.Alpha);
-
-            Assert.Equal(expected: assembly.ManifestModule.ModuleVersionId, actual: result);
-        }
-
-        [Fact]
         public void FindSatelliteAssemblies_None()
         {
             var directory = Temp.CreateDirectory();

@@ -14,6 +14,8 @@ using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.CommandLine;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.VisualBasic;
+using System.Reflection.PortableExecutable;
+using System.Reflection.Metadata;
 
 namespace Microsoft.CodeAnalysis.CompilerServer
 {
@@ -116,7 +118,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                     continue;
                 }
 
-                var resolvedPathMvid = AssemblyUtilities.ReadMvid(resolvedPath);
+                var resolvedPathMvid = ReadMvid(resolvedPath);
                 var loadedAssemblyMvid = loadedAssembly.ManifestModule.ModuleVersionId;
                 if (resolvedPathMvid != loadedAssemblyMvid)
                 {
@@ -128,6 +130,22 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             }
 
             return errorMessages == null;
+        }
+
+        /// <summary>
+        /// Given a path to an assembly, returns its MVID (Module Version ID).
+        /// May throw.
+        /// </summary>
+        public static Guid ReadMvid(string filePath)
+        {
+            RoslynDebug.Assert(PathUtilities.IsAbsolute(filePath));
+
+            using var reader = new PEReader(FileUtilities.OpenRead(filePath));
+            var metadataReader = reader.GetMetadataReader();
+            var mvidHandle = metadataReader.GetModuleDefinition().Mvid;
+            var fileMvid = metadataReader.GetGuid(mvidHandle);
+
+            return fileMvid;
         }
     }
 }
