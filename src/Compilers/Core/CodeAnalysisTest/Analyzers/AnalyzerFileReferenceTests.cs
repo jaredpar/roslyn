@@ -296,7 +296,7 @@ namespace Microsoft.CodeAnalysis.UnitTests
 
         private class AnalyzerLoaderMockCSharpCompiler : CSharpCompiler
         {
-            public AnalyzerLoaderMockCSharpCompiler(CSharpCommandLineParser parser, string? responseFile, string[] args, BuildPaths buildPaths, string? additionalReferenceDirectories, IAnalyzerAssemblyLoader assemblyLoader, GeneratorDriverCache? driverCache = null, ICommonCompilerFileSystem? fileSystem = null)
+            public AnalyzerLoaderMockCSharpCompiler(CSharpCommandLineParser parser, string? responseFile, string[] args, BuildPaths buildPaths, string? additionalReferenceDirectories, IAnalyzerAssemblyLoader assemblyLoader, GeneratorDriverCache? driverCache = null, ICompilerFileSystem? fileSystem = null)
                 : base(parser, responseFile, args, buildPaths, additionalReferenceDirectories, assemblyLoader, driverCache, fileSystem)
             {
             }

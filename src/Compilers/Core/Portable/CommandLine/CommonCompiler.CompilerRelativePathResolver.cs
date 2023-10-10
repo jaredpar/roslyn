@@ -21,9 +21,9 @@ namespace Microsoft.CodeAnalysis
         /// </summary>
         internal sealed class CompilerRelativePathResolver : RelativePathResolver
         {
-            internal ICommonCompilerFileSystem FileSystem { get; }
+            internal ICompilerFileSystem FileSystem { get; }
 
-            internal CompilerRelativePathResolver(ICommonCompilerFileSystem fileSystem, ImmutableArray<string> searchPaths, string? baseDirectory)
+            internal CompilerRelativePathResolver(ICompilerFileSystem fileSystem, ImmutableArray<string> searchPaths, string? baseDirectory)
                 : base(searchPaths, baseDirectory)
             {
                 FileSystem = fileSystem;

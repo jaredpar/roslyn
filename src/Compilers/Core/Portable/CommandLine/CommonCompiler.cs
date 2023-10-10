@@ -85,9 +85,9 @@ namespace Microsoft.CodeAnalysis
         public Roslyn.Utilities.IReadOnlySet<string> EmbeddedSourcePaths { get; }
 
         /// <summary>
-        /// The <see cref="ICommonCompilerFileSystem"/> used to access the file system inside this instance.
+        /// The <see cref="ICompilerFileSystem"/> used to access the file system inside this instance.
         /// </summary>
-        internal ICommonCompilerFileSystem FileSystem { get; set; }
+        internal ICompilerFileSystem FileSystem { get; set; }
 
         private readonly HashSet<Diagnostic> _reportedDiagnostics = new HashSet<Diagnostic>();
 
@@ -121,7 +121,7 @@ namespace Microsoft.CodeAnalysis
             out ImmutableArray<DiagnosticAnalyzer> analyzers,
             out ImmutableArray<ISourceGenerator> generators);
 
-        public CommonCompiler(CommandLineParser parser, string? responseFile, string[] args, BuildPaths buildPaths, string? additionalReferenceDirectories, IAnalyzerAssemblyLoader assemblyLoader, GeneratorDriverCache? driverCache, ICommonCompilerFileSystem? fileSystem)
+        public CommonCompiler(CommandLineParser parser, string? responseFile, string[] args, BuildPaths buildPaths, string? additionalReferenceDirectories, IAnalyzerAssemblyLoader assemblyLoader, GeneratorDriverCache? driverCache, ICompilerFileSystem? fileSystem)
         {
             IEnumerable<string> allArgs = args;
 
@@ -1568,7 +1568,7 @@ namespace Microsoft.CodeAnalysis
 
         // internal for testing
         internal static Stream? GetWin32ResourcesInternal(
-            ICommonCompilerFileSystem fileSystem,
+            ICompilerFileSystem fileSystem,
             CommonMessageProvider messageProvider,
             CommandLineArguments arguments,
             Compilation compilation,
@@ -1581,7 +1581,7 @@ namespace Microsoft.CodeAnalysis
         }
 
         private static Stream? GetWin32Resources(
-            ICommonCompilerFileSystem fileSystem,
+            ICompilerFileSystem fileSystem,
             CommonMessageProvider messageProvider,
             CommandLineArguments arguments,
             Compilation compilation,
@@ -1610,14 +1610,14 @@ namespace Microsoft.CodeAnalysis
             return null;
         }
 
-        private static Stream? OpenManifestStream(ICommonCompilerFileSystem fileSystem, CommonMessageProvider messageProvider, OutputKind outputKind, CommandLineArguments arguments, DiagnosticBag diagnostics)
+        private static Stream? OpenManifestStream(ICompilerFileSystem fileSystem, CommonMessageProvider messageProvider, OutputKind outputKind, CommandLineArguments arguments, DiagnosticBag diagnostics)
         {
             return outputKind.IsNetModule()
                 ? null
                 : OpenStream(fileSystem, messageProvider, arguments.Win32Manifest, arguments.BaseDirectory, messageProvider.ERR_CantOpenWin32Manifest, diagnostics);
         }
 
-        private static Stream? OpenStream(ICommonCompilerFileSystem fileSystem, CommonMessageProvider messageProvider, string? path, string? baseDirectory, int errorCode, DiagnosticBag diagnostics)
+        private static Stream? OpenStream(ICompilerFileSystem fileSystem, CommonMessageProvider messageProvider, string? path, string? baseDirectory, int errorCode, DiagnosticBag diagnostics)
         {
             if (path == null)
             {
@@ -1673,7 +1673,7 @@ namespace Microsoft.CodeAnalysis
 
         private void EmitDeterminismKey(
             Compilation compilation,
-            ICommonCompilerFileSystem fileSystem,
+            ICompilerFileSystem fileSystem,
             ImmutableArray<AdditionalText> additionalTexts,
             ImmutableArray<DiagnosticAnalyzer> analyzers,
             ImmutableArray<ISourceGenerator> generators,

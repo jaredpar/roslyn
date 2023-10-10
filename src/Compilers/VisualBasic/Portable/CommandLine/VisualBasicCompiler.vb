@@ -20,7 +20,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic
         Private ReadOnly _tempDirectory As String
         Private _additionalTextFiles As ImmutableArray(Of AdditionalTextFile)
 
-        Protected Sub New(parser As VisualBasicCommandLineParser, responseFile As String, args As String(), buildPaths As BuildPaths, additionalReferenceDirectories As String, analyzerLoader As IAnalyzerAssemblyLoader, Optional driverCache As GeneratorDriverCache = Nothing, Optional fileSystem As ICommonCompilerFileSystem = Nothing)
+        Protected Sub New(parser As VisualBasicCommandLineParser, responseFile As String, args As String(), buildPaths As BuildPaths, additionalReferenceDirectories As String, analyzerLoader As IAnalyzerAssemblyLoader, Optional driverCache As GeneratorDriverCache = Nothing, Optional fileSystem As ICompilerFileSystem = Nothing)
             MyBase.New(parser, responseFile, args, buildPaths, additionalReferenceDirectories, analyzerLoader, driverCache, fileSystem)
 
             _diagnosticFormatter = New CommandLineDiagnosticFormatter(buildPaths.WorkingDirectory, AddressOf GetAdditionalTextFiles)

@@ -13,7 +13,7 @@ namespace Roslyn.Test.Utilities
     public delegate Stream OpenFileExFunc(string filePath, FileMode mode, FileAccess access, FileShare share, int bufferSize, FileOptions options, out string normalizedFilePath);
     public delegate Stream OpenFileFunc(string filePath, FileMode mode, FileAccess access, FileShare share);
 
-    public sealed class TestableFileSystem : ICommonCompilerFileSystem
+    public sealed class TestableFileSystem : ICompilerFileSystem
     {
         private readonly Dictionary<string, TestableFile>? _map;
 

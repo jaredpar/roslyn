@@ -1,2 +1,9 @@
 M:System.IO.Path.GetTempPath(); Cannot be used safely in APIs or compiler server as underlying environment variables can change during build.
 P:System.Environment.CurrentDirectory; Cannot be used safely in APIs or compiler server as underlying environment variables can change during build.
+M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode); Use ICompilerFileSystem
+M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess); Use ICompilerFileSystem
+M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare); Use ICompilerFileSystem
+M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int); Use ICompilerFileSystem
+M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,bool); Use ICompilerFileSystem
+M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions); Use ICompilerFileSystem
+M:System.IO.File.ReadAllBytes(System.String); Use ICompilerFileSystem
