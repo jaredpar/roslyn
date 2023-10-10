@@ -381,11 +381,11 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        private Stream OpenFileForReadWithSmallBufferOptimization(string filePath, out string normalizedFilePath)
+        private Stream OpenFileForReadWithSmallBufferOptimization(string filePath, out string normalizedFilePath) =>
             // PERF: Using a very small buffer size for the FileStream opens up an optimization within EncodedStringText/EmbeddedText where
             // we read the entire FileStream into a byte array in one shot. For files that are actually smaller than the buffer
             // size, FileStream.Read still allocates the internal buffer.
-            => FileSystem.OpenFileEx(
+            FileSystem.NewFileStreamEx(
                 filePath,
                 FileMode.Open,
                 FileAccess.Read,
@@ -1557,7 +1557,7 @@ namespace Microsoft.CodeAnalysis
         {
             try
             {
-                return FileSystem.OpenFile(filePath, mode, access, share);
+                return FileSystem.NewFileStream(filePath, mode, access, share);
             }
             catch (Exception e)
             {
@@ -1632,7 +1632,7 @@ namespace Microsoft.CodeAnalysis
 
             try
             {
-                return fileSystem.OpenFile(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                return fileSystem.NewFileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             }
             catch (Exception ex)
             {
@@ -1682,7 +1682,7 @@ namespace Microsoft.CodeAnalysis
         {
             var key = compilation.GetDeterministicKey(additionalTexts, analyzers, generators, pathMap, emitOptions);
             var filePath = Path.Combine(Arguments.OutputDirectory, Arguments.OutputFileName + ".key");
-            using var stream = fileSystem.OpenFile(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            using var stream = fileSystem.NewFileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
             var bytes = Encoding.UTF8.GetBytes(key);
             stream.Write(bytes, 0, bytes.Length);
         }

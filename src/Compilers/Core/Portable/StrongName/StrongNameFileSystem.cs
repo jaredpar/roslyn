@@ -15,23 +15,25 @@ namespace Microsoft.CodeAnalysis
     /// </summary>
     internal class StrongNameFileSystem
     {
-        internal static readonly StrongNameFileSystem Instance = new StrongNameFileSystem();
-        internal readonly string? _signingTempPath;
+        internal static readonly StrongNameFileSystem Instance = new StrongNameFileSystem(fileSystem: StandardFileSystem.Instance);
+        private readonly string? _signingTempPath;
+        private readonly ICompilerFileSystem _fileSystem;
 
-        internal StrongNameFileSystem(string? signingTempPath = null)
+        internal StrongNameFileSystem(string? signingTempPath = null, ICompilerFileSystem? fileSystem = null)
         {
             _signingTempPath = signingTempPath;
+            _fileSystem = fileSystem ?? StandardFileSystem.Instance;
         }
 
-        internal virtual FileStream CreateFileStream(string filePath, FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
+        internal virtual Stream CreateFileStream(string filePath, FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
         {
-            return new FileStream(filePath, fileMode, fileAccess, fileShare);
+            return _fileSystem.NewFileStream(filePath, fileMode, fileAccess, fileShare);
         }
 
         internal virtual byte[] ReadAllBytes(string fullPath)
         {
             Debug.Assert(PathUtilities.IsAbsolute(fullPath));
-            return File.ReadAllBytes(fullPath);
+            return _fileSystem.FileReadAllBytes(fullPath);
         }
 
         internal virtual bool FileExists(string? fullPath)

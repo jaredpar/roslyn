@@ -10,7 +10,7 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
     internal sealed class TestStrongNameFileSystem : StrongNameFileSystem
     {
         internal Func<string, byte[]> ReadAllBytesFunc { get; set; }
-        internal Func<string, FileMode, FileAccess, FileShare, FileStream> CreateFileStreamFunc { get; set; }
+        internal Func<string, FileMode, FileAccess, FileShare, Stream> CreateFileStreamFunc { get; set; }
 
         internal TestStrongNameFileSystem(string? signingTempPath)
             : base(signingTempPath)
@@ -20,7 +20,7 @@ namespace Microsoft.CodeAnalysis.Test.Utilities
         }
 
         internal override byte[] ReadAllBytes(string fullPath) => ReadAllBytesFunc(fullPath);
-        internal override FileStream CreateFileStream(string filePath, FileMode fileMode, FileAccess fileAccess, FileShare fileShare) =>
+        internal override Stream CreateFileStream(string filePath, FileMode fileMode, FileAccess fileAccess, FileShare fileShare) =>
             CreateFileStreamFunc(filePath, fileMode, fileAccess, fileShare);
     }
 }

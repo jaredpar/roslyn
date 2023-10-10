@@ -8848,7 +8848,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.", output);
             var srcPath = MakeTrivialExe(Temp.CreateDirectory().Path);
             var exePath = Path.Combine(Path.GetDirectoryName(srcPath), "test.exe");
             var csc = CreateCSharpCompiler(null, WorkingDirectory, new[] { "/nologo", "/preferreduilang:en", $"/out:{exePath}", srcPath });
-            csc.FileSystem = TestableFileSystem.CreateForStandard(openFileFunc: (file, mode, access, share) =>
+            csc.FileSystem = TestableFileSystem.CreateForStandard(newFileStream: (file, mode, access, share) =>
             {
                 if (file == exePath)
                 {
@@ -8871,7 +8871,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.", output);
             var exePath = Path.Combine(Path.GetDirectoryName(srcPath), "test.exe");
             var pdbPath = Path.ChangeExtension(exePath, "pdb");
             var csc = CreateCSharpCompiler(null, WorkingDirectory, new[] { "/nologo", "/preferreduilang:en", "/debug", $"/out:{exePath}", srcPath });
-            csc.FileSystem = TestableFileSystem.CreateForStandard(openFileFunc: (file, mode, access, share) =>
+            csc.FileSystem = TestableFileSystem.CreateForStandard(newFileStream: (file, mode, access, share) =>
             {
                 if (file == pdbPath)
                 {
@@ -8893,7 +8893,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.", output);
             var srcPath = MakeTrivialExe(Temp.CreateDirectory().Path);
             var xmlPath = Path.Combine(Path.GetDirectoryName(srcPath), "test.xml");
             var csc = CreateCSharpCompiler(null, WorkingDirectory, new[] { "/nologo", "/preferreduilang:en", $"/doc:{xmlPath}", srcPath });
-            csc.FileSystem = TestableFileSystem.CreateForStandard(openFileFunc: (file, mode, access, share) =>
+            csc.FileSystem = TestableFileSystem.CreateForStandard(newFileStream: (file, mode, access, share) =>
             {
                 if (file == xmlPath)
                 {
@@ -8917,7 +8917,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.", output);
             var srcPath = MakeTrivialExe(Temp.CreateDirectory().Path);
             var sourceLinkPath = Path.Combine(Path.GetDirectoryName(srcPath), "test.json");
             var csc = CreateCSharpCompiler(null, WorkingDirectory, new[] { "/nologo", "/preferreduilang:en", "/debug:" + format, $"/sourcelink:{sourceLinkPath}", srcPath });
-            csc.FileSystem = TestableFileSystem.CreateForStandard(openFileFunc: (file, mode, access, share) =>
+            csc.FileSystem = TestableFileSystem.CreateForStandard(newFileStream: (file, mode, access, share) =>
             {
                 if (file == sourceLinkPath)
                 {
@@ -8945,7 +8945,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.", output);
             string sourcePath = MakeTrivialExe();
             string exePath = Path.Combine(Path.GetDirectoryName(sourcePath), "test.exe");
             var csc = CreateCSharpCompiler(null, WorkingDirectory, new[] { "/nologo", "/preferreduilang:en", $"/out:{exePath}", sourcePath });
-            csc.FileSystem = TestableFileSystem.CreateForStandard(openFileFunc: (file, mode, access, share) =>
+            csc.FileSystem = TestableFileSystem.CreateForStandard(newFileStream: (file, mode, access, share) =>
             {
                 if (file == exePath)
                 {
@@ -8971,7 +8971,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.", output);
             string exePath = Path.Combine(Path.GetDirectoryName(sourcePath), "test.exe");
             string pdbPath = Path.ChangeExtension(exePath, ".pdb");
             var csc = CreateCSharpCompiler(null, WorkingDirectory, new[] { "/nologo", "/debug-", $"/out:{exePath}", sourcePath });
-            csc.FileSystem = TestableFileSystem.CreateForStandard(openFileFunc: (file, mode, access, share) =>
+            csc.FileSystem = TestableFileSystem.CreateForStandard(newFileStream: (file, mode, access, share) =>
             {
                 if (file == pdbPath)
                 {
@@ -8996,7 +8996,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.", output);
             string sourcePath = MakeTrivialExe();
             string xmlPath = Path.Combine(WorkingDirectory, "Test.xml");
             var csc = CreateCSharpCompiler(null, WorkingDirectory, new[] { "/nologo", "/preferreduilang:en", "/doc:" + xmlPath, sourcePath });
-            csc.FileSystem = TestableFileSystem.CreateForStandard(openFileFunc: (file, mode, access, share) =>
+            csc.FileSystem = TestableFileSystem.CreateForStandard(newFileStream: (file, mode, access, share) =>
             {
                 if (file == xmlPath)
                 {
