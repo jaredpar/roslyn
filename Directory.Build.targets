@@ -1,6 +1,21 @@
 <!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information. -->
 <Project>
+  <PropertyGroup>
+    <CreateSatelliteAssembliesDependsOn>$(CreateSatelliteAssembliesDependsOn);LetsDoSomeEvil</CreateSatelliteAssembliesDependsOn>
+  </PropertyGroup>
   <Import Project="eng\targets\Imports.BeforeArcade.targets" />
   <Import Project="Sdk.targets" Sdk="Microsoft.DotNet.Arcade.Sdk" />
+  <PropertyGroup>
+    <CreateSatelliteAssembliesDependsOn>$(CreateSatelliteAssembliesDependsOn);LetsDoSomeEvil</CreateSatelliteAssembliesDependsOn>
+  </PropertyGroup>
+
   <Import Project="eng\targets\Imports.targets" />
+
+  <Target Name="LetsDoSomeEvil"> 
+    <ItemGroup>
+        <ReferencePath Remove="@(ReferencePath)" />
+        <ReferencePath Include="C:\Users\jaredpar\.nuget\packages\netstandard.library\2.0.3\build\netstandard2.0\ref\netstandard.dll" />
+    </ItemGroup>
+  </Target>
+  
 </Project>
