@@ -154,6 +154,7 @@ Run Compilation for {request.RequestId}
 Return code: {returnCode}
 Output:
 {outputString}");
+                Logger.Log($"Analyzer Section Regex Count: {AnalyzerConfig.RegexMap.Count}");
                 return new CompletedBuildResponse(returnCode, utf8output, outputString);
             }
             catch (Exception ex)
@@ -161,6 +162,7 @@ Output:
                 Logger.LogException(ex, $"Running compilation for {request.RequestId}");
                 throw;
             }
+
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
@@ -15,6 +16,8 @@ namespace Microsoft.CodeAnalysis
 {
     public sealed partial class AnalyzerConfig
     {
+        internal static ImmutableSegmentedDictionary<string, Regex> RegexMap = ImmutableSegmentedDictionary<string, Regex>.Empty;
+
         internal readonly struct SectionNameMatcher
         {
             private readonly ImmutableArray<(int minValue, int maxValue)> _numberRangePairs;
@@ -109,9 +112,32 @@ namespace Microsoft.CodeAnalysis
                 return null;
             }
             sb.Append('$');
-            return new SectionNameMatcher(
-                new Regex(sb.ToString(), RegexOptions.Compiled),
-                numberRangePairs.ToImmutableAndFree());
+
+            var pattern = sb.ToString();
+            if (!RegexMap.TryGetValue(pattern, out var regex))
+            {
+                regex = new Regex(pattern, RegexOptions.Compiled);
+                do
+                {
+                    var map = RegexMap;
+                    if (map.TryGetValue(pattern, out var existing))
+                    {
+                        regex = existing;
+                        break;
+                    }
+
+                    var prior = RoslynImmutableInterlocked.InterlockedCompareExchange(
+                        ref RegexMap,
+                        map.Add(pattern, regex),
+                        map);
+                    if (prior == map)
+                    {
+                        break;
+                    }
+                } while (true);
+            }
+
+            return new SectionNameMatcher(regex, numberRangePairs.ToImmutableAndFree());
         }
 
         internal static string UnescapeSectionName(string sectionName)
