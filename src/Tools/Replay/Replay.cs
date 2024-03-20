@@ -70,10 +70,9 @@ static async Task<int> RunAsync(ReplayOptions options)
     Console.WriteLine($"Binary Log: {options.BinlogPath}");
     Console.WriteLine($"Client Directory: {options.ClientDirectory}");
     Console.WriteLine($"Output Directory: {options.OutputDirectory}");
-    Console.WriteLine($"Pipe Name: {options.PipeName}");
     Console.WriteLine($"Parallel: {options.MaxParallel}");
     Console.WriteLine();
-    Console.WriteLine("Starting server");
+    Console.WriteLine($"Starting server with pipe name {options.PipeName}");
 
     using var compilerServerLogger = new CompilerServerLogger("replay", Path.Combine(options.OutputDirectory, "server.log"));
     if (!BuildServerConnection.TryCreateServer(options.ClientDirectory, options.PipeName, compilerServerLogger))
@@ -101,7 +100,7 @@ static async Task<int> RunAsync(ReplayOptions options)
     }
     finally
     {
-        Console.WriteLine("Shutting down server");
+        Console.WriteLine($"Shutting down server with pipe name {options.PipeName}");
 
         await BuildServerConnection.RunServerShutdownRequestAsync(
             options.PipeName,
