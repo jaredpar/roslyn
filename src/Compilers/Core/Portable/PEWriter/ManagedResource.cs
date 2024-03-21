@@ -36,7 +36,7 @@ namespace Microsoft.Cci
             _isPublic = isPublic;
         }
 
-        public void WriteData(BlobBuilder resourceWriter)
+        public void WriteData(PooledBlobBuilder resourceWriter)
         {
             if (_fileReference == null)
             {
@@ -54,7 +54,7 @@ namespace Microsoft.Cci
                         var count = (int)(stream.Length - stream.Position);
                         resourceWriter.WriteInt32(count);
 
-                        int bytesWritten = resourceWriter.TryWriteBytes(stream, count);
+                        int bytesWritten = resourceWriter.TryWriteBytesSegmented(stream, count);
                         if (bytesWritten != count)
                         {
                             throw new EndOfStreamException(

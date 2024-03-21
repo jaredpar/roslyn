@@ -5,6 +5,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Buffers;
 
 namespace Roslyn.Utilities
 {
@@ -74,5 +75,40 @@ namespace Roslyn.Utilities
             stream.CopyTo(memoryStream);
             return memoryStream.ToArray();
         }
+
+#if !NETCOREAPP
+
+        public static int Read(this Stream stream, Span<byte> buffer)
+        {
+            var array = System.Buffers.ArrayPool<byte>.Shared.Rent(Math.Min(buffer.Length, 1024));
+            try
+            {
+                int totalBytesRead = 0;
+                do
+                {
+                    if (buffer.Length == 0)
+                    {
+                        return totalBytesRead;
+                    }
+
+                    var toRead = Math.Min(buffer.Length, array.Length);
+                    var bytesRead = stream.Read(array, 0, toRead);
+                    if (bytesRead == 0)
+                    {
+                        return totalBytesRead;
+                    }
+
+                    totalBytesRead += bytesRead;
+                    array.AsSpan(0, bytesRead).CopyTo(buffer);
+                    buffer = buffer.Slice(bytesRead);
+                } while (true);
+            }
+            finally
+            {
+                System.Buffers.ArrayPool<byte>.Shared.Return(array);
+            }
+        }
+
+#endif
     }
 }
