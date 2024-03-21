@@ -3,19 +3,22 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.PooledObjects;
+using Roslyn.Utilities;
 
 namespace Microsoft.Cci
 {
     internal sealed class PooledBlobBuilder : BlobBuilder, IDisposable
     {
-        private const int PoolSize = 128;
-        private const int PoolChunkSize = 1024;
+        internal const int PoolSize = 128;
+        internal const int PoolChunkSize = 1024;
 
         private static readonly ObjectPool<PooledBlobBuilder> s_chunkPool = new ObjectPool<PooledBlobBuilder>(() => new PooledBlobBuilder(PoolChunkSize), PoolSize);
 
@@ -80,6 +83,47 @@ namespace Microsoft.Cci
             {
                 s_chunkPool.Free(this);
             }
+        }
+
+        internal void WriteBytesSegmented(ReadOnlySpan<byte> buffer)
+        {
+            while (buffer.Length > 0)
+            {
+                var maxWrite = ChunkCapacity == 0
+                    ? PoolChunkSize
+                    : ChunkCapacity;
+                var toWrite = Math.Min(maxWrite, buffer.Length);
+                this.WriteBytes(buffer.Slice(0, toWrite));
+                buffer = buffer.Slice(toWrite);
+            }
+        }
+
+        internal int TryWriteBytesSegmented(Stream stream, int byteCount)
+        {
+            Debug.Assert(stream.CanSeek);
+            Debug.Assert(stream.CanRead);
+
+            if (byteCount == 0)
+            {
+                return 0;
+            }
+
+            Span<byte> buffer = stackalloc byte[PoolChunkSize];
+            var written = 0;
+            do
+            {
+                var toRead = Math.Min(byteCount, buffer.Length);
+                var read = stream.Read(buffer.Slice(0, toRead));
+                if (read == 0)
+                {
+                    break;
+                }
+
+                WriteBytesSegmented(buffer.Slice(0, read));
+                written += read;
+            } while (written < byteCount);
+
+            return written;
         }
 
         public new void Free()
