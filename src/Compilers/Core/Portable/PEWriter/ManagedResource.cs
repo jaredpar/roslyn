@@ -54,7 +54,7 @@ namespace Microsoft.Cci
                         var count = (int)(stream.Length - stream.Position);
                         resourceWriter.WriteInt32(count);
 
-                        int bytesWritten = resourceWriter.TryWriteBytesSegmented(stream, count);
+                        int bytesWritten = resourceWriter.WriteBytesSegmented(stream, count);
                         if (bytesWritten != count)
                         {
                             throw new EndOfStreamException(

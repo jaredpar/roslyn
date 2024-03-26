@@ -242,7 +242,7 @@ namespace Microsoft.CodeAnalysis
             }
             else
             {
-                using (var builder = BlobBuildingStream.GetInstance())
+                using (var builder = new BlobBuildingStream())
                 {
                     builder.WriteInt32(length);
 
@@ -276,7 +276,7 @@ namespace Microsoft.CodeAnalysis
             }
             else
             {
-                using (var builder = BlobBuildingStream.GetInstance())
+                using (var builder = new BlobBuildingStream())
                 {
                     builder.WriteInt32(bytes.Count);
 
@@ -310,7 +310,7 @@ namespace Microsoft.CodeAnalysis
                 maxByteCount = int.MaxValue;
             }
 
-            using (var builder = BlobBuildingStream.GetInstance())
+            using (var builder = new BlobBuildingStream())
             {
                 if (maxByteCount < CompressionThreshold)
                 {

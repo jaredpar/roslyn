@@ -24,8 +24,8 @@
     <SystemCompositionVersion>8.0.0</SystemCompositionVersion>
     <SystemConfigurationConfigurationManagerVersion>8.0.0</SystemConfigurationConfigurationManagerVersion>
     <SystemDiagnosticsEventLogVersion>8.0.0</SystemDiagnosticsEventLogVersion>
-    <SystemCollectionsImmutableVersion>8.1.0-dev3</SystemCollectionsImmutableVersion>
-    <SystemReflectionMetadataVersion>8.1.0-dev3</SystemReflectionMetadataVersion>
+    <SystemCollectionsImmutableVersion>8.1.0-dev6</SystemCollectionsImmutableVersion>
+    <SystemReflectionMetadataVersion>8.1.0-dev6</SystemReflectionMetadataVersion>
     <SystemDiagnosticsDiagnosticSourceVersion>8.0.0</SystemDiagnosticsDiagnosticSourceVersion>
     <SystemIOPipelinesVersion>8.0.0</SystemIOPipelinesVersion>
     <SystemResourcesExtensionsVersion>8.0.0</SystemResourcesExtensionsVersion>

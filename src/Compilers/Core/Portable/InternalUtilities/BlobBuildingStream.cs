@@ -9,6 +9,7 @@ using System.IO;
 using System.Reflection.Metadata;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis;
+using Microsoft.Cci;
 
 namespace Roslyn.Utilities
 {
@@ -17,9 +18,6 @@ namespace Roslyn.Utilities
     /// </summary>
     internal sealed class BlobBuildingStream : Stream
     {
-        private static readonly ObjectPool<BlobBuildingStream> s_pool = new ObjectPool<BlobBuildingStream>(() => new BlobBuildingStream());
-        private readonly BlobBuilder _builder;
-
         /// <summary>
         /// The chunk size to be used by the underlying BlobBuilder.
         /// </summary>
@@ -43,21 +41,18 @@ namespace Roslyn.Utilities
         /// </remarks>
         public const int ChunkSize = 32 * 1024;
 
+        private readonly PooledBlobBuilder _builder;
+
         public override bool CanWrite => true;
         public override bool CanRead => false;
         public override bool CanSeek => false;
         public override long Length => _builder.Count;
 
-        public static BlobBuildingStream GetInstance()
-        {
-            return s_pool.Allocate();
-        }
-
-        private BlobBuildingStream()
+        public BlobBuildingStream()
         {
             // NOTE: We pool the wrapping BlobBuildingStream, but not individual chunks.
             // The first chunk will be reused, but any further chunks will be freed when we're done building blob.
-            _builder = new BlobBuilder(ChunkSize);
+            _builder = PooledBlobBuilder.GetInstance(ChunkSize);
         }
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -87,8 +82,7 @@ namespace Roslyn.Utilities
 
         public void Free()
         {
-            _builder.Clear();  // frees all but first chunk
-            s_pool.Free(this); // return first chunk to pool
+            _builder.Free();
         }
 
         public override void Flush()
@@ -121,6 +115,5 @@ namespace Roslyn.Utilities
             get { throw new NotSupportedException(); }
             set { throw new NotSupportedException(); }
         }
-
     }
 }

@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -20,11 +22,12 @@ namespace Microsoft.Cci
         internal const int PoolSize = 128;
         internal const int PoolChunkSize = 1024;
 
-        private static readonly ObjectPool<PooledBlobBuilder> s_chunkPool = new ObjectPool<PooledBlobBuilder>(() => new PooledBlobBuilder(PoolChunkSize), PoolSize);
+        private bool _rentsArray;
 
         private PooledBlobBuilder(int size)
-            : base(size)
+            : base(ArrayPool<byte>.Shared.Rent(size))
         {
+            _rentsArray = true;
         }
 
         /// <summary>
@@ -38,51 +41,49 @@ namespace Microsoft.Cci
         ///
         /// https://github.com/dotnet/runtime/issues/99244
         /// </remarks>
-        public static PooledBlobBuilder GetInstance(bool zero = false)
+        public static PooledBlobBuilder GetInstance(int capacity = PoolChunkSize, bool zero = false)
         {
-            var builder = s_chunkPool.Allocate();
+            var builder = new PooledBlobBuilder(capacity);
             if (zero)
             {
-                builder.WriteBytes(0, builder.ChunkCapacity);
-                builder.Clear();
+                builder._buffer.AsSpan().Clear();
             }
+
             return builder;
         }
 
+        protected override byte[] AllocateBytes(int size) => throw new Exception("should not get here");
+
         protected override BlobBuilder AllocateChunk(int minimalSize)
         {
-            if (minimalSize <= PoolChunkSize)
-            {
-                return s_chunkPool.Allocate();
-            }
+            return new PooledBlobBuilder(minimalSize);
+        }
 
-            return new BlobBuilder(minimalSize);
+        protected override void LinkThisToOther(BlobBuilder other, bool isSuffix)
+        {
+            if (other is not PooledBlobBuilder)
+            {
+                _rentsArray = false;
+            }
+        }
+
+        protected override void LinkOtherToThis(BlobBuilder @this, bool isSuffix)
+        {
+            if (@this is not PooledBlobBuilder)
+            {
+                _rentsArray = false;
+            }
         }
 
         protected override void FreeChunk()
         {
-            if (ChunkCapacity != PoolChunkSize)
+            if (_rentsArray)
             {
-                // The invariant of this builder is that it produces BlobBuilder instances that have a 
-                // ChunkCapacity of exactly 1024. Essentially inside AllocateChuck the pool must be able
-                // to mindlessly allocate a BlobBuilder where ChunkCapacity is at least 1024.
-                //
-                // To maintain this the code must verify that the returned BlobBuilder instances have 
-                // a backing array of the appropriate size. This array can shrink in practice through code
-                // like the following: 
-                //
-                //      var builder = PooledBlobBuilder.GetInstance();
-                //      builder.LinkSuffix(new BlobBuilder(256));
-                //      builder.Free(); // calls FreeChunk where ChunkCapacity is 256
-                //
-                // This shouldn't happen much in practice due to convention of how builders are used but
-                // it is a legal use of the APIs and must be accounted for.
-                s_chunkPool.ForgetTrackedObject(this);
+                ArrayPool<byte>.Shared.Return(_buffer);
             }
-            else
-            {
-                s_chunkPool.Free(this);
-            }
+
+            _buffer = null!;
+            _rentsArray = false;
         }
 
         internal void WriteBytesSegmented(ReadOnlySpan<byte> buffer)
@@ -98,7 +99,29 @@ namespace Microsoft.Cci
             }
         }
 
-        internal int TryWriteBytesSegmented(Stream stream, int byteCount)
+        internal int WriteBytesSegmented(Stream stream)
+        {
+            Debug.Assert(stream.CanSeek);
+            Debug.Assert(stream.CanRead);
+
+            Span<byte> buffer = stackalloc byte[PoolChunkSize];
+            var written = 0;
+            do
+            {
+                var read = stream.Read(buffer);
+                if (read == 0)
+                {
+                    break;
+                }
+
+                WriteBytesSegmented(buffer.Slice(0, read));
+                written += read;
+            } while (true);
+
+            return written;
+        }
+
+        internal int WriteBytesSegmented(Stream stream, int byteCount)
         {
             Debug.Assert(stream.CanSeek);
             Debug.Assert(stream.CanRead);
