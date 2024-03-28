@@ -48,16 +48,16 @@ namespace Microsoft.Cci
             bool hasPdbStream,
             CancellationToken cancellationToken)
         {
-            var builder = new MetadataBuilder();
+            var builder = new MetadataBuilder(createBlobBuilderFunc: PooledBlobBuilder.GetInstanceEx);
             MetadataBuilder? debugBuilderOpt;
             switch (context.Module.DebugInformationFormat)
             {
                 case DebugInformationFormat.PortablePdb:
-                    debugBuilderOpt = hasPdbStream ? new MetadataBuilder() : null;
+                    debugBuilderOpt = hasPdbStream ? new MetadataBuilder(createBlobBuilderFunc: PooledBlobBuilder.GetInstanceEx) : null;
                     break;
 
                 case DebugInformationFormat.Embedded:
-                    debugBuilderOpt = metadataOnly ? null : new MetadataBuilder();
+                    debugBuilderOpt = metadataOnly ? null : new MetadataBuilder(createBlobBuilderFunc: PooledBlobBuilder.GetInstanceEx);
                     break;
 
                 default:

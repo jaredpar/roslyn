@@ -26,7 +26,7 @@ public sealed class PooledBlobBuilderTests
         var bytes = new byte[size];
         bytes.AsSpan().Fill(13);
         var builder = PooledBlobBuilder.GetInstance();
-        var written = builder.TryWriteBytesSegmented(new MemoryStream(bytes), size);
+        var written = builder.WriteBytesSegmented(new MemoryStream(bytes), size);
         Assert.Equal(size, written);
 
         var expectedBlobCount = size % PooledBlobBuilder.PoolChunkSize == 0

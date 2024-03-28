@@ -32,9 +32,9 @@ namespace Microsoft.Cci
         public ExtendedPEBuilder(
             PEHeaderBuilder header,
             MetadataRootBuilder metadataRootBuilder,
-            BlobBuilder ilStream,
-            BlobBuilder? mappedFieldData,
-            BlobBuilder? managedResources,
+            PooledBlobBuilder ilStream,
+            PooledBlobBuilder? mappedFieldData,
+            PooledBlobBuilder? managedResources,
             ResourceSectionBuilder? nativeResources,
             DebugDirectoryBuilder? debugDirectoryBuilder,
             int strongNameSignatureSize,
@@ -47,6 +47,9 @@ namespace Microsoft.Cci
         {
             _withMvidSection = withMvidSection;
         }
+
+        protected override BlobBuilder CreateBlobBuilder(int? minimumSize = null) =>
+            minimumSize is { } size ? PooledBlobBuilder.GetInstance(size) : PooledBlobBuilder.GetInstance();
 
         protected override ImmutableArray<Section> CreateSections()
         {
@@ -89,7 +92,7 @@ namespace Microsoft.Cci
 
         private BlobBuilder SerializeMvidSection()
         {
-            var sectionBuilder = new BlobBuilder();
+            var sectionBuilder = PooledBlobBuilder.GetInstance();
 
             // The guid will be filled in later:
             _mvidSectionFixup = sectionBuilder.ReserveBytes(SizeOfGuid);

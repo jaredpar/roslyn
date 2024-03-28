@@ -227,7 +227,7 @@ namespace Microsoft.Cci
                 languageDirectory.Entries.Add(r);
             }
 
-            var dataWriter = new BlobBuilder();
+            var dataWriter = PooledBlobBuilder.GetInstance();
 
             //'dataWriter' is where opaque resource data goes as well as strings that are used as type or name identifiers
             WriteDirectory(typeDirectory, builder, 0, 0, sizeOfDirectoryTree, resourcesRva, dataWriter);

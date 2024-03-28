@@ -4055,7 +4055,7 @@ public unsafe class Program1
 
             using var peStream = new MemoryStream();
             var ilBuilder = new BlobBuilder();
-            var metadataBuilder = new MetadataBuilder();
+            var metadataBuilder = new MetadataBuilder(createBlobBuilderFunc: PooledBlobBuilder.GetInstanceEx);
             // SignatureAttributes has the following values:
             // 0x00 - default
             // 0x10 - Generic

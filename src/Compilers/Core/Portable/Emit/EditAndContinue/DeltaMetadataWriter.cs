@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis.Emit
             SymbolChanges changes,
             CancellationToken cancellationToken)
             : base(metadata: MakeTablesBuilder(previousGeneration),
-                   debugMetadataOpt: (context.Module.DebugInformationFormat == DebugInformationFormat.PortablePdb) ? new MetadataBuilder() : null,
+                   debugMetadataOpt: (context.Module.DebugInformationFormat == DebugInformationFormat.PortablePdb) ? new MetadataBuilder(createBlobBuilderFunc: PooledBlobBuilder.GetInstanceEx) : null,
                    dynamicAnalysisDataWriterOpt: null,
                    context: context,
                    messageProvider: messageProvider,
@@ -141,7 +141,8 @@ namespace Microsoft.CodeAnalysis.Emit
                 previousGeneration.UserStringStreamLength,
                 previousGeneration.StringStreamLength,
                 previousGeneration.BlobStreamLength,
-                previousGeneration.GuidStreamLength);
+                previousGeneration.GuidStreamLength,
+                PooledBlobBuilder.GetInstanceEx);
         }
 
         private ImmutableArray<int> GetDeltaTableSizes(ImmutableArray<int> rowCounts)

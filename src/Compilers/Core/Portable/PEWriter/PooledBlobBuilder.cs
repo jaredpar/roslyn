@@ -11,6 +11,7 @@ using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
@@ -19,16 +20,29 @@ namespace Microsoft.Cci
 {
     internal sealed class PooledBlobBuilder : BlobBuilder, IDisposable
     {
-        internal const int PoolSize = 128;
+        internal const int PoolSize = 1024 * 4;
         internal const int PoolChunkSize = 1024;
+        internal const int PoolMaxChunkSize = 1024 * 16;
 
         private bool _rentsArray;
+
+        protected override int? MaxChunkSize => PoolMaxChunkSize;
+
+        private static readonly ObjectPool<PooledBlobBuilder> s_chunkPool = new ObjectPool<PooledBlobBuilder>(() => new PooledBlobBuilder(), PoolSize);
+
+        private PooledBlobBuilder()
+            : base(Array.Empty<byte>())
+        {
+            _rentsArray = false;
+        }
 
         private PooledBlobBuilder(int size)
             : base(ArrayPool<byte>.Shared.Rent(size))
         {
             _rentsArray = true;
         }
+
+        public static PooledBlobBuilder GetInstanceEx(int capacity) => GetInstance(capacity);
 
         /// <summary>
         /// Get a new instance of the <see cref="BlobBuilder"/> that has <see cref="BlobBuilder.ChunkCapacity"/> of
@@ -43,34 +57,42 @@ namespace Microsoft.Cci
         /// </remarks>
         public static PooledBlobBuilder GetInstance(int capacity = PoolChunkSize, bool zero = false)
         {
-            var builder = new PooledBlobBuilder(capacity);
+            var builder = s_chunkPool.Allocate();
+            Debug.Assert(!builder._rentsArray);
+            Debug.Assert(builder.Buffer.Length == 0);
+
+            builder.Buffer = ArrayPool<byte>.Shared.Rent(capacity);
+            builder._rentsArray = true;
             if (zero)
             {
-                builder._buffer.AsSpan().Clear();
+                builder.Buffer.AsSpan().Clear();
             }
-
             return builder;
         }
 
-        protected override byte[] AllocateBytes(int size) => throw new Exception("should not get here");
+        protected override BlobBuilder AllocateChunk(int minimalSize) => PooledBlobBuilder.GetInstance(minimalSize);
 
-        protected override BlobBuilder AllocateChunk(int minimalSize)
+        public override void SetCapacityCore(int capacity)
         {
-            return new PooledBlobBuilder(minimalSize);
-        }
-
-        protected override void LinkThisToOther(BlobBuilder other, bool isSuffix)
-        {
-            if (other is not PooledBlobBuilder)
+            if (_rentsArray)
             {
-                _rentsArray = false;
+                var oldBuffer = Buffer;
+                Buffer = ArrayPool<byte>.Shared.Rent(capacity);
+                var copy = Math.Min(oldBuffer.Length, Buffer.Length);
+                this.WriteBytes(oldBuffer.AsSpan().Slice(0, copy));
+                ArrayPool<byte>.Shared.Return(oldBuffer);
+            }
+            else
+            {
+                base.SetCapacityCore(capacity);
             }
         }
 
-        protected override void LinkOtherToThis(BlobBuilder @this, bool isSuffix)
+        protected override void BeforeSwapCore(BlobBuilder other)
         {
-            if (@this is not PooledBlobBuilder)
+            if (other is not PooledBlobBuilder { _rentsArray: true })
             {
+                Debug.Assert(false);
                 _rentsArray = false;
             }
         }
@@ -79,11 +101,11 @@ namespace Microsoft.Cci
         {
             if (_rentsArray)
             {
-                ArrayPool<byte>.Shared.Return(_buffer);
+                ArrayPool<byte>.Shared.Return(Buffer);
+                Buffer = Array.Empty<byte>();
+                _rentsArray = false;
+                s_chunkPool.Free(this);
             }
-
-            _buffer = null!;
-            _rentsArray = false;
         }
 
         internal void WriteBytesSegmented(ReadOnlySpan<byte> buffer)

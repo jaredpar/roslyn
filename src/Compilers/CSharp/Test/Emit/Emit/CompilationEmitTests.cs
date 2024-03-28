@@ -638,7 +638,7 @@ public class C
         public void MvidSectionNotFirst()
         {
             var ilBuilder = new BlobBuilder();
-            var metadataBuilder = new MetadataBuilder();
+            var metadataBuilder = new MetadataBuilder(createBlobBuilderFunc: null);
 
             var peBuilder = new TestPEBuilder(
                 PEHeaderBuilder.CreateLibraryHeader(),

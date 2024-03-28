@@ -164,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
                     buildRequest,
                     pipeName,
                     timeoutOverride: null,
-                    tryCreateServerFunc: (pipeName, logger) => TryCreateServer(clientDirectory, pipeName, logger),
+                    tryCreateServerFunc: (pipeName, logger) => TryCreateServer(clientDirectory, pipeName, logfilePath: null, logger),
                     logger,
                     cancellationToken);
 
@@ -433,10 +433,14 @@ namespace Microsoft.CodeAnalysis.CommandLine
             }
         }
 
-        internal static (string processFilePath, string commandLineArguments, string toolFilePath) GetServerProcessInfo(string clientDir, string pipeName)
+        internal static (string processFilePath, string commandLineArguments, string toolFilePath) GetServerProcessInfo(string clientDir, string pipeName, string? logFilePath)
         {
             var serverPathWithoutExtension = Path.Combine(clientDir, "VBCSCompiler");
             var commandLineArgs = $@"""-pipename:{pipeName}""";
+            if (logFilePath is not null)
+            {
+                commandLineArgs += $@" ""-logger:{logFilePath}""";
+            }
             return RuntimeHostInfo.GetProcessInfo(serverPathWithoutExtension, commandLineArgs);
         }
 
@@ -446,9 +450,9 @@ namespace Microsoft.CodeAnalysis.CommandLine
         /// compiler server process was successful, it does not state whether the server successfully
         /// started or not (it could crash on startup).
         /// </summary>
-        internal static bool TryCreateServer(string clientDirectory, string pipeName, ICompilerServerLogger logger)
+        internal static bool TryCreateServer(string clientDirectory, string pipeName, string? logfilePath, ICompilerServerLogger logger)
         {
-            var serverInfo = GetServerProcessInfo(clientDirectory, pipeName);
+            var serverInfo = GetServerProcessInfo(clientDirectory, pipeName, logfilePath);
 
             if (!File.Exists(serverInfo.toolFilePath))
             {

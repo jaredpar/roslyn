@@ -75,8 +75,9 @@ static async Task<int> RunAsync(ReplayOptions options)
     Console.WriteLine();
     Console.WriteLine("Starting server");
 
-    using var compilerServerLogger = new CompilerServerLogger("replay", Path.Combine(options.OutputDirectory, "server.log"));
-    if (!BuildServerConnection.TryCreateServer(options.ClientDirectory, options.PipeName, compilerServerLogger))
+    var logFilePath = Path.Combine(options.OutputDirectory, "server.log");
+    using var compilerServerLogger = new CompilerServerLogger("replay", logFilePath);
+    if (!BuildServerConnection.TryCreateServer(options.ClientDirectory, options.PipeName, logFilePath, compilerServerLogger))
     {
         Console.WriteLine("Failed to start server");
         return 1;

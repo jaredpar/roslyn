@@ -35,7 +35,7 @@ namespace Microsoft.Cci
     {
         internal struct EmitBuilders
         {
-            internal BlobBuilder IlBlobBuilder;
+            internal PooledBlobBuilder IlBlobBuilder;
             internal PooledBlobBuilder? MappedFieldDataBlobBuilder;
             internal PooledBlobBuilder? ManagedResourceBlobBuilder;
             internal PooledBlobBuilder? PortableExecutableBlobBuilder;
@@ -43,7 +43,7 @@ namespace Microsoft.Cci
 
             public EmitBuilders()
             {
-                IlBlobBuilder = new BlobBuilder(32 * 1024);
+                IlBlobBuilder = PooledBlobBuilder.GetInstance(32 * 1024);
                 MappedFieldDataBlobBuilder = null;
                 ManagedResourceBlobBuilder = null;
                 PortableExecutableBlobBuilder = null;
@@ -238,7 +238,7 @@ namespace Microsoft.Cci
             DebugDirectoryBuilder? debugDirectoryBuilder;
             if (pdbPathOpt != null || isDeterministic || portablePdbToEmbed != null)
             {
-                debugDirectoryBuilder = new DebugDirectoryBuilder();
+                debugDirectoryBuilder = new DebugDirectoryBuilder(PooledBlobBuilder.GetInstance());
                 if (pdbPathOpt != null)
                 {
                     string paddedPath = isDeterministic ? pdbPathOpt : PadPdbPath(pdbPathOpt);

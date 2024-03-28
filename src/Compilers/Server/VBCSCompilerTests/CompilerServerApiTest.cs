@@ -129,7 +129,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer.UnitTests
         [WorkItem(33452, "https://github.com/dotnet/roslyn/issues/33452")]
         public void QuotePipeName_Desktop()
         {
-            var serverInfo = BuildServerConnection.GetServerProcessInfo(@"q:\tools", "name with space");
+            var serverInfo = BuildServerConnection.GetServerProcessInfo(@"q:\tools", "name with space", logFilePath: null);
             Assert.Equal(@"q:\tools\VBCSCompiler.exe", serverInfo.processFilePath);
             Assert.Equal(@"q:\tools\VBCSCompiler.exe", serverInfo.toolFilePath);
             Assert.Equal(@"""-pipename:name with space""", serverInfo.commandLineArguments);
@@ -142,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer.UnitTests
             var toolDir = ExecutionConditionUtil.IsWindows
                 ? @"q:\tools"
                 : "/tools";
-            var serverInfo = BuildServerConnection.GetServerProcessInfo(toolDir, "name with space");
+            var serverInfo = BuildServerConnection.GetServerProcessInfo(toolDir, "name with space", logFilePath: null);
             var vbcsFilePath = Path.Combine(toolDir, "VBCSCompiler.dll");
             Assert.Equal(vbcsFilePath, serverInfo.toolFilePath);
             Assert.Equal($@"exec ""{vbcsFilePath}"" ""-pipename:name with space""", serverInfo.commandLineArguments);
