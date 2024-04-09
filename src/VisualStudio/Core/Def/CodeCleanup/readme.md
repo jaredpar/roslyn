@@ -13,37 +13,33 @@ For editorconfig items that are handled by the formatter they are not exported f
 | **editorconfig**                                                                  | **Diagnostic Ids**       |
 |-----------------------------------------------------------------------------------|--------------------------|
 | dotnet_code_quality_unused_parameters                                             | IDE0060                  |
-| dotnet_remove_unnecessary_suppression_exclusions                                  | IDE0079                  |
-| dotnet_separate_import_directive_groups                                           | IDE0065                  |
-| dotnet_sort_system_directives_first                                               | IDE0065                  |
 | dotnet_style_allow_multiple_blank_lines_experimental                              | IDE2000                  |
 | dotnet_style_allow_statement_immediately_after_block_experimental                 | IDE2003                  |
-| dotnet_style_coalesce_expression                                                  | IDE0029                  |
+| dotnet_style_coalesce_expression                                                  | IDE0029/IDE0030/IDE0270  |
 | dotnet_style_collection_initializer                                               | IDE0028                  |
 | dotnet_style_explicit_tuple_names                                                 | IDE0033                  |
 | dotnet_style_namespace_match_folder                                               | IDE0130                  |
 | dotnet_style_null_propagation                                                     | IDE0031                  |
 | dotnet_style_object_initializer                                                   | IDE0017                  |
-| dotnet_style_operator_placement_when_wrapping                                     | N/A handled by formatter |
 | dotnet_style_parentheses_in_arithmetic_binary_operators                           | IDE0047/IDE0048          |
 | dotnet_style_parentheses_in_other_binary_operators                                | IDE0047/IDE0048          |
 | dotnet_style_parentheses_in_other_operators                                       | IDE0047/IDE0048          |
 | dotnet_style_parentheses_in_relational_binary_operators                           | IDE0047/IDE0048          |
-| dotnet_style_predefined_type_for_locals_parameters_members                        | IDE0049                  |
-| dotnet_style_predefined_type_for_member_access                                    | IDE0049                  |
 | dotnet_style_prefer_auto_properties                                               | IDE0032                  |
+| dotnet_style_prefer_collection_expression                                         | IDE0300/IDE0301/IDE0302/IDE0303/IDE0304/IDE0305 |
 | dotnet_style_prefer_compound_assignment                                           | IDE0054/IDE0074          |
 | dotnet_style_prefer_conditional_expression_over_assignment                        | IDE0045                  |
 | dotnet_style_prefer_conditional_expression_over_return                            | IDE0046                  |
+| dotnet_style_prefer_foreach_explicit_cast_in_source                               | IDE0220                  |
 | dotnet_style_prefer_inferred_anonymous_type_member_names                          | IDE0037                  |
 | dotnet_style_prefer_inferred_tuple_names                                          | IDE0037                  |
 | dotnet_style_prefer_is_null_check_over_reference_equality_method                  | IDE0041                  |
 | dotnet_style_prefer_simplified_boolean_expressions                                | IDE0075                  |
 | dotnet_style_prefer_simplified_interpolation                                      | IDE0071                  |
-| dotnet_style_qualification_for_event                                              | IDE0003/IDE0009          |
-| dotnet_style_qualification_for_field                                              | IDE0003/IDE0009          |
-| dotnet_style_qualification_for_method                                             | IDE0003/IDE0009          |
-| dotnet_style_qualification_for_property                                           | IDE0003/IDE0009          |
+| dotnet_style_qualification_for_event                                              | IDE0009                  |
+| dotnet_style_qualification_for_field                                              | IDE0009                  |
+| dotnet_style_qualification_for_method                                             | IDE0009                  |
+| dotnet_style_qualification_for_property                                           | IDE0009                  |
 | dotnet_style_readonly_field                                                       | IDE0044                  |
 | dotnet_style_require_accessibility_modifiers                                      | IDE0040                  |
 | csharp_indent_block_contents                                                      | N/A handled by formatter |
@@ -89,6 +85,8 @@ For editorconfig items that are handled by the formatter they are not exported f
 | csharp_space_between_parentheses                                                  | N/A handled by formatter |
 | csharp_space_between_square_brackets                                              | N/A handled by formatter |
 | csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental | IDE2004                  |
+| csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental | IDE2006                  |
+| csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental  | IDE2005                  |
 | csharp_style_allow_blank_lines_between_consecutive_braces_experimental            | IDE2002                  |
 | csharp_style_allow_embedded_statements_on_same_line_experimental                  | IDE2001                  |
 | csharp_style_conditional_delegate_call                                            | IDE1005                  |
@@ -103,8 +101,8 @@ For editorconfig items that are handled by the formatter they are not exported f
 | csharp_style_expression_bodied_properties                                         | IDE0025                  |
 | csharp_style_implicit_object_creation_when_type_is_apparent                       | IDE0090                  |
 | csharp_style_inlined_variable_declaration                                         | IDE0018                  |
-| csharp_style_namespace_declarations                                               | IDE0161                  |
-| csharp_style_pattern_matching_over_as_with_null_check                             | IDE0019                  |
+| csharp_style_namespace_declarations                                               | IDE0160/IDE0161          |
+| csharp_style_pattern_matching_over_as_with_null_check                             | IDE0019/IDE0260          |
 | csharp_style_pattern_matching_over_is_with_cast_check                             | IDE0020                  |
 | csharp_style_prefer_extended_property_pattern                                     | IDE0170                  |
 | csharp_style_prefer_index_operator                                                | IDE0056                  |
@@ -112,11 +110,15 @@ For editorconfig items that are handled by the formatter they are not exported f
 | csharp_style_prefer_method_group_conversion                                       | IDE0200                  |
 | csharp_style_prefer_not_pattern                                                   | IDE0083                  |
 | csharp_style_prefer_null_check_over_type_check                                    | IDE0150                  |
-| csharp_style_prefer_null_check_over_type_check                                    | IDE0150                  |
 | csharp_style_prefer_pattern_matching                                              | IDE0078                  |
+| csharp_style_prefer_primary_constructors                                          | IDE0290                  |
 | csharp_style_prefer_range_operator                                                | IDE0057                  |
+| csharp_style_prefer_readonly_struct                                               | IDE0250                  |
+| csharp_style_prefer_readonly_struct_member                                        | IDE0251                  |
 | csharp_style_prefer_switch_expression                                             | IDE0066                  |
+| csharp_style_prefer_top_level_statements                                          | IDE0210/IDE0211          |
 | csharp_style_prefer_tuple_swap                                                    | IDE0180                  |
+| csharp_style_prefer_utf8_string_literals                                          | IDE0230                  |
 | csharp_style_throw_expression                                                     | IDE0016                  |
 | csharp_style_unused_value_assignment_preference                                   | IDE0059                  |
 | csharp_style_unused_value_expression_statement_preference                         | IDE0058                  |
@@ -125,8 +127,8 @@ For editorconfig items that are handled by the formatter they are not exported f
 | csharp_style_var_when_type_is_apparent                                            | IDE0007/IDE0008          |
 | csharp_using_directive_placement                                                  | IDE0065                  |
 | file_header_template                                                              | IDE0073                  |
-| visual_basic_preferred_modifier_order                                             | IDE0036                  |
-| visual_basic_style_prefer_isnot_expression                                        | IDE0084                  |
-| visual_basic_style_prefer_simplified_object_creation                              | IDE0140                  |
-| visual_basic_style_unused_value_assignment_preference                             | IDE0059                  |
-| visual_basic_style_unused_value_expression_statement_preference                   | IDE0058                  |
+| visual_basic_preferred_modifier_order                                             | N/A handled by formatter |
+| visual_basic_style_prefer_isnot_expression                                        | N/A handled by formatter |
+| visual_basic_style_prefer_simplified_object_creation                              | N/A handled by formatter |
+| visual_basic_style_unused_value_assignment_preference                             | N/A handled by formatter |
+| visual_basic_style_unused_value_expression_statement_preference                   | N/A handled by formatter |
