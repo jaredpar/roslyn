@@ -85,6 +85,16 @@ namespace RunTests
         public bool UseHelix { get; set; }
 
         /// <summary>
+        /// Name of the helix job
+        /// </summary>
+        public string? HelixJobName { get; set; }
+
+        /// <summary>
+        /// The <see cref="OSPlatform"/> the helix job should run on.
+        /// </summary>
+        public OSPlatform HelixOSPlatform { get; set; }
+
+        /// <summary>
         /// Name of the Helix queue to run tests on (only valid when <see cref="UseHelix" /> is <see langword="true" />).
         /// </summary>
         public string? HelixQueueName { get; set; }
