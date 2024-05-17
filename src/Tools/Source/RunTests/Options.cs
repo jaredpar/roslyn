@@ -92,7 +92,7 @@ namespace RunTests
         /// <summary>
         /// The <see cref="OSPlatform"/> the helix job should run on.
         /// </summary>
-        public OSPlatform HelixOSPlatform { get; set; }
+        public OSPlatform? HelixOSPlatform { get; set; }
 
         /// <summary>
         /// Name of the Helix queue to run tests on (only valid when <see cref="UseHelix" /> is <see langword="true" />).
@@ -160,6 +160,8 @@ namespace RunTests
             var sequential = false;
             var helix = false;
             var helixQueueName = "Windows.10.Amd64.Open";
+            string? helixJobName = null;
+            string? helixPlatform = null;
             string? helixApiAccessToken = null;
             string? testFilter = null;
             int? timeout = null;
@@ -187,6 +189,8 @@ namespace RunTests
                 { "helix", "Run tests on Helix", o => helix = o is object },
                 { "helixQueueName=", "Name of the Helix queue to run tests on", (string s) => helixQueueName = s },
                 { "helixApiAccessToken=", "Access token for internal helix queues", (string s) => helixApiAccessToken = s },
+                { "helixJobName=", "Friendly name of the helix job", (string s) => helixJobName = s },
+                { "helixPlatform=", "The platform to run helix on: Windows, Linux, OSX", (string s) => platform = s },
                 { "testfilter=", "xUnit string to pass to --filter, e.g. FullyQualifiedName~TestClass1|Category=CategoryA", (string s) => testFilter = s },
                 { "timeout=", "Minute timeout to limit the tests to", (int i) => timeout = i },
                 { "out=", "Test result file directory (when running on Helix, this is relative to the Helix work item directory)", (string s) => resultFileDirectory = s },
@@ -226,6 +230,10 @@ namespace RunTests
                 return null;
             }
 
+            OSPlatform? platform = helixPlatform is { } 
+                ? OSPlatform.Create(platform)
+                : null;
+
             resultFileDirectory ??= helix
                 ? "."
                 : Path.Combine(artifactsPath, "TestResults", configuration);
@@ -260,6 +268,8 @@ namespace RunTests
                 CollectDumps = collectDumps,
                 Sequential = sequential,
                 UseHelix = helix,
+                HelixJobName = helixJobName,
+                HelixOSPlatform = platform,
                 HelixQueueName = helixQueueName,
                 HelixApiAccessToken = helixApiAccessToken,
                 IncludeHtml = includeHtml,

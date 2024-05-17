@@ -4,7 +4,7 @@ Get all of the helix generation to occur on the same machine as the build. That 
 
 ## Plan
 
-1. Change RunTests to just drop the files on disk
+1. Change RunTests to just drop the files on disk. Those are then uploaded with the rest of the payload
 2. Make sure there is a README in the folder of all of our build tools that better explain their purpose and how they fit into the build process
 
 ## Todo
