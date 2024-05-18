@@ -66,6 +66,7 @@
       "src\\Test\\PdbUtilities\\Roslyn.Test.PdbUtilities.csproj",
       "src\\Tools\\BuildBoss\\BuildBoss.csproj",
       "src\\Tools\\Replay\\Replay.csproj",
+      "src\\Tools\\HelixUtil\\HelixUtil.csproj",
       "src\\Tools\\BuildValidator\\BuildValidator.csproj",
       "src\\Tools\\PrepareTests\\PrepareTests.csproj",
       "src\\Tools\\Source\\CompilerGeneratorTools\\Source\\BoundTreeGenerator\\CompilersBoundTreeGenerator.csproj",

@@ -15,9 +15,9 @@ using Microsoft.TeamFoundation.TestManagement.WebApi;
 using Microsoft.VisualStudio.Services.TestResults.WebApi;
 using Microsoft.VisualStudio.Services.WebApi;
 
-// TODO: delete from RunTests
-namespace RunTests;
-internal class TestHistoryManager
+namespace HelixUtil;
+
+internal sealed class TestHistoryManager
 {
     /// <summary>
     /// Azure devops limits the number of tests returned per request to 10000.
@@ -27,24 +27,24 @@ internal class TestHistoryManager
     /// <summary>
     /// Looks up the last passing test run for the current build and stage to estimate execution times for each test.
     /// </summary>
-    public static async Task<ImmutableDictionary<string, TimeSpan>> GetTestHistoryAsync(Options options, CancellationToken cancellationToken)
+    public static async Task<ImmutableDictionary<string, TimeSpan>> GetTestHistoryAsync(CancellationToken cancellationToken)
     {
         // Access token that has permissions to lookup test history.  This typically comes from the pipeline.
-        var accessToken = options.AccessToken ?? GetEnvironmentVariable("SYSTEM_ACCESSTOKEN");
+        var accessToken = GetEnvironmentVariable("SYSTEM_ACCESSTOKEN");
 
         // ADO project that the build pipeline is located in.
-        var projectUri = options.ProjectUri ?? GetEnvironmentVariable("SYSTEM_COLLECTIONURI");
+        var projectUri = GetEnvironmentVariable("SYSTEM_COLLECTIONURI");
 
         // Id of the pipeline to get test history from.
-        var pipelineDefinitionIdStr = options.PipelineDefinitionId ?? GetEnvironmentVariable("SYSTEM_DEFINITIONID");
+        var pipelineDefinitionIdStr = GetEnvironmentVariable("SYSTEM_DEFINITIONID");
 
         // The phase name is used to filter the tests on the last passing build to only those that apply to the currently running phase.
         //   Note here that 'phaseName' corresponds to the 'jobName' defined in our pipeline yaml file and the job name env var is not correct.
         //   See https://developercommunity.visualstudio.com/t/systemjobname-seems-to-be-incorrectly-assigned-and/1209736
-        var phaseName = options.PhaseName ?? GetEnvironmentVariable("SYSTEM_PHASENAME");
+        var phaseName = GetEnvironmentVariable("SYSTEM_PHASENAME");
 
         // We use the target branch of the current build to lookup the last successful build for the same branch.
-        var targetBranch = options.TargetBranchName ?? GetEnvironmentVariable("SYSTEM_PULLREQUEST_TARGETBRANCH") ?? GetEnvironmentVariable("BUILD_SOURCEBRANCHNAME");
+        var targetBranch = GetEnvironmentVariable("SYSTEM_PULLREQUEST_TARGETBRANCH") ?? GetEnvironmentVariable("BUILD_SOURCEBRANCHNAME");
         if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(projectUri) || string.IsNullOrEmpty(phaseName) || string.IsNullOrEmpty(targetBranch) || !int.TryParse(pipelineDefinitionIdStr, out var pipelineDefinitionId))
         {
             ConsoleUtil.WriteLine($"Missing required options to lookup test history, accessToken={accessToken}, projectUri={projectUri}, phaseName={phaseName}, targetBranchName={targetBranch}, pipelineDefinitionId={pipelineDefinitionIdStr}");
@@ -94,7 +94,7 @@ internal class TestHistoryManager
                 // Helix outputs results for the whole dll work item suffixed with WorkItemExecution which we should ignore.
                 if (testResult.AutomatedTestName.Contains("WorkItemExecution"))
                 {
-                    Logger.Log($"Skipping overall result for work item {testResult.AutomatedTestName}");
+                    ConsoleUtil.WriteLine($"Skipping overall result for work item {testResult.AutomatedTestName}");
                     continue;
                 }
 
@@ -117,7 +117,7 @@ internal class TestHistoryManager
 
         if (duplicateCount > 0)
         {
-            Logger.Log($"Found {duplicateCount} duplicate tests in run {runForThisStage.Name}.");
+            ConsoleUtil.WriteLine($"Found {duplicateCount} duplicate tests in run {runForThisStage.Name}.");
         }
 
         var totalTestRuntime = TimeSpan.FromMilliseconds(testInfos.Values.Sum(t => t.TotalMilliseconds));

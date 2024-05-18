@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31319.15
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -556,6 +556,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticSearch.ReferenceAssemblies", "src\Tools\SemanticSearch\ReferenceAssemblies\SemanticSearch.ReferenceAssemblies.csproj", "{EDEF898A-CEFA-4151-8168-D0231A602093}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticSearch.BuildTask.UnitTests", "src\Tools\SemanticSearch\Tests\SemanticSearch.BuildTask.UnitTests.csproj", "{D817E3CE-F603-499B-B02A-7DECD017B170}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{208C7AA6-6F55-4C95-B3E7-ED131C85CEFF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{AC6E5EB9-A147-4FD0-B208-E930D9147B20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelixUtil", "src\Tools\HelixUtil\HelixUtil.csproj", "{400DBA03-42B9-44E8-8C62-29F63545573E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1379,6 +1385,10 @@ Global
 		{D817E3CE-F603-499B-B02A-7DECD017B170}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D817E3CE-F603-499B-B02A-7DECD017B170}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D817E3CE-F603-499B-B02A-7DECD017B170}.Release|Any CPU.Build.0 = Release|Any CPU
+		{400DBA03-42B9-44E8-8C62-29F63545573E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{400DBA03-42B9-44E8-8C62-29F63545573E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{400DBA03-42B9-44E8-8C62-29F63545573E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{400DBA03-42B9-44E8-8C62-29F63545573E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1635,6 +1645,8 @@ Global
 		{FCE88BBD-9BBD-4871-B9B0-DE176D73A6B0} = {52ABB0E4-C3A1-4897-B51B-18EDA83F5D20}
 		{EDEF898A-CEFA-4151-8168-D0231A602093} = {52ABB0E4-C3A1-4897-B51B-18EDA83F5D20}
 		{D817E3CE-F603-499B-B02A-7DECD017B170} = {52ABB0E4-C3A1-4897-B51B-18EDA83F5D20}
+		{AC6E5EB9-A147-4FD0-B208-E930D9147B20} = {208C7AA6-6F55-4C95-B3E7-ED131C85CEFF}
+		{400DBA03-42B9-44E8-8C62-29F63545573E} = {AC6E5EB9-A147-4FD0-B208-E930D9147B20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {604E6B91-7BC0-4126-AE07-D4D2FEFC3D29}
