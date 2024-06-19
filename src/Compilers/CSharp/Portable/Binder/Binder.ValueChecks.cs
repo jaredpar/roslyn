@@ -42,8 +42,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             internal MethodSymbol? Method { get; }
 
             /// <summary>
-            /// In the case of a compound operation on a property or indexer with a non-ref return
-            /// <see cref="Method"/> with a will represent the `get` accessor and this will 
+            /// In the case of a compound operation on non-ref return property or indexer 
+            /// <see cref="Method"/> will represent the `get` accessor and this will 
             /// represent the `set` accessor. 
             /// </summary>
             internal MethodSymbol? SetMethod { get; }
@@ -71,6 +71,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     property,
                     property.GetOwnOrInheritedGetMethod() ?? property.GetOwnOrInheritedSetMethod(),
                     null);
+            }
+
+            internal static MethodInfo Create(PropertySymbol property, MethodSymbol? method)
+            {
+                return new MethodInfo(property, method, null);
             }
 
             internal static MethodInfo Create(Symbol symbol, BoundExpression? expr)
@@ -261,6 +266,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// n + 1 corresponds to scopes immediately inside a scope of depth n. 
         ///   Since sibling scopes do not intersect and a value cannot escape from one to another without 
         ///   escaping to a wider scope, we can use simple depth numbering without ambiguity.
+        ///
+        /// Generally these values are expressed via the following parameters:
+        ///   - escapeFrom: the scope in which an expression is being evaluated. Usually the current local 
+        ///     scope
+        ///   - escapeTo: the scope to which the values are being escaped to.
         /// </summary>
         private const uint CallingMethodScope = 0;
         private const uint ReturnOnlyScope = 1;
@@ -411,18 +421,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var coreValueKind = valueKind & ValueKindSignificantBitsMask;
             var returnsByRef = indexerAccess.Indexer.RefKind != RefKind.None;
-            AccessorKind kind = (returnsByRef, coreValueKind) switch
+            AccessorKind kind = coreValueKind switch
             {
-                (true, _) => AccessorKind.Get,
-                (false, BindValueKind.CompoundAssignment) => AccessorKind.Both,
-                (false, BindValueKind.Assignable) => AccessorKind.Set,
-                (false, BindValueKind.RValue) => AccessorKind.Get,
+                BindValueKind.CompoundAssignment => returnsByRef ? AccessorKind.Get : AccessorKind.Both,
+                BindValueKind.Assignable => returnsByRef ? AccessorKind.Get : AccessorKind.Set,
+                BindValueKind.RValue => AccessorKind.Get,
 
                 // These combinations of not returns by ref but having a ref accessor kind 
                 // occur in error scenarios.
-                (false, BindValueKind.RefOrOut) => AccessorKind.Get,
-                (false, BindValueKind.RefAssignable) => AccessorKind.Get,
-                (false, BindValueKind.ReadonlyRef) => AccessorKind.Get,
+                BindValueKind.RefOrOut => AccessorKind.Get,
+                BindValueKind.RefAssignable => AccessorKind.Get,
+                BindValueKind.ReadonlyRef => AccessorKind.Get,
                 _ => AccessorKind.Unknown,
             };
             Debug.Assert(kind != AccessorKind.Unknown);
@@ -2407,31 +2416,31 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 return getReceiverCore(methodInfo.Method, receiver);
+            }
 
-                static EscapeArgument getReceiverCore(MethodSymbol? method, BoundExpression receiver)
+            static EscapeArgument getReceiverCore(MethodSymbol? method, BoundExpression receiver)
+            {
+                if (method is FunctionPointerMethodSymbol)
                 {
-                    if (method is FunctionPointerMethodSymbol)
-                    {
-                        return new EscapeArgument(parameter: null, receiver, RefKind.None);
-                    }
-
-                    var refKind = RefKind.None;
-                    ParameterSymbol? thisParameter = null;
-                    if (method is not null &&
-                        method.TryGetThisParameter(out thisParameter) &&
-                        thisParameter is not null)
-                    {
-                        if (receiver.Type is TypeParameterSymbol typeParameter)
-                        {
-                            // Pretend that the type of the parameter is the type parameter
-                            thisParameter = new TypeParameterThisParameterSymbol(thisParameter, typeParameter);
-                        }
-
-                        refKind = thisParameter.RefKind;
-                    }
-
-                    return new EscapeArgument(thisParameter, receiver, refKind);
+                    return new EscapeArgument(parameter: null, receiver, RefKind.None);
                 }
+
+                var refKind = RefKind.None;
+                ParameterSymbol? thisParameter = null;
+                if (method is not null &&
+                    method.TryGetThisParameter(out thisParameter) &&
+                    thisParameter is not null)
+                {
+                    if (receiver.Type is TypeParameterSymbol typeParameter)
+                    {
+                        // Pretend that the type of the parameter is the type parameter
+                        thisParameter = new TypeParameterThisParameterSymbol(thisParameter, typeParameter);
+                    }
+
+                    refKind = thisParameter.RefKind;
+                }
+
+                return new EscapeArgument(thisParameter, receiver, refKind);
             }
 
             static void getArgList(
@@ -4366,10 +4375,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // just say it does not escape anywhere, so that we do not get false errors.
                     return scopeOfTheContainingExpression;
 
-                case BoundKind.ImplicitReceiver:
                 case BoundKind.ObjectOrCollectionValuePlaceholder:
-                    // binder uses this as a placeholder when binding members inside an object initializer
-                    // just say it does not escape anywhere, so that we do not get false errors.
+                    {
+                        if (TryGetPlaceholderScope((BoundValuePlaceholderBase)expr) is uint scope)
+                        {
+                            return scope;
+                        }
+
+                        return scopeOfTheContainingExpression;
+                    }
+
+                case BoundKind.ImplicitReceiver:
                     return scopeOfTheContainingExpression;
 
                 case BoundKind.InterpolatedStringHandlerPlaceholder:
@@ -4458,7 +4474,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     throw ExceptionUtilities.UnexpectedValue(collectionTypeKind); // ref struct collection type with unexpected type kind
             }
         }
-#nullable disable
 
         private uint GetTupleValEscape(ImmutableArray<BoundExpression> elements, uint scopeOfTheContainingExpression)
         {
@@ -4496,6 +4511,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return result;
         }
+
+#nullable disable
 
         private uint GetValEscape(ImmutableArray<BoundExpression> expressions, uint scopeOfTheContainingExpression)
         {
@@ -4577,6 +4594,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // same as uninitialized local
                     return true;
 
+                case BoundKind.ObjectOrCollectionValuePlaceholder:
                 case BoundKind.DeconstructValuePlaceholder:
                 case BoundKind.AwaitableValuePlaceholder:
                 case BoundKind.InterpolatedStringArgumentPlaceholder:
@@ -5358,6 +5376,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             return true;
         }
 
+#nullable enable
+
         private bool CheckValEscapeOfObjectInitializer(BoundObjectInitializerExpression initExpr, uint escapeFrom, uint escapeTo, BindingDiagnosticBag diagnostics)
         {
             foreach (var expression in initExpr.Initializers)
@@ -5375,7 +5395,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 
                     var left = (BoundObjectInitializerMember)assignment.Left;
-                    if (!CheckValEscape(left.Arguments, escapeFrom, escapeTo, diagnostics: diagnostics))
+                    if (!check(left))
                     {
                         return false;
                     }
@@ -5390,7 +5410,42 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             return true;
+
+            bool check(BoundObjectInitializerMember expr)
+            {
+                if (expr.MemberSymbol is PropertySymbol { IsIndexer: true } property)
+                {
+                    MethodSymbol? accessor = property.RefKind != RefKind.None
+                        ? property.GetOwnOrInheritedGetMethod()
+                        : property.GetOwnOrInheritedSetMethod();
+
+                    MethodInfo methodInfo = MethodInfo.Create(property, accessor);
+
+                    // Generally invocation arg mixing is checked during the standard walk in
+                    // RefSafetyAnalysis. That works because at the point say a normal method
+                    // call is checked 
+                    var placeholders = ArrayBuilder<(BoundValuePlaceholderBase, uint)>.GetInstance();
+                    placeholders.Add((initExpr.Placeholder, escapeTo));
+                    using var region = new PlaceholderRegion(this, placeholders, eagerRemove: true);
+
+                    return CheckInvocationArgMixing(
+                        expr.Syntax,
+                        in methodInfo,
+                        initExpr.Placeholder,
+                        ThreeState.False,
+                        property.Parameters,
+                        expr.Arguments,
+                        expr.ArgumentRefKindsOpt,
+                        expr.ArgsToParamsOpt,
+                        escapeFrom,
+                        diagnostics);
+                }
+
+                return CheckValEscape(expr.Arguments, escapeFrom, escapeTo, diagnostics: diagnostics);
+            }
         }
+
+#nullable disable
 
         private bool CheckValEscape(ImmutableArray<BoundExpression> expressions, uint escapeFrom, uint escapeTo, BindingDiagnosticBag diagnostics)
         {

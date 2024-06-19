@@ -154,11 +154,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             private readonly RefSafetyAnalysis _analysis;
             private readonly ArrayBuilder<(BoundValuePlaceholderBase, uint)> _placeholders;
+            private readonly bool _eagerRemove;
 
-            public PlaceholderRegion(RefSafetyAnalysis analysis, ArrayBuilder<(BoundValuePlaceholderBase, uint)> placeholders)
+            public PlaceholderRegion(RefSafetyAnalysis analysis, ArrayBuilder<(BoundValuePlaceholderBase, uint)> placeholders, bool eagerRemove = false)
             {
                 _analysis = analysis;
                 _placeholders = placeholders;
+                _eagerRemove = eagerRemove;
                 foreach (var (placeholder, valEscapeScope) in placeholders)
                 {
                     _analysis.AddPlaceholderScope(placeholder, valEscapeScope);
@@ -169,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 foreach (var (placeholder, _) in _placeholders)
                 {
-                    _analysis.RemovePlaceholderScope(placeholder);
+                    _analysis.RemovePlaceholderScope(placeholder, _eagerRemove);
                 }
                 _placeholders.Free();
             }
@@ -203,13 +205,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 #pragma warning disable IDE0060
-        private void RemovePlaceholderScope(BoundValuePlaceholderBase placeholder)
+        private void RemovePlaceholderScope(BoundValuePlaceholderBase placeholder, bool eagerRemove)
         {
             Debug.Assert(_placeholderScopes?.ContainsKey(placeholder) == true);
 
             // https://github.com/dotnet/roslyn/issues/65961: Currently, analysis may require subsequent calls
             // to GetRefEscape(), etc. for the same expression so we cannot remove placeholders eagerly.
-            //_placeholderScopes.Remove(placeholder);
+            if (eagerRemove)
+            {
+                _placeholderScopes.Remove(placeholder);
+            }
         }
 #pragma warning restore IDE0060
 
@@ -220,6 +225,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _placeholderScopes?.TryGetValue(placeholder, out var scope) == true
                 ? scope
                 : CallingMethodScope;
+        }
+
+        private uint? TryGetPlaceholderScope(BoundValuePlaceholderBase placeholder)
+        {
+            if (_placeholderScopes?.TryGetValue(placeholder, out var scope) == true)
+            {
+                return scope;
+            }
+
+            return null;
         }
 
 #if DEBUG
@@ -1038,6 +1053,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 placeholders.Add((targetPlaceholder, collectionEscape));
             }
+
             if (node.AwaitOpt is { } awaitableInfo)
             {
                 GetAwaitableInstancePlaceholders(placeholders, awaitableInfo, collectionEscape);
