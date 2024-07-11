@@ -14877,7 +14877,7 @@ class Enumerator1
             break;
         }
         foreach (ref S r6 in RefStructEnumerable.Create(ref s0)) {
-            r0 = ref r6; // 4
+            r0 = ref r6;
             break;
         }
     }
@@ -14912,10 +14912,8 @@ class ClassEnumerator
                 Diagnostic(ErrorCode.ERR_RefAssignNarrower, "r0 = ref r2").WithArguments("r0", "r2").WithLocation(12, 13),
                 // (24,13): error CS8374: Cannot ref-assign 'r5' to 'r0' because 'r5' has a narrower escape scope than 'r0'.
                 //             r0 = ref r5; // 3
-                Diagnostic(ErrorCode.ERR_RefAssignNarrower, "r0 = ref r5").WithArguments("r0", "r5").WithLocation(24, 13),
-                // (28,22): error CS8352: Cannot use variable 'r6' in this context because it may expose referenced variables outside of their declaration scope
-                //             r0 = ref r6; // 4
-                Diagnostic(ErrorCode.ERR_EscapeVariable, "r6").WithArguments("r6").WithLocation(28, 22));
+                Diagnostic(ErrorCode.ERR_RefAssignNarrower, "r0 = ref r5").WithArguments("r0", "r5").WithLocation(24, 13)
+                );
         }
 
         [Theory]
@@ -15181,10 +15179,306 @@ class ClassEnumerator
 }
 ";
             var comp = CreateCompilation(source);
+            comp.VerifyDiagnostics();
+        }
+
+        [Fact]
+        [WorkItem(64218, "https://github.com/dotnet/roslyn/issues/74325")]
+        public void LocalScope_12_Foreach_05_PureRefStruct_Value()
+        {
+            var source =
+                """
+                using System;
+                using System.Diagnostics.CodeAnalysis;
+
+                class S1
+                {
+                    static Span<int> Test()
+                    {
+                        foreach (Span<int> s in new SpanCollection(stackalloc int[1]))
+                        {
+                            return s; // 1
+                        }
+                        return default;
+                    }
+
+                    ref struct SpanCollection
+                    {
+                        public SpanCollection(Span<int> span) { }
+                        public SpanEnumerator GetEnumerator() => default;
+                    }
+
+                    ref struct SpanEnumerator
+                    {
+                        public Span<int> Current => throw null;
+                        public bool MoveNext() => false;
+                    }
+                }
+
+                class S2
+                {
+                    static Span<int> Test()
+                    {
+                        foreach (Span<int> s in new SpanCollection(default))
+                        {
+                            return s;
+                        }
+                        return default;
+                    }
+
+                    ref struct SpanCollection
+                    {
+                        public SpanCollection(Span<int> span) { }
+                        public SpanEnumerator GetEnumerator() => default;
+                    }
+
+                    ref struct SpanEnumerator
+                    {
+                        public Span<int> Current => throw null;
+                        public bool MoveNext() => false;
+                    }
+                }
+
+                class S3
+                {
+                    static void Test()
+                    {
+                        Span<int> local = stackalloc int[1];
+                        foreach (Span<int> s in new SpanCollection(stackalloc int[1]))
+                        {
+                            // May seem odd at a glance but stackalloc is scoped to the 
+                            // entire method so this is indeed legal
+                            local = s;
+                        }
+                    }
+
+                    ref struct SpanCollection
+                    {
+                        public SpanCollection(Span<int> span) { }
+                        public SpanEnumerator GetEnumerator() => default;
+                    }
+
+                    ref struct SpanEnumerator
+                    {
+                        public Span<int> Current => throw null;
+                        public bool MoveNext() => false;
+                    }
+                }
+
+                class S4
+                {
+                    static void Test()
+                    {
+                        Span<int> local = stackalloc int[1];
+                        foreach (Span<int> s in new SpanCollection(default))
+                        {
+                            local = s; // 2
+                        }
+                    }
+
+                    ref struct SpanCollection
+                    {
+                        public SpanCollection(Span<int> span) { }
+                        [UnscopedRef]
+                        public SpanEnumerator GetEnumerator() => default;
+                    }
+
+                    ref struct SpanEnumerator
+                    {
+                        public Span<int> Current => throw null;
+                        public bool MoveNext() => false;
+                    }
+                }
+
+                """;
+
+            var comp = CreateCompilation(source, targetFramework: TargetFramework.Net90);
             comp.VerifyDiagnostics(
-                // (10,22): error CS8352: Cannot use variable 's1' in this context because it may expose referenced variables outside of their declaration scope
-                //                 s0 = s1;
-                Diagnostic(ErrorCode.ERR_EscapeVariable, "s1").WithArguments("s1").WithLocation(10, 22));
+                // (10,20): error CS8352: Cannot use variable 's' in this context because it may expose referenced variables outside of their declaration scope
+                //             return s; // 1
+                Diagnostic(ErrorCode.ERR_EscapeVariable, "s").WithArguments("s").WithLocation(10, 20),
+                // (85,21): error CS8352: Cannot use variable 's' in this context because it may expose referenced variables outside of their declaration scope
+                //             local = s; // 2
+                Diagnostic(ErrorCode.ERR_EscapeVariable, "s").WithArguments("s").WithLocation(85, 21)
+                );
+        }
+
+        [Fact]
+        [WorkItem(64218, "https://github.com/dotnet/roslyn/issues/74325")]
+        public void LocalScope_12_Foreach_06_RefCurrent()
+        {
+            var source =
+                """
+                using System.Diagnostics.CodeAnalysis;
+
+                class S1
+                {
+                    static ref int Test1(int[] array)
+                    {
+                        int local = 42;
+                        ref int r1 = ref local;
+                        ref int r2 = ref array[0];
+
+                        foreach (ref int i in new Collection([]))
+                        {
+                            r1 = ref i;
+                            r2 = ref i;
+                            return ref i;
+                        }
+                        throw null!;
+                    }
+
+                    struct Collection
+                    {
+                        public Collection(int[] array) { }
+                        public Enumerator GetEnumerator() => default;
+                    }
+
+                    struct Enumerator
+                    {
+                        public ref int Current => throw null;
+                        public bool MoveNext() => false;
+                    }
+                }
+
+                class S2
+                {
+                    static ref int Test1(int[] array)
+                    {
+                        int local = 42;
+                        ref int r1 = ref local;
+                        ref int r2 = ref array[0];
+
+                        foreach (ref int i in new Collection([]))
+                        {
+                            r1 = ref i; // 1
+                            r2 = ref i; // 2
+                            return ref i; // 3
+                        }
+                        throw null!;
+                    }
+
+                    struct Collection
+                    {
+                        public Collection(int[] array) { }
+                        public Enumerator GetEnumerator() => default;
+                    }
+
+                    struct Enumerator
+                    {
+                        [UnscopedRef]
+                        public ref int Current => throw null;
+                        public bool MoveNext() => false;
+                    }
+                }
+
+                """;
+
+            var comp = CreateCompilation(source, targetFramework: TargetFramework.Net90);
+            comp.VerifyDiagnostics(
+                // (43,13): error CS8374: Cannot ref-assign 'i' to 'r1' because 'i' has a narrower escape scope than 'r1'.
+                //             r1 = ref i; // 1
+                Diagnostic(ErrorCode.ERR_RefAssignNarrower, "r1 = ref i").WithArguments("r1", "i").WithLocation(43, 13),
+                // (44,13): error CS8374: Cannot ref-assign 'i' to 'r2' because 'i' has a narrower escape scope than 'r2'.
+                //             r2 = ref i; // 2
+                Diagnostic(ErrorCode.ERR_RefAssignNarrower, "r2 = ref i").WithArguments("r2", "i").WithLocation(44, 13),
+                // (45,24): error CS8157: Cannot return 'i' by reference because it was initialized to a value that cannot be returned by reference
+                //             return ref i; // 3
+                Diagnostic(ErrorCode.ERR_RefReturnNonreturnableLocal, "i").WithArguments("i").WithLocation(45, 24)
+                );
+        }
+
+        [Fact]
+        [WorkItem(64218, "https://github.com/dotnet/roslyn/issues/74325")]
+        public void LocalScope_12_Foreach_06_RefCurrentWithRefType()
+        {
+            var source =
+                """
+                using System.Diagnostics.CodeAnalysis;
+
+                class S1
+                {
+                    static ref S Test1()
+                    {
+                        S local = default;
+                        ref S r1 = ref local;
+                        ref S r2 = ref Get();
+
+                        foreach (ref S s in new Collection())
+                        {
+                            r1 = ref s;
+                            r2 = ref s;
+                            return ref s;
+                        }
+                        throw null!;
+                    }
+
+                    static ref S Get() => throw null!;
+
+                    ref struct S { }
+
+                    struct Collection
+                    {
+                        public Collection() { }
+                        public Enumerator GetEnumerator() => default;
+                    }
+
+                    struct Enumerator
+                    {
+                        public ref S Current => throw null;
+                        public bool MoveNext() => false;
+                    }
+                }
+
+                class S2
+                {
+                    static ref S Test()
+                    {
+                        S local = default;
+                        ref S r1 = ref local;
+                        ref S r2 = ref Get();
+
+                        foreach (ref S s in new Collection())
+                        {
+                            r1 = ref s; // 1
+                            r2 = ref s; // 2
+                            return ref s; // 3
+                        }
+                        throw null!;
+                    }
+
+                    static ref S Get() => throw null!;
+
+                    ref struct S { }
+
+                    struct Collection
+                    {
+                        public Collection() { }
+                        public Enumerator GetEnumerator() => default;
+                    }
+
+                    struct Enumerator
+                    {
+                        [UnscopedRef]
+                        public ref S Current => throw null;
+                        public bool MoveNext() => false;
+                    }
+                }
+
+                """;
+
+            var comp = CreateCompilation(source, targetFramework: TargetFramework.Net90);
+            comp.VerifyDiagnostics(
+                // (47,13): error CS8374: Cannot ref-assign 's' to 'r1' because 's' has a narrower escape scope than 'r1'.
+                //             r1 = ref s; // 1
+                Diagnostic(ErrorCode.ERR_RefAssignNarrower, "r1 = ref s").WithArguments("r1", "s").WithLocation(47, 13),
+                // (48,13): error CS8374: Cannot ref-assign 's' to 'r2' because 's' has a narrower escape scope than 'r2'.
+                //             r2 = ref s; // 2
+                Diagnostic(ErrorCode.ERR_RefAssignNarrower, "r2 = ref s").WithArguments("r2", "s").WithLocation(48, 13),
+                // (49,24): error CS8157: Cannot return 's' by reference because it was initialized to a value that cannot be returned by reference
+                //             return ref s; // 3
+                Diagnostic(ErrorCode.ERR_RefReturnNonreturnableLocal, "s").WithArguments("s").WithLocation(49, 24)
+                );
         }
 
         [Fact]

@@ -3176,7 +3176,7 @@ class Program
                     }
                 }
 
-                public rEf struct S4
+                public ref struct S4
                 {
                     public S4(in Span<int> span) { }
                     int this[Span<int> span] { get => 0; set {} }

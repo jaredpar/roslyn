@@ -1947,6 +1947,58 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #nullable enable
 
+        private uint GetInvocationEscapeScope(
+            in MethodInfo methodInfo,
+            uint receiverValEscape,
+            uint receiverRefEscape,
+            ImmutableArray<ParameterSymbol> parameters,
+            ImmutableArray<BoundExpression> argsOpt,
+            ImmutableArray<RefKind> argRefKindsOpt,
+            ImmutableArray<int> argsToParamsOpt,
+            uint scopeOfTheContainingExpression,
+            bool isRefEscape)
+        {
+            uint invocationEscape = GetInvocationEscapeScope(
+                in methodInfo,
+                receiver: null,
+                ThreeState.Unknown,
+                parameters,
+                argsOpt,
+                argRefKindsOpt,
+                argsToParamsOpt,
+                scopeOfTheContainingExpression,
+                isRefEscape);
+
+            MethodSymbol? method = methodInfo.Method;
+            if (method is not { RequiresInstanceReceiver: true } ||
+                !method.TryGetThisParameter(out ParameterSymbol thisParameter))
+            {
+                return invocationEscape;
+            }
+
+            if (isRefEscape)
+            {
+                if (GetParameterRefEscapeLevel(thisParameter) is not null)
+                {
+                    invocationEscape = Math.Max(receiverRefEscape, invocationEscape);
+                }
+            }
+            else if (method.ReturnType?.IsRefLikeOrAllowsRefLikeType() == true)
+            {
+                if (GetParameterValEscapeLevel(thisParameter) is not null)
+                {
+                    invocationEscape = Math.Max(receiverValEscape, invocationEscape);
+                }
+
+                if (method.UseUpdatedEscapeRules && method.HasUnscopedRefAttribute)
+                {
+                    invocationEscape = Math.Max(invocationEscape, receiverRefEscape);
+                }
+            }
+
+            return invocationEscape;
+        }
+
         /// <summary>
         /// Computes the scope to which the given invocation can escape
         /// NOTE: the escape scope for ref and val escapes is the same for invocations except for trivial cases (ordinary type returned by val) 

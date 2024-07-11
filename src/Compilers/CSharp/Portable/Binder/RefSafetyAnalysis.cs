@@ -1052,6 +1052,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             this.Visit(node.Expression);
             uint collectionEscape;
 
+            // A foreach expression creates a new scope in which the enumerator and collection are evaluated. This
+            // needs to be represented in ref safety by incrementing _localsScopeDepth
+            using var foreachOuterScope = new LocalScope(this, ImmutableArray<LocalSymbol>.Empty);
+
             if (node.EnumeratorInfoOpt is { InlineArraySpanType: not WellKnownType.Unknown and var spanType, InlineArrayUsedAsValue: false })
             {
                 ImmutableArray<BoundExpression> arguments;
@@ -1079,11 +1083,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 collectionEscape = GetValEscape(node.Expression, _localScopeDepth);
             }
 
-            using var _ = new LocalScope(this, ImmutableArray<LocalSymbol>.Empty);
+            var enumeratorCurrentEscape = getEnumeratorCurrentEscape(collectionEscape);
+
+            using var foreachInnerScope = new LocalScope(this, ImmutableArray<LocalSymbol>.Empty);
 
             foreach (var local in node.IterationVariables)
             {
-                AddLocalScopes(local, refEscapeScope: local.RefKind == RefKind.None ? _localScopeDepth : collectionEscape, valEscapeScope: collectionEscape);
+                var refEscape = local.RefKind == RefKind.None
+                    ? _localScopeDepth
+                    : enumeratorCurrentEscape.refEscape;
+                AddLocalScopes(local, refEscapeScope: refEscape, valEscapeScope: enumeratorCurrentEscape.valEscape);
             }
 
             var placeholders = ArrayBuilder<(BoundValuePlaceholderBase, uint)>.GetInstance();
@@ -1107,6 +1116,51 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (var local in node.IterationVariables)
             {
                 RemoveLocalScopes(local);
+            }
+
+            (uint refEscape, uint valEscape) getEnumeratorCurrentEscape(uint collectionEscape)
+            {
+                if (node.EnumeratorInfoOpt is null)
+                {
+                    return (collectionEscape, collectionEscape);
+                }
+
+                var enumeratorInfo = node.EnumeratorInfoOpt;
+
+                uint enumeratorEscape = GetInvocationEscapeScope(
+                    MethodInfo.Create(enumeratorInfo.GetEnumeratorInfo.Method),
+                    receiverValEscape: collectionEscape,
+                    receiverRefEscape: _localScopeDepth,
+                    enumeratorInfo.GetEnumeratorInfo.Method.Parameters,
+                    enumeratorInfo.GetEnumeratorInfo.Arguments,
+                    argRefKindsOpt: ImmutableArray<RefKind>.Empty,
+                    argsToParamsOpt: ImmutableArray<int>.Empty,
+                    _localScopeDepth,
+                    isRefEscape: false);
+
+                uint valEscape = GetInvocationEscapeScope(
+                    MethodInfo.Create(enumeratorInfo.CurrentPropertyGetter),
+                    receiverValEscape: enumeratorEscape,
+                    receiverRefEscape: _localScopeDepth,
+                    enumeratorInfo.CurrentPropertyGetter.Parameters,
+                    argsOpt: ImmutableArray<BoundExpression>.Empty,
+                    argRefKindsOpt: ImmutableArray<RefKind>.Empty,
+                    argsToParamsOpt: ImmutableArray<int>.Empty,
+                    collectionEscape,
+                    isRefEscape: false);
+
+                uint refEscape = GetInvocationEscapeScope(
+                    MethodInfo.Create(enumeratorInfo.CurrentPropertyGetter),
+                    receiverValEscape: enumeratorEscape,
+                    receiverRefEscape: _localScopeDepth,
+                    enumeratorInfo.CurrentPropertyGetter.Parameters,
+                    argsOpt: ImmutableArray<BoundExpression>.Empty,
+                    argRefKindsOpt: ImmutableArray<RefKind>.Empty,
+                    argsToParamsOpt: ImmutableArray<int>.Empty,
+                    collectionEscape,
+                    isRefEscape: true);
+
+                return (refEscape, valEscape);
             }
 
             return null;
