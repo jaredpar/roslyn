@@ -24,6 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.DiaSymReader" />
+    <PackageReference Include="Basic.Reference.Assemblies.Net20" />
     <PackageReference Include="Basic.Reference.Assemblies.Net50" />
     <PackageReference Include="Basic.Reference.Assemblies.Net60" />
     <PackageReference Include="Basic.Reference.Assemblies.Net80" />

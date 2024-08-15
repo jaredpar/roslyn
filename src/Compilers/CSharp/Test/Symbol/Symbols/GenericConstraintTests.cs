@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 using Utils = Microsoft.CodeAnalysis.CSharp.UnitTests.CompilationUtils;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Symbols
@@ -7290,7 +7291,7 @@ public class C : A<C, C.D>
     }
 }
 ";
-            var metadataComp = CreateEmptyCompilation(code, new[] { MscorlibRef_v20 }, assemblyName: "assembly1");
+            var metadataComp = CreateEmptyCompilation(code, new[] { Net20.References.mscorlib }, assemblyName: "assembly1");
             metadataComp.VerifyDiagnostics();
             var comp = CreateCompilation(@"System.Console.WriteLine(typeof(C.D).FullName);",
                 new[] { metadataComp.EmitToImageReference() },

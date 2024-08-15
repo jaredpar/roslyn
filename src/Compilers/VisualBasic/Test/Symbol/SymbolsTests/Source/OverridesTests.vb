@@ -9,9 +9,9 @@ Imports Microsoft.CodeAnalysis.Test.Utilities
 Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
-
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols
 Imports Roslyn.Test.Utilities
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Public Class OverridesTests
@@ -2543,7 +2543,7 @@ Class SelfDestruct
         MyBase.Finalize()
     End Sub
 End Class     ]]></file>
- </compilation>, {MscorlibRef_v20})
+ </compilation>, {Net20.References.mscorlib})
 
             Dim obj = compilation.GetSpecialType(SpecialType.System_Object)
             Dim finalize = DirectCast(obj.GetMembers("Finalize").Single(), MethodSymbol)

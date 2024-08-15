@@ -22,6 +22,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Semantics
 {
@@ -10909,7 +10910,7 @@ public class Base
     public virtual nint M() => 0;
 }
 """;
-            var libComp = CreateEmptyCompilation(lib_cs, references: new[] { MscorlibRef_v20 }, assemblyName: "lib");
+            var libComp = CreateEmptyCompilation(lib_cs, references: new[] { Net20.References.mscorlib }, assemblyName: "lib");
             libComp.VerifyDiagnostics();
 
             string source = """

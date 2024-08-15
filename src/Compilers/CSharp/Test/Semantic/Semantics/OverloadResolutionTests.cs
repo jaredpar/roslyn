@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -1114,7 +1115,7 @@ struct MyTaskMethodBuilder<T>
 
 namespace System.Runtime.CompilerServices { class AsyncMethodBuilderAttribute : System.Attribute { public AsyncMethodBuilderAttribute(System.Type t) { } } }
 ";
-            var compilation = CreateEmptyCompilation(source, references: new[] { MscorlibRef_v20 });
+            var compilation = CreateEmptyCompilation(source, references: new[] { Net20.References.mscorlib });
             compilation.VerifyDiagnostics();
             var type = compilation.GetMember<FieldSymbol>("C.F").Type;
             var normalized = type.NormalizeTaskTypes(compilation);

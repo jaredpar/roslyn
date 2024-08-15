@@ -16,6 +16,7 @@ Imports System.Reflection.Metadata
 Imports Microsoft.CodeAnalysis.Emit
 Imports System.Collections.Immutable
 Imports Roslyn.Test.Utilities.TestMetadata
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
 
@@ -691,17 +692,17 @@ BC35000: Requested operation is not available because the runtime library functi
         Dim x As S = Nothing
                      ~~~~~~~
 </errors>
-            Dim compilation0 = CreateEmptyCompilationWithReferences(sources0, references:={MscorlibRef_v20})
+            Dim compilation0 = CreateEmptyCompilationWithReferences(sources0, references:={Net20.References.mscorlib})
             Dim verifier = CompileAndVerify(compilation0)
             AssertTheseDiagnostics(verifier, <errors/>)
             Dim compilation1 = CreateEmptyCompilationWithReferences(
                 sources1,
-                references:={MscorlibRef_v20, New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True)})
+                references:={Net20.References.mscorlib, New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True)})
             VerifyEmitDiagnostics(compilation1, errors)
             VerifyEmitMetadataOnlyDiagnostics(compilation1)
             compilation1 = CreateEmptyCompilationWithReferences(
                 sources1,
-                references:={MscorlibRef_v20, compilation0.EmitToImageReference(embedInteropTypes:=True)})
+                references:={Net20.References.mscorlib, compilation0.EmitToImageReference(embedInteropTypes:=True)})
             VerifyEmitDiagnostics(compilation1, errors)
             VerifyEmitMetadataOnlyDiagnostics(compilation1)
         End Sub
@@ -734,19 +735,19 @@ BC35000: Requested operation is not available because the runtime library functi
         Dim y = DirectCast(Nothing, I)
             ~
 </errors>
-            Dim compilation0 = CreateEmptyCompilationWithReferences(sources0, references:={MscorlibRef_v20})
+            Dim compilation0 = CreateEmptyCompilationWithReferences(sources0, references:={Net20.References.mscorlib})
             Dim verifier = CompileAndVerify(compilation0)
             AssertTheseDiagnostics(verifier, (<errors/>))
             Dim compilation1 = CreateEmptyCompilationWithReferences(
                 sources1,
                 options:=TestOptions.DebugDll,
-                references:={MscorlibRef_v20, New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True)})
+                references:={Net20.References.mscorlib, New VisualBasicCompilationReference(compilation0, embedInteropTypes:=True)})
             VerifyEmitDiagnostics(compilation1, errors)
             VerifyEmitMetadataOnlyDiagnostics(compilation1)
             compilation1 = CreateEmptyCompilationWithReferences(
                 sources1,
                 options:=TestOptions.DebugDll,
-                references:={MscorlibRef_v20, compilation0.EmitToImageReference(embedInteropTypes:=True)})
+                references:={Net20.References.mscorlib, compilation0.EmitToImageReference(embedInteropTypes:=True)})
             VerifyEmitDiagnostics(compilation1, errors)
             VerifyEmitMetadataOnlyDiagnostics(compilation1)
         End Sub

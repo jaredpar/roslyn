@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Semantics
 {
@@ -1256,7 +1257,7 @@ namespace System.Threading.Tasks
         }
     }
 }";
-            var compilation0 = CreateEmptyCompilation(source0, references: new[] { MscorlibRef_v20 });
+            var compilation0 = CreateEmptyCompilation(source0, references: new[] { Net20.References.mscorlib });
             var ref0 = compilation0.EmitToImageReference();
             var source =
 @"using System.Threading.Tasks;
@@ -1272,7 +1273,7 @@ class Program
         t.GetAwaiter().GetResult();
     }
 }";
-            var compilation = CreateEmptyCompilation(source, references: new[] { MscorlibRef_v20, ref0 });
+            var compilation = CreateEmptyCompilation(source, references: new[] { Net20.References.mscorlib, ref0 });
             compilation.VerifyEmitDiagnostics();
         }
 

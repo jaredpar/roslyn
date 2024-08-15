@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Symbols
 {
@@ -2862,7 +2863,7 @@ class Test
     }
 }
 ";
-            var compilation = CreateEmptyCompilation(text, new MetadataReference[] { MscorlibRef_v20 });
+            var compilation = CreateEmptyCompilation(text, new MetadataReference[] { Net20.References.mscorlib });
 
             var obj = compilation.GetSpecialType(SpecialType.System_Object);
             var finalize = (MethodSymbol)obj.GetMembers("Finalize").Single();

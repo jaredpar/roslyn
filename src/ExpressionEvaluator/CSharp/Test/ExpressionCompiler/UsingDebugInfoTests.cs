@@ -20,6 +20,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.DiaSymReader;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.UnitTests
 {
@@ -1224,7 +1225,7 @@ public class C2 : C1
 {
 }
 ";
-            var comp1 = CreateEmptyCompilation(source1, new[] { MscorlibRef_v20 }, TestOptions.DebugDll);
+            var comp1 = CreateEmptyCompilation(source1, new[] { Net20.References.mscorlib }, TestOptions.DebugDll);
             var module1 = comp1.ToModuleInstance();
 
             var comp2 = CreateEmptyCompilation(source2, new[] { MscorlibRef_v4_0_30316_17626, module1.GetReference() }, TestOptions.DebugDll);

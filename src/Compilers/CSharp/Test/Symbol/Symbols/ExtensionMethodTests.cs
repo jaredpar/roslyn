@@ -15,6 +15,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 using Utils = Microsoft.CodeAnalysis.CSharp.UnitTests.CompilationUtils;
 using static Roslyn.Test.Utilities.TestMetadata;
 
@@ -3444,7 +3445,7 @@ internal static class Test
     }
 }
 ";
-            var compilation = CreateEmptyCompilation(source, new[] { MscorlibRef_v20 }, TestOptions.ReleaseDll);
+            var compilation = CreateEmptyCompilation(source, new[] { Net20.References.mscorlib }, TestOptions.ReleaseDll);
             CompileAndVerify(compilation);
         }
 

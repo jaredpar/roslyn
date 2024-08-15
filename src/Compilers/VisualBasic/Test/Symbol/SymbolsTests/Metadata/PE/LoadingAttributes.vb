@@ -13,6 +13,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
 Imports Roslyn.Test.Utilities.TestMetadata
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols.Metadata.PE
 
@@ -33,7 +34,7 @@ End Interface
 ]]>
                            </file>
                        </compilation>
-            Dim comp1 = CreateEmptyCompilationWithReferences(text, references:={MscorlibRef_v20})
+            Dim comp1 = CreateEmptyCompilationWithReferences(text, references:={Net20.References.mscorlib})
             Dim ref1 = comp1.EmitToImageReference()
             Dim text2 =
 <compilation>

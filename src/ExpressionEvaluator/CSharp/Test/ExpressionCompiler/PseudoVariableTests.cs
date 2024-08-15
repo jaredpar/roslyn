@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Debugger.Evaluation;
 using Roslyn.Test.PdbUtilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.UnitTests
 {
@@ -932,20 +933,20 @@ class C
             var compilationA1 = CreateCompilation(
                 new AssemblyIdentity(assemblyNameA, new Version(1, 1, 1, 1), cultureName: "", publicKeyOrToken: publicKeyA, hasPublicKey: true),
                 new[] { sourceA },
-                references: new[] { MscorlibRef_v20 },
+                references: new[] { Net20.References.mscorlib },
                 options: TestOptions.DebugDll.WithDelaySign(true));
 
             var compilationB1 = CreateCompilation(
                 new AssemblyIdentity(assemblyNameB, new Version(1, 2, 2, 2)),
                 new[] { sourceB },
-                references: new[] { MscorlibRef_v20, compilationA1.EmitToImageReference() },
+                references: new[] { Net20.References.mscorlib, compilationA1.EmitToImageReference() },
                 options: TestOptions.DebugDll);
 
             // Use mscorlib v4.0.0.0 and A v2.1.2.1 at runtime.
             var compilationA2 = CreateCompilation(
                 new AssemblyIdentity(assemblyNameA, new Version(2, 1, 2, 1), cultureName: "", publicKeyOrToken: publicKeyA, hasPublicKey: true),
                 new[] { sourceA },
-                references: new[] { MscorlibRef_v20 },
+                references: new[] { Net20.References.mscorlib },
                 options: TestOptions.DebugDll.WithDelaySign(true));
 
             WithRuntimeInstance(compilationB1, new[] { MscorlibRef, compilationA2.EmitToImageReference() }, runtime =>

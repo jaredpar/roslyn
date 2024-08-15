@@ -15,6 +15,7 @@ using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -55,7 +56,7 @@ public static class R
         public fixed byte Buffer[16];
     }
 }";
-            var comp1 = CreateEmptyCompilation(text1, assemblyName: "assembly1", references: new[] { MscorlibRef_v20 },
+            var comp1 = CreateEmptyCompilation(text1, assemblyName: "assembly1", references: new[] { Net20.References.mscorlib },
                 options: TestOptions.UnsafeDebugDll);
 
             var ref1 = comp1.EmitToImageReference();

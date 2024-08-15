@@ -1238,63 +1238,6 @@ End Module
             Assert.Equal(CompletionData.RequestCompleted, listener.CompletionDataList.Single());
         }
 
-        [WorkItem(871477, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/871477")]
-        [ConditionalFact(typeof(DesktopOnly))]
-        [Trait(Traits.Environment, Traits.Environments.VSProductInstall)]
-        public async Task AssemblyIdentityComparer1()
-        {
-            _tempDirectory.CreateFile("mscorlib20.dll").WriteAllBytes(TestMetadata.ResourcesNet20.mscorlib);
-            _tempDirectory.CreateFile("mscorlib40.dll").WriteAllBytes(TestMetadata.ResourcesNet40.mscorlib);
-
-            // Create DLL "lib.dll"
-            Dictionary<string, string> files =
-                                   new Dictionary<string, string> {
-                                           { "ref_mscorlib2.cs",
-@"public class C
-{
-    public System.Exception GetException()
-    {
-        return new System.Exception();
-    }
-}
-"}};
-
-            using var serverData = await ServerUtil.CreateServer(_logger);
-
-            var result = RunCommandLineCompiler(CSharpCompilerClientExecutable,
-                                                $"ref_mscorlib2.cs /shared:{serverData.PipeName} /nologo /nostdlib /noconfig /t:library /r:mscorlib20.dll",
-                                                _tempDirectory, files);
-
-            Assert.Equal("", result.Output);
-            Assert.Equal(0, result.ExitCode);
-
-            Temp.AddFile(GetResultFile(_tempDirectory, "ref_mscorlib2.dll"));
-
-            // Create EXE "main.exe"
-            files = new Dictionary<string, string> {
-                                       { "main.cs",
-@"using System;
-
-class Program
-{
-static void Main(string[] args)
-{
-    var e = new C().GetException();
-    Console.WriteLine(e);
-}
-}
-"}};
-            result = RunCommandLineCompiler(CSharpCompilerClientExecutable,
-                                            $"main.cs /shared:{serverData.PipeName} /nologo /nostdlib /noconfig /r:mscorlib40.dll /r:ref_mscorlib2.dll",
-                                            _tempDirectory, files);
-
-            Assert.Equal("", result.Output);
-            Assert.Equal(0, result.ExitCode);
-
-            var listener = await serverData.Complete();
-            Assert.Equal(2, listener.CompletionDataList.Count);
-        }
-
         [WorkItem(979588, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/979588")]
         [Fact]
         public async Task Utf8OutputInRspFileCsc()

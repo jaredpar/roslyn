@@ -24,6 +24,7 @@ using MemoryStream = System.IO.MemoryStream;
 using System;
 using Microsoft.CodeAnalysis.Emit;
 using System.Collections.Immutable;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Emit
 {
@@ -795,7 +796,7 @@ public struct Test21
 }
 ";
 
-            var piaCompilation = CreateEmptyCompilation(pia, new MetadataReference[] { MscorlibRef_v20 }, options: TestOptions.ReleaseDll);
+            var piaCompilation = CreateEmptyCompilation(pia, new MetadataReference[] { Net20.References.mscorlib }, options: TestOptions.ReleaseDll);
 
             CompileAndVerify(piaCompilation);
 
@@ -818,11 +819,11 @@ class UsePia
                 Diagnostic(ErrorCode.ERR_MissingPredefinedMember, "default(Test21)").WithArguments("System.Runtime.InteropServices.TypeIdentifierAttribute", ".ctor")
                                                };
 
-            var compilation = CreateEmptyCompilation(consumer, new MetadataReference[] { MscorlibRef_v20, new CSharpCompilationReference(piaCompilation, embedInteropTypes: true) }, options: TestOptions.ReleaseExe);
+            var compilation = CreateEmptyCompilation(consumer, new MetadataReference[] { Net20.References.mscorlib, new CSharpCompilationReference(piaCompilation, embedInteropTypes: true) }, options: TestOptions.ReleaseExe);
 
             VerifyEmitDiagnostics(compilation, true, expected);
 
-            compilation = CreateEmptyCompilation(consumer, references: new MetadataReference[] { MscorlibRef_v20, piaCompilation.EmitToImageReference(embedInteropTypes: true) }, options: TestOptions.ReleaseExe);
+            compilation = CreateEmptyCompilation(consumer, references: new MetadataReference[] { Net20.References.mscorlib, piaCompilation.EmitToImageReference(embedInteropTypes: true) }, options: TestOptions.ReleaseExe);
 
             VerifyEmitDiagnostics(compilation, true, expected);
         }
@@ -844,7 +845,7 @@ public interface ITest20
 }
 ";
 
-            var piaCompilation = CreateEmptyCompilation(pia, new MetadataReference[] { MscorlibRef_v20 }, options: TestOptions.DebugDll);
+            var piaCompilation = CreateEmptyCompilation(pia, new MetadataReference[] { Net20.References.mscorlib }, options: TestOptions.DebugDll);
 
             CompileAndVerify(piaCompilation);
 
@@ -868,11 +869,11 @@ class UsePia
                 Diagnostic(ErrorCode.ERR_MissingPredefinedMember, "x = (ITest20)null").WithArguments("System.Runtime.InteropServices.TypeIdentifierAttribute", ".ctor")
             };
 
-            var compilation = CreateEmptyCompilation(consumer, new MetadataReference[] { MscorlibRef_v20, new CSharpCompilationReference(piaCompilation, embedInteropTypes: true) }, options: TestOptions.DebugExe);
+            var compilation = CreateEmptyCompilation(consumer, new MetadataReference[] { Net20.References.mscorlib, new CSharpCompilationReference(piaCompilation, embedInteropTypes: true) }, options: TestOptions.DebugExe);
 
             VerifyEmitDiagnostics(compilation, true, expected);
 
-            compilation = CreateEmptyCompilation(consumer, references: new MetadataReference[] { MscorlibRef_v20, piaCompilation.EmitToImageReference(embedInteropTypes: true) }, options: TestOptions.DebugExe);
+            compilation = CreateEmptyCompilation(consumer, references: new MetadataReference[] { Net20.References.mscorlib, piaCompilation.EmitToImageReference(embedInteropTypes: true) }, options: TestOptions.DebugExe);
 
             VerifyEmitDiagnostics(compilation, true, expected);
         }

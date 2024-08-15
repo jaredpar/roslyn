@@ -1,17 +1,5 @@
 <Project>
     <ItemGroup>
-        <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net20)\build\.NETFramework\v2.0\mscorlib.dll">
-          <LogicalName>net20.mscorlib.dll</LogicalName>
-          <Link>Resources\ReferenceAssemblies\net20\mscorlib.dll</Link>
-        </EmbeddedResource>
-        <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net20)\build\.NETFramework\v2.0\System.dll">
-          <LogicalName>net20.System.dll</LogicalName>
-          <Link>Resources\ReferenceAssemblies\net20\System.dll</Link>
-        </EmbeddedResource>
-        <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net20)\build\.NETFramework\v2.0\Microsoft.VisualBasic.dll">
-          <LogicalName>net20.Microsoft.VisualBasic.dll</LogicalName>
-          <Link>Resources\ReferenceAssemblies\net20\Microsoft.VisualBasic.dll</Link>
-        </EmbeddedResource>
         <EmbeddedResource Include="$(PkgMicrosoft_NETFramework_ReferenceAssemblies_net40)\build\.NETFramework\v4.0\mscorlib.dll">
           <LogicalName>net40.mscorlib.dll</LogicalName>
           <Link>Resources\ReferenceAssemblies\net40\mscorlib.dll</Link>

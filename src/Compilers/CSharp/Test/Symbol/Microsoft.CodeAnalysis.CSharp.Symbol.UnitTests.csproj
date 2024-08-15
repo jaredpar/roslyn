@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\..\VisualBasic\Portable\Microsoft.CodeAnalysis.VisualBasic.vbproj" />
     <ProjectReference Include="..\..\Portable\Microsoft.CodeAnalysis.CSharp.csproj" />
     <ProjectReference Include="..\..\..\..\Test\PdbUtilities\Roslyn.Test.PdbUtilities.csproj" />
+    <PackageReference Include="Basic.Reference.Assemblies.Net20" />
     <PackageReference Include="Basic.Reference.Assemblies.Net50" />
     <PackageReference Include="Basic.Reference.Assemblies.Net60" />
   </ItemGroup>

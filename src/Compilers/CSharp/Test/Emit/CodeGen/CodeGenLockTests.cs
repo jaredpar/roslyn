@@ -1741,7 +1741,7 @@ public class Test
 
         private static CSharpCompilation CreateCompilationWithCorlib20(string text)
         {
-            return CreateEmptyCompilation(new string[] { text }, new[] { TestMetadata.Net20.mscorlib });
+            return CreateCompilation(text, targetFramework: TargetFramework.Net20);
         }
 
         #endregion Pre-4.0 codegen

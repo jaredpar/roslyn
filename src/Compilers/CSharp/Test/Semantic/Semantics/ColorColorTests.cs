@@ -15,6 +15,7 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests
 {
@@ -2081,7 +2082,7 @@ public enum Color { Red }
             var refLib = CreateEmptyCompilation(
                 sourceRefLib,
                 assemblyName: "RefLib",
-                references: new[] { TestMetadata.Net20.mscorlib });
+                references: new[] { Net20.References.mscorlib });
 
             refLib.VerifyEmitDiagnostics();
 
@@ -2126,7 +2127,7 @@ public class Base { }
             var refLib = CreateEmptyCompilation(
                 sourceRefLib,
                 assemblyName: "RefLib",
-                references: new[] { TestMetadata.Net20.mscorlib });
+                references: new[] { Net20.References.mscorlib });
 
             refLib.VerifyEmitDiagnostics();
 

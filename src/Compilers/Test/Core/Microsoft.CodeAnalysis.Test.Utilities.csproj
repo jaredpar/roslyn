@@ -108,7 +108,6 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net451" IncludeAssets="none" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net40" IncludeAssets="none" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net20" IncludeAssets="none" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.NET.Build.Extensions" IncludeAssets="none" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Threading.Tasks.Extensions" IncludeAssets="none" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.CSharp" GeneratePathProperty="true" />

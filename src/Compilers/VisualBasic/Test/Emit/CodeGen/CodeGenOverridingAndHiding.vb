@@ -10,6 +10,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Microsoft.CodeAnalysis.VisualBasic.UnitTests.Emit
 Imports Roslyn.Test.Utilities
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests
     Public Class CodeGenOverridingAndHiding
@@ -715,7 +716,7 @@ Class SelfDestruct
 End Class
                     </file>
                 </compilation>,
-                {MscorlibRef_v20}).VerifyDiagnostics()
+                {Net20.References.mscorlib}).VerifyDiagnostics()
         End Sub
     End Class
 End Namespace

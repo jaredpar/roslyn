@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 
 Imports Roslyn.Test.Utilities
 Imports System.Collections.ObjectModel
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Semantics
 
@@ -2978,7 +2979,7 @@ End Class
     ]]></file>
 </compilation>
 
-            Dim compilation = CreateEmptyCompilationWithReferences(source, {MscorlibRef_v20}, TestOptions.ReleaseExe)
+            Dim compilation = CreateEmptyCompilationWithReferences(source, {Net20.References.mscorlib}, TestOptions.ReleaseExe)
 
             AssertTheseDiagnostics(compilation,
 <expected><![CDATA[

@@ -27,6 +27,7 @@ using Roslyn.Test.PdbUtilities;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.UnitTests
 {
@@ -580,9 +581,9 @@ class B : A
             var identityBS2 = referenceBS2.GetAssemblyIdentity();
 
             var mscorlibIdentity = MscorlibRef.GetAssemblyIdentity();
-            var mscorlib20Identity = MscorlibRef_v20.GetAssemblyIdentity();
+            var mscorlib20Identity = Net20.References.mscorlib.GetAssemblyIdentity();
             var systemRefIdentity = SystemRef.GetAssemblyIdentity();
-            var systemRef20Identity = SystemRef_v20.GetAssemblyIdentity();
+            var systemRef20Identity = Net20.References.System.GetAssemblyIdentity();
 
             // No duplicates.
             VerifyAssemblyReferences(
@@ -602,11 +603,11 @@ class B : A
             // Strong-named, non-strong-named, and framework duplicates, different versions.
             VerifyAssemblyReferences(
                 referenceBN1,
-                ImmutableArray.Create(MscorlibRef, referenceAS1, MscorlibRef_v20, referenceAS2, referenceBN2, referenceBN1, referenceAS2, referenceAS1, referenceBN1),
+                ImmutableArray.Create(MscorlibRef, referenceAS1, Net20.References.mscorlib, referenceAS2, referenceBN2, referenceBN1, referenceAS2, referenceAS1, referenceBN1),
                 ImmutableArray.Create(mscorlibIdentity, identityAS2, identityBN2));
             VerifyAssemblyReferences(
                 referenceBN2,
-                ImmutableArray.Create(MscorlibRef, referenceAS1, MscorlibRef_v20, referenceAS2, referenceBN2, referenceBN1, referenceAS2, referenceAS1, referenceBN1),
+                ImmutableArray.Create(MscorlibRef, referenceAS1, Net20.References.mscorlib, referenceAS2, referenceBN2, referenceBN1, referenceAS2, referenceAS1, referenceBN1),
                 ImmutableArray.Create(mscorlibIdentity, identityAS2, identityBN2));
             // Strong-named, different versions.
             VerifyAssemblyReferences(

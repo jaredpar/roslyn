@@ -5,6 +5,7 @@
 Imports System.Collections.Immutable
 Imports System.Reflection
 Imports System.Runtime.InteropServices
+Imports Basic.Reference.Assemblies
 Imports Microsoft.CodeAnalysis.CodeGen
 Imports Microsoft.CodeAnalysis.Debugging
 Imports Microsoft.CodeAnalysis.Emit
@@ -607,7 +608,7 @@ Public Class C2 : Inherits C1
 End Class
 "
 
-            Dim comp1 = CreateEmptyCompilationWithReferences(VisualBasicSyntaxTree.ParseText(source1), {MscorlibRef_v20}, TestOptions.DebugDll)
+            Dim comp1 = CreateEmptyCompilationWithReferences(VisualBasicSyntaxTree.ParseText(source1), {Net20.References.mscorlib}, TestOptions.DebugDll)
             Dim module1 = comp1.ToModuleInstance()
 
             Dim comp2 = CreateEmptyCompilationWithReferences(VisualBasicSyntaxTree.ParseText(source2), {MscorlibRef_v4_0_30316_17626, module1.GetReference()}, TestOptions.DebugDll)

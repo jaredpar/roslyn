@@ -8,6 +8,7 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
+using Basic.Reference.Assemblies;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
@@ -84,7 +85,7 @@ namespace System.Threading.Tasks {
                 taskAssembly = taskAssembly + "\n" + extensionSource;
             }
 
-            var taskCompilation = CreateEmptyCompilation(taskAssembly, references: new[] { MscorlibRef_v20 });
+            var taskCompilation = CreateEmptyCompilation(taskAssembly, references: [Net20.References.mscorlib]);
             taskCompilation.VerifyDiagnostics();
             return taskCompilation.ToMetadataReference();
         }
@@ -98,7 +99,7 @@ namespace System.Threading.Tasks {
                 source: @" System.Console.Write(""complete"");",
                 parseOptions: TestOptions.Script,
                 options: TestOptions.DebugExe,
-                references: new MetadataReference[] { TaskFacadeAssembly(), MscorlibRef_v20 });
+                references: new MetadataReference[] { TaskFacadeAssembly(), Net20.References.mscorlib });
 
             script.VerifyEmitDiagnostics(
                 // error CS1061: 'Task<object>' does not contain a definition for 'GetAwaiter' and no extension method 'GetAwaiter' accepting a first argument of type 'Task<object>' could be found (are you missing a using directive or an assembly reference?)
@@ -115,7 +116,7 @@ namespace System.Threading.Tasks {
                 source: @" System.Console.Write(""complete"");",
                 parseOptions: TestOptions.Script,
                 options: TestOptions.DebugExe,
-                references: new MetadataReference[] { TaskFacadeAssembly(false), MscorlibRef_v20 });
+                references: new MetadataReference[] { TaskFacadeAssembly(false), Net20.References.mscorlib });
 
             script.VerifyEmitDiagnostics();
             var compiled = CompileAndVerify(script);
@@ -160,7 +161,7 @@ namespace System.Threading.Tasks {
                 source: @" System.Console.Write(""complete"");",
                 parseOptions: TestOptions.Script,
                 options: TestOptions.DebugExe.WithUsings("Hidden"),
-                references: new MetadataReference[] { TaskFacadeAssembly(), MscorlibRef_v20 });
+                references: new MetadataReference[] { TaskFacadeAssembly(), Net20.References.mscorlib });
 
             script.VerifyEmitDiagnostics();
 
@@ -189,7 +190,7 @@ new System.Threading.Tasks.Task<int>().GetAwaiter();
 System.Console.Write(""complete"");",
                 parseOptions: TestOptions.Script,
                 options: TestOptions.DebugExe,
-                references: new MetadataReference[] { TaskFacadeAssembly(), MscorlibRef_v20 });
+                references: new MetadataReference[] { TaskFacadeAssembly(), Net20.References.mscorlib });
 
             script.VerifyEmitDiagnostics(
                 // error CS1061: 'Task<object>' does not contain a definition for 'GetAwaiter' and no extension method 'GetAwaiter' accepting a first argument of type 'Task<object>' could be found (are you missing a using directive or an assembly reference?)
@@ -208,7 +209,7 @@ new System.Threading.Tasks.Task<int>().GetAwaiter();
 System.Console.Write(""complete"");",
                 parseOptions: TestOptions.Script,
                 options: TestOptions.DebugExe.WithUsings("Hidden"),
-                references: new MetadataReference[] { TaskFacadeAssembly(), MscorlibRef_v20 });
+                references: new MetadataReference[] { TaskFacadeAssembly(), Net20.References.mscorlib });
 
             var compiled = CompileAndVerify(script);
             compiled.VerifyIL("<Main>", @"
@@ -1372,7 +1373,7 @@ goto Label;");
                 source: @"string F() => null; const var x = F();",
                 parseOptions: TestOptions.Script,
                 options: TestOptions.DebugExe,
-                references: new MetadataReference[] { TaskFacadeAssembly(), MscorlibRef_v20 });
+                references: new MetadataReference[] { TaskFacadeAssembly(), Net20.References.mscorlib });
 
             script.VerifyDiagnostics(
                 // (1,27): error CS0822: Implicitly-typed variables cannot be constant

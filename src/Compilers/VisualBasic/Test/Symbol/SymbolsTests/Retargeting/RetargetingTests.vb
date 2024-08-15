@@ -9,6 +9,7 @@ Imports Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting
 Imports Microsoft.CodeAnalysis.VisualBasic.Symbols
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
 Imports Roslyn.Test.Utilities
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.UnitTests.Symbols
 #If Not Retargeting Then
@@ -3143,12 +3144,12 @@ End Namespace
                 Else
                     'Retarget to use v2.0 assemblies
                     If AssembliesToRetarget = 1 Then
-                        NewCompilation = C.ReplaceReference(oldReference:=OldReference, newReference:=TestMetadata.Net20.mscorlib)
+                        NewCompilation = C.ReplaceReference(oldReference:=OldReference, newReference:=Net20.References.mscorlib)
                     ElseIf AssembliesToRetarget = 2 Then
-                        NewCompilation = C.ReplaceReference(oldReference:=OldVBReference, newReference:=TestMetadata.Net20.MicrosoftVisualBasic)
+                        NewCompilation = C.ReplaceReference(oldReference:=OldVBReference, newReference:=Net20.References.MicrosoftVisualBasic)
                     ElseIf AssembliesToRetarget = 3 Then
-                        NewCompilation = C.ReplaceReference(oldReference:=OldReference, newReference:=TestMetadata.Net20.mscorlib).
-                            ReplaceReference(oldReference:=OldVBReference, newReference:=TestMetadata.Net20.MicrosoftVisualBasic)
+                        NewCompilation = C.ReplaceReference(oldReference:=OldReference, newReference:=Net20.References.mscorlib).
+                            ReplaceReference(oldReference:=OldVBReference, newReference:=Net20.References.MicrosoftVisualBasic)
                     End If
                 End If
             Else
@@ -3168,7 +3169,7 @@ End Class
     </file>
 </compilation>
 
-            Dim comp1 = CreateEmptyCompilationWithReferences(source1, {MscorlibRef_v20}, TestOptions.ReleaseDll)
+            Dim comp1 = CreateEmptyCompilationWithReferences(source1, {Net20.References.mscorlib}, TestOptions.ReleaseDll)
             comp1.VerifyDiagnostics()
 
             Dim c1 As NamedTypeSymbol = comp1.Assembly.GlobalNamespace.GetTypeMembers("C1").Single
@@ -3204,7 +3205,7 @@ End Class
     ]]></file>
 </compilation>
 
-            Dim comp1 = CreateEmptyCompilation(ParseSourceXml(source1, Nothing).ToArray(), references:={MscorlibRef_v20}, options:=TestOptions.ReleaseDll)
+            Dim comp1 = CreateEmptyCompilation(ParseSourceXml(source1, Nothing).ToArray(), references:={Net20.References.mscorlib}, options:=TestOptions.ReleaseDll)
             comp1.VerifyDiagnostics()
 
             Dim source2 =

@@ -88,6 +88,7 @@ namespace Roslyn.Test.Utilities
         /// </summary>
         MinimalAsync,
 
+        Net20,
         Net50,
         Net60,
         Net70,
@@ -289,6 +290,7 @@ namespace Roslyn.Test.Utilities
             // Note: NetCoreApp should behave like latest Core TFM
             TargetFramework.Empty => ImmutableArray<MetadataReference>.Empty,
             TargetFramework.NetStandard20 => NetStandard20References,
+            TargetFramework.Net20 => ImmutableArray.CreateRange<MetadataReference>(LoadDynamicReferences("Net20")),
             TargetFramework.Net50 => ImmutableArray.CreateRange<MetadataReference>(LoadDynamicReferences("Net50")),
             TargetFramework.Net60 => ImmutableArray.CreateRange<MetadataReference>(LoadDynamicReferences("Net60")),
             TargetFramework.NetCoreApp or TargetFramework.Net70 => ImmutableArray.CreateRange<MetadataReference>(Net70.References.All),

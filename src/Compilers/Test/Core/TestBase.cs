@@ -215,8 +215,6 @@ namespace Roslyn.Test.Utilities
             LazyThreadSafetyMode.PublicationOnly);
         public static MetadataReference AacorlibRef => s_aacorlibRef.Value;
 
-        public static MetadataReference MscorlibRef_v20 => Net20.mscorlib;
-
         public static MetadataReference MscorlibRef_v4_0_30316_17626 => Net451.mscorlib;
 
         private static readonly Lazy<MetadataReference> s_mscorlibRef_v46 = new Lazy<MetadataReference>(
@@ -275,11 +273,6 @@ namespace Roslyn.Test.Utilities
             () => AssemblyMetadata.CreateFromImage(ResourcesNet451.System).GetReference(display: "System.v4_0_30319_17929.dll"),
             LazyThreadSafetyMode.PublicationOnly);
         public static MetadataReference SystemRef_v4_0_30319_17929 => s_systemRef_v4_0_30319_17929.Value;
-
-        private static readonly Lazy<MetadataReference> s_systemRef_v20 = new Lazy<MetadataReference>(
-            () => AssemblyMetadata.CreateFromImage(ResourcesNet20.System).GetReference(display: "System.v2_0_50727.dll"),
-            LazyThreadSafetyMode.PublicationOnly);
-        public static MetadataReference SystemRef_v20 => s_systemRef_v20.Value;
 
         private static readonly Lazy<MetadataReference> s_systemXmlRef = new Lazy<MetadataReference>(
             () => AssemblyMetadata.CreateFromImage(ResourcesNet451.SystemXml).GetReference(display: "System.Xml.v4_0_30319.dll"),

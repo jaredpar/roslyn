@@ -17,6 +17,7 @@ using Microsoft.DiaSymReader.Tools;
 using Roslyn.Test.Utilities;
 using Roslyn.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 
 namespace Microsoft.CodeAnalysis.CSharp.EditAndContinue.UnitTests
 {
@@ -1144,8 +1145,8 @@ class C
         }
     }
 }";
-            var compilation0 = CreateEmptyCompilation(source, options: TestOptions.DebugDll, references: new[] { MscorlibRef_v20 });
-            var compilation1 = CreateEmptyCompilation(source, options: TestOptions.DebugDll, references: new[] { MscorlibRef_v20 });
+            var compilation0 = CreateEmptyCompilation(source, options: TestOptions.DebugDll, references: new[] { Net20.References.mscorlib });
+            var compilation1 = CreateEmptyCompilation(source, options: TestOptions.DebugDll, references: new[] { Net20.References.mscorlib });
 
             var testData0 = new CompilationTestData();
             var bytes0 = compilation0.EmitToArray(testData: testData0);

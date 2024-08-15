@@ -26,6 +26,7 @@
     <Reference Include="System.Xml" />
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine-implementation" />
     <PackageReference Include="Microsoft.DiaSymReader" />
+    <PackageReference Include="Basic.Reference.Assemblies.Net20" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\" />

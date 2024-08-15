@@ -15,6 +15,7 @@ Imports Microsoft.VisualStudio.Debugger.Evaluation
 Imports Roslyn.Test.PdbUtilities
 Imports Roslyn.Test.Utilities
 Imports Xunit
+Imports Basic.Reference.Assemblies
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.UnitTests
     Public Class PseudoVariableTests
@@ -768,20 +769,20 @@ End Class"
             Dim compilationA1 = CreateEmptyCompilation(
                 New AssemblyIdentity(assemblyNameA, New Version(1, 1, 1, 1), cultureName:="", publicKeyOrToken:=publicKeyA, hasPublicKey:=True),
                 {sourceA},
-                references:={MscorlibRef_v20},
+                references:={Net20.References.mscorlib},
                 options:=TestOptions.DebugDll.WithDelaySign(True))
 
             Dim compilationB1 = CreateEmptyCompilation(
                 New AssemblyIdentity(assemblyNameB, New Version(1, 2, 2, 2)),
                 {sourceB},
-                references:={MscorlibRef_v20, compilationA1.EmitToImageReference()},
+                references:={Net20.References.mscorlib, compilationA1.EmitToImageReference()},
                 options:=TestOptions.DebugDll)
 
             ' Use mscorlib v4.0.0.0 and A v2.1.2.1 at runtime.
             Dim compilationA2 = CreateEmptyCompilation(
                 New AssemblyIdentity(assemblyNameA, New Version(2, 1, 2, 1), cultureName:="", publicKeyOrToken:=publicKeyA, hasPublicKey:=True),
                 {sourceA},
-                references:={MscorlibRef_v20},
+                references:={Net20.References.mscorlib},
                 options:=TestOptions.DebugDll.WithDelaySign(True))
 
             WithRuntimeInstance(compilationB1, {MscorlibRef, compilationA2.EmitToImageReference()},

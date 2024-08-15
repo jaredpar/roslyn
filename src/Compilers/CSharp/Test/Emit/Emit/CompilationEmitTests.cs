@@ -15,6 +15,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading;
+using Basic.Reference.Assemblies;
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
@@ -3462,7 +3463,7 @@ class C
             var compilation = CSharpCompilation.Create(
                 "v2Fx.exe",
                 new[] { Parse(source) },
-                new[] { Net20.mscorlib });
+                new[] { Net20.References.mscorlib });
 
             //EDMAURER this is built with a 2.0 mscorlib. The runtimeMetadataVersion should be the same as the runtimeMetadataVersion stored in the assembly
             //that contains System.Object.

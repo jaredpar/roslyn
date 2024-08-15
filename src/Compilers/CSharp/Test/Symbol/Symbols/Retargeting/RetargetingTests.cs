@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp.Test.Utilities;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Test.Utilities;
 using Xunit;
+using Basic.Reference.Assemblies;
 using Utils = Microsoft.CodeAnalysis.CSharp.UnitTests.CompilationUtils;
 
 namespace Microsoft.CodeAnalysis.CSharp.UnitTests.Symbols.Retargeting
@@ -727,7 +728,7 @@ public class C<T> where T : int
 class C1<T>
 {
 }";
-            var comp1 = CreateEmptyCompilation(source, new[] { MscorlibRef_v20 }, TestOptions.ReleaseDll);
+            var comp1 = CreateEmptyCompilation(source, new[] { Net20.References.mscorlib }, TestOptions.ReleaseDll);
             comp1.VerifyDiagnostics();
 
             NamedTypeSymbol c1 = comp1.Assembly.GlobalNamespace.GetTypeMembers("C1").Single();
