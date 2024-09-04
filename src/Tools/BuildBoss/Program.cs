@@ -88,6 +88,7 @@ namespace BuildBoss
             while (dir != null && !File.Exists(Path.Combine(dir, "global.json")))
             {
                 dir = Path.GetDirectoryName(dir);
+
             }
 
             return dir;

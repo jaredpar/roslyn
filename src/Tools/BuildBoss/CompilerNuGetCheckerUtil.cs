@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.IO.Packaging;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -15,6 +16,8 @@ using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using Newtonsoft.Json.Linq;
 
 namespace BuildBoss
@@ -73,6 +76,7 @@ namespace BuildBoss
             try
             {
                 var allGood = true;
+                allGood &= CheckPackagesReadMe(textWriter);
                 allGood &= CheckPublishData(textWriter);
                 allGood &= CheckPackages(textWriter);
                 allGood &= CheckExternalApis(textWriter);
@@ -344,6 +348,58 @@ namespace BuildBoss
             return list
                 .Where(x => x.RelativeName.StartsWith(folderRelativePath, PathComparison))
                 .Select(x => x.PackagePart);
+        }
+
+        private bool CheckPackagesReadMe(TextWriter textWriter)
+        {
+            textWriter.WriteLine("Verifying shipping NuPkg have README files");
+            var shippingDir = Path.Combine(ArtifactsDirectory, "packages", Configuration, "Shipping");
+            if (!Directory.Exists(shippingDir))
+            {
+                textWriter.WriteLine($"Error: Can't find packages path: {shippingDir}");
+            }
+
+            var allGood = true;
+            foreach (var packageFilePath in Directory.EnumerateFiles(shippingDir, "*.nupkg"))
+            {
+                textWriter.WriteLine($"\tVerifying {Path.GetFileName(packageFilePath)}");
+                allGood &= verifyPackage(textWriter, packageFilePath);
+            }
+
+            return allGood;
+
+            static bool verifyPackage(TextWriter textWriter, string packageFilePath)
+            {
+                using var packageStream = new FileStream(packageFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                using var package = new ZipArchive(packageStream, ZipArchiveMode.Read, leaveOpen: true);
+
+                var items = package.Entries
+                    .Where(x => x.Name.EndsWith(".nuspec", StringComparison.Ordinal))
+                    .ToList();
+                if (items.Count != 1)
+                {
+                    textWriter.WriteLine("Cannot find nuspec file");
+                    return false;
+                }
+
+                using var nuspecStream = items[0].Open();
+                var doc = XDocument.Load(nuspecStream);
+                XNamespace ns = "http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd";
+                var readme = doc.Root.Element(ns + "metadata")?.Element(ns + "readme")?.Value;
+                if (readme != "README.md")
+                {
+                    textWriter.WriteLine("There is no readme metadata in the nuspec. Did the project remember to set PackageReadMe?");
+                    return false;
+                }
+
+                if (package.GetEntry("README.md") is null)
+                {
+                    textWriter.WriteLine("There is no README.md in the package");
+                    return false;
+                }
+
+                return true;
+            }
         }
 
         /// <summary>

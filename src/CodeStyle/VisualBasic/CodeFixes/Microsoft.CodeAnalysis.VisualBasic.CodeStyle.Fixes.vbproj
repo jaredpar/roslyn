@@ -12,9 +12,7 @@
     <IsPackable>true</IsPackable>
     <IsAnalyzer>true</IsAnalyzer>
     <NuspecPackageId>Microsoft.CodeAnalysis.VisualBasic.CodeStyle</NuspecPackageId>
-    <PackageDescription>
-      .NET Compiler Platform ("Roslyn") code style analyzers for Visual Basic.
-    </PackageDescription>
+    <PackageDescription>.NET Compiler Platform ("Roslyn") code style analyzers for Visual Basic.</PackageDescription>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_GetFilesToPackage</TargetsForTfmSpecificContentInPackage>
     <!-- Remove once https://github.com/NuGet/Home/issues/8583 is fixed -->
     <NoWarn>$(NoWarn);NU5128</NoWarn>

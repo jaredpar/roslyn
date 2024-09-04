@@ -8,15 +8,8 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <DevelopmentDependency>true</DevelopmentDependency>
     <ExcludeFromSourceBuild>true</ExcludeFromSourceBuild>
-    <PackageDescription>
-      .NET Framework Compilers Toolset Package
-
-      Referencing this package will cause the project to be built using the C# and Visual Basic framework compilers contained in the package, as opposed to the version installed with MSBuild.
-
-      This package is an implementation detail of a .NET SDK feature. Directly referencing this package is not supported. 
-
-      $(RoslynPackageDescriptionDetails)
-    </PackageDescription>
+    <PackageDescription>.NET Compilers Toolset Package.</PackageDescription>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_GetFilesToPackage</TargetsForTfmSpecificContentInPackage>
     <!-- Remove NU5128 once https://github.com/NuGet/Home/issues/8583 is fixed -->
     <NoWarn>$(NoWarn);NU5100;NU5128</NoWarn>
@@ -30,6 +23,7 @@
     <ProjectReference Include="..\..\..\Interactive\csi\csi.csproj" PrivateAssets="All"/>
     <ProjectReference Include="..\..\..\Compilers\Core\MSBuildTask\Microsoft.Build.Tasks.CodeAnalysis.csproj" PrivateAssets="All"/>
     <ProjectReference Include="..\..\..\Compilers\Server\VBCSCompiler\AnyCpu\VBCSCompiler.csproj" PrivateAssets="All"/>
+    <Content Include="..\docs\README.md" Pack="true" PackagePath="README.md" />
   </ItemGroup>
 
   <Target Name="_GetFilesToPackage" DependsOnTargets="$(_DependsOn)">

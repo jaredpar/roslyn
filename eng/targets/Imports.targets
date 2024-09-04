@@ -202,10 +202,16 @@
   </ItemGroup>
 
   <!-- 
-    Add ThirdPartyNotices.rtf to all shipping NuGet packages.
+    Add standard files to shipping NuGet packages
   -->
-  <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(IsShipping)' == 'true'">
-    <None Include="$(ThirdPartyNoticesFilePath)" PackagePath="ThirdPartyNotices.rtf" Visible="false" Pack="true"/>
+  <PropertyGroup Condition="'$(IsPackable)' == 'true'>
+    <PackageReadMeFile>README.md</PackageReadMeFile>
+    <RoslynPackageReadMeFilePath>$(MSBuildThisFileDirectory)NuPkg.README.md</RoslynPackageReadMeFilePath> 
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true'>
+    <None Include="$(ThirdPartyNoticesFilePath)" Condition="'$(IsShipping) == 'true'" PackagePath="ThirdPartyNotices.rtf" Visible="false" Pack="true"/>
+    <None Include="$(RoslynPackageReadMeFilePath)" PackagePath="README.md" Pack="true"/>
   </ItemGroup>
 
   <!--
@@ -215,22 +221,6 @@
   <ItemGroup>
     <Content Update=".vsextension\**\*" Pack="false" />
   </ItemGroup>
-
-  <!--
-    Append common text to package specific PackageDescription.
-  -->
-  <Target Name="_AppendCommonPackageDescription" 
-          BeforeTargets="InitializeStandardNuspecProperties;GenerateNuspec" 
-          DependsOnTargets="InitializeSourceControlInformation"
-          Condition="'$(IsPackable)' == 'true' AND '$(SourceControlInformationFeatureSupported)' == 'true'">
-    <PropertyGroup>
-      <PackageDescription>
-      $(PackageDescription)
-      More details at https://aka.ms/roslyn-packages
-      This package was built from the source at $(PrivateRepositoryUrl)/commit/$(SourceRevisionId).
-      </PackageDescription>
-    </PropertyGroup>
-  </Target>
 
   <!-- Make sure additional files show up in Solution Explorer -->
   <ItemGroup>
