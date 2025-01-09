@@ -10,5 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Mono.Options" />
+    <ProjectReference Include="..\Util\Microsoft.CodeAnalysis.Tools.Util.csproj" />
   </ItemGroup>
 </Project>
