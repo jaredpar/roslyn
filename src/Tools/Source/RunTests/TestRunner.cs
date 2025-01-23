@@ -14,6 +14,7 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Services.Common.CommandLine;
 using Newtonsoft.Json;
 
 namespace RunTests
@@ -49,7 +50,7 @@ namespace RunTests
             var partitionIndex = 0;
             foreach (var assembly in assemblies)
             {
-                var currentWorkItem = ImmutableSortedDictionary<AssemblyInfo, ImmutableArray<TestMethodInfo>>.Empty.Add(assembly, ImmutableArray<TestMethodInfo>.Empty);
+                var currentWorkItem = ImmutableSortedDictionary<string, ImmutableArray<TestMethodInfo>>.Empty.Add(assembly.AssemblyPath, []);
                 workItems.Add(new WorkItemInfo(currentWorkItem, partitionIndex++));
             }
 
@@ -57,6 +58,29 @@ namespace RunTests
         }
 
         internal async Task<RunAllResult> RunAllAsync(ImmutableArray<AssemblyInfo> assemblies, CancellationToken cancellationToken)
+        {
+            var envName = TestAssemblyUtil.AsEnvironmentVariableName(_options.TestEnvironment);
+            string? oldValue = null;
+            if (!string.IsNullOrEmpty(envName))
+            {
+                oldValue = Environment.GetEnvironmentVariable(envName);
+                Environment.SetEnvironmentVariable(envName, "true");
+            }
+
+            try
+            {
+                return await RunAllAsyncCore(assemblies, cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(envName))
+                {
+                    Environment.SetEnvironmentVariable(envName, oldValue);
+                }
+            }
+        }
+
+        internal async Task<RunAllResult> RunAllAsyncCore(ImmutableArray<AssemblyInfo> assemblies, CancellationToken cancellationToken)
         {
             // Use 1.5 times the number of processors for unit tests, but only 1 processor for the open integration tests
             // since they perform actual UI operations (such as mouse clicks and sending keystrokes) and we don't want two

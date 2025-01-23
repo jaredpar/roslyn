@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Services.Common;
 
 namespace RunTests
 {
@@ -20,13 +21,13 @@ namespace RunTests
             var fileContentsBuilder = new StringBuilder();
 
             // Add each assembly we want to test on a new line.
-            var assemblyPaths = workItem.Filters.Keys.Select(assembly => assembly.AssemblyPath);
+            var assemblyPaths = workItem.Filters.Keys;
             foreach (var path in assemblyPaths)
             {
                 fileContentsBuilder.AppendLine($"\"{path}\"");
             }
 
-            fileContentsBuilder.AppendLine($@"/Platform:{options.Architecture}");
+            fileContentsBuilder.AppendLine($@"/Platform:{TestAssemblyUtil.AsPlatformString(options.TestAssemblyArch)}");
             fileContentsBuilder.AppendLine($@"/Logger:xunit;LogFilePath={xmlResultsFilePath}");
             if (htmlResultsFilePath != null)
             {
@@ -102,7 +103,7 @@ namespace RunTests
 
         public static string GetResultsFilePath(WorkItemInfo workItemInfo, Options options, string suffix = "xml")
         {
-            var fileName = $"WorkItem_{workItemInfo.PartitionIndex}_{options.Architecture}_test_results.{suffix}";
+            var fileName = $"WorkItem_{workItemInfo.PartitionIndex}_{TestAssemblyUtil.AsPlatformString(options.TestAssemblyArch)}_test_results.{suffix}";
             return Path.Combine(options.TestResultsDirectory, fileName);
         }
 

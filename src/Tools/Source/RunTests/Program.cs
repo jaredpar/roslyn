@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -127,19 +128,22 @@ namespace RunTests
 
         private static async Task<int> RunAsync(Options options, CancellationToken cancellationToken)
         {
-            var assemblyFilePaths = GetAssemblyFilePaths(options);
+            var assemblyFilePaths = TestAssemblyUtil.GetTestAssemblyFilePaths(
+                options.ArtifactsDirectory,
+                options.Configuration,
+                options.TestAssemblyGroup,
+                options.TestAssemblyArch);
+
             if (options.UseHelix)
             {
-                return await HelixTestRunner.RunAsync(
-                    options,
-                    assemblyFilePaths,
-                    cancellationToken);
+                return await HelixTestRunner.RunAsync(options, assemblyFilePaths, cancellationToken);
             }
 
             var testExecutor = new ProcessTestExecutor();
             var testRunner = new TestRunner(options, testExecutor);
             var start = DateTime.Now;
-            if (assemblyFilePaths.Length == 0)
+            var assemblyInfoList = assemblyFilePaths.Select(x => new AssemblyInfo(x)).ToImmutableArray();
+            if (assemblyInfoList.Length == 0)
             {
                 WriteLogFile(options);
                 ConsoleUtil.WriteLine(ConsoleColor.Red, "No assemblies to test");
@@ -148,7 +152,7 @@ namespace RunTests
 
             ConsoleUtil.WriteLine($"Proc dump location: {options.ProcDumpFilePath}");
 
-            var result = await testRunner.RunAllAsync(assemblyFilePaths, cancellationToken).ConfigureAwait(true);
+            var result = await testRunner.RunAllAsync(assemblyInfoList, cancellationToken).ConfigureAwait(true);
             var elapsed = DateTime.Now - start;
 
             ConsoleUtil.WriteLine($"Test execution time: {elapsed}");
@@ -283,107 +287,6 @@ namespace RunTests
             }
 
             WriteLogFile(options);
-        }
-
-        private static ImmutableArray<AssemblyInfo> GetAssemblyFilePaths(Options options)
-        {
-            var list = new List<AssemblyInfo>();
-            var binDirectory = Path.Combine(options.ArtifactsDirectory, "bin");
-            foreach (var project in Directory.EnumerateDirectories(binDirectory, "*", SearchOption.TopDirectoryOnly))
-            {
-                var name = Path.GetFileName(project);
-                if (!shouldInclude(name, options) || shouldExclude(name, options))
-                {
-                    Console.WriteLine($"Skipping {name} because it is not included or is excluded");
-                    continue;
-                }
-
-                var fileName = $"{name}.dll";
-
-                var configDirectory = Path.Combine(project, options.Configuration);
-                if (!Directory.Exists(configDirectory))
-                {
-                    Console.WriteLine($"Skipping {name} because {options.Configuration} does not exist");
-                    continue;
-                }
-
-                foreach (var targetFrameworkDirectory in Directory.EnumerateDirectories(configDirectory))
-                {
-                    var tfm = Path.GetFileName(targetFrameworkDirectory)!;
-                    if (!IsMatch(options.TestRuntime, tfm))
-                    {
-                        Console.WriteLine($"Skipping {name} {tfm} does not match the target framework");
-                        continue;
-                    }
-
-                    var filePath = Path.Combine(targetFrameworkDirectory, fileName);
-                    if (File.Exists(filePath))
-                    {
-                        list.Add(new AssemblyInfo(filePath));
-                    }
-                    else if (Directory.GetFiles(targetFrameworkDirectory, searchPattern: "*.UnitTests.dll") is { Length: > 0 } matches)
-                    {
-                        // If the unit test assembly name doesn't match the project folder name, but still matches our "unit test" name pattern, we want to run it.
-                        // If more than one such assembly is present in a project output folder, we assume something is wrong with the build configuration.
-                        // For example, one unit test project might be referencing another unit test project.
-                        if (matches.Length > 1)
-                        {
-                            var message = $"Multiple unit test assemblies found in '{targetFrameworkDirectory}'. Please adjust the build to prevent this. Matches:{Environment.NewLine}{string.Join(Environment.NewLine, matches)}";
-                            throw new Exception(message);
-                        }
-
-                        Console.WriteLine($"Found unit test assembly '{matches[0]}' in '{targetFrameworkDirectory}'");
-                        list.Add(new AssemblyInfo(matches[0]));
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{targetFrameworkDirectory} does not contain unit tests");
-                    }
-                }
-            }
-
-            if (list.Count == 0)
-            {
-                throw new InvalidOperationException($"Did not find any test assemblies");
-            }
-
-            list.Sort();
-            return list.ToImmutableArray();
-
-            static bool shouldInclude(string name, Options options)
-            {
-                foreach (var pattern in options.IncludeFilter)
-                {
-                    if (Regex.IsMatch(name, pattern.Trim('\'', '"')))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            static bool shouldExclude(string name, Options options)
-            {
-                foreach (var pattern in options.ExcludeFilter)
-                {
-                    if (Regex.IsMatch(name, pattern.Trim('\'', '"')))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            static bool IsMatch(TestRuntime testRuntime, string dirName) =>
-                testRuntime switch
-                {
-                    TestRuntime.Both => true,
-                    TestRuntime.Core => Regex.IsMatch(dirName, @"^net\d+\."),
-                    TestRuntime.Framework => dirName is "net472",
-                    _ => throw new InvalidOperationException($"Unexpected {nameof(TestRuntime)} value: {testRuntime}"),
-                };
         }
 
         private static void DisplayResults(Display display, ImmutableArray<TestResult> testResults)

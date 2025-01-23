@@ -43,14 +43,11 @@ jobs:
       env:
         HELIX_CORRELATION_PAYLOAD: '$(Build.SourcesDirectory)/.duplicate'
 
-    - task: ShellScript@2
+    - task: Bash@3
+      displayName: Run Helix Tests
       inputs:
-        scriptPath: ./eng/build.sh        
-        ${{ if ne(variables['System.TeamProject'], 'public') }}:
-          args: --ci --helix --configuration ${{ parameters.configuration }} --helixQueueName ${{ parameters.helixQueueName }} --helixApiAccessToken ${{ parameters.helixApiAccessToken }} ${{ parameters.testArguments }}        
-        ${{ else }}:
-          args: --ci --helix --configuration ${{ parameters.configuration }} --helixQueueName ${{ parameters.helixQueueName }} ${{ parameters.testArguments }}
-      displayName: Test
+        targetType: 'inline'
+        script: ./.dotnet/dotnet exec ./artifacts/bin/RunTests/$${{ parameters.configuration }}/RunTests.dll --helix --configuration ${{ parameters.configuration }} --helixQueueName ${{ parameters.helixQueueName }} ${{ parameters.testArguments }}
       env:
         SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 

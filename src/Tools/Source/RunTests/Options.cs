@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Microsoft.TeamFoundation.TestManagement.WebApi;
 using Mono.Options;
 
 namespace RunTests
@@ -20,13 +21,6 @@ namespace RunTests
         All,
         Succeeded,
         Failed,
-    }
-
-    internal enum TestRuntime
-    {
-        Both,
-        Core,
-        Framework
     }
 
     internal class Options
@@ -48,14 +42,11 @@ namespace RunTests
 
         public string Configuration { get; set; }
 
-        /// <summary>
-        /// The set of target frameworks that should be probed for test assemblies.
-        /// </summary>
-        public TestRuntime TestRuntime { get; set; } = TestRuntime.Both;
+        public TestAssemblyGroup TestAssemblyGroup { get; set; }
 
-        public List<string> IncludeFilter { get; set; } = new List<string>();
+        public TestAssemblyArch TestAssemblyArch { get; set; }
 
-        public List<string> ExcludeFilter { get; set; } = new List<string>();
+        public TestEnvironment TestEnvironment { get; set; }
 
         public string ArtifactsDirectory { get; }
 
@@ -110,8 +101,6 @@ namespace RunTests
         /// </summary>
         public string LogFilesDirectory { get; set; }
 
-        public string Architecture { get; set; }
-
         public string? AccessToken { get; set; }
 
         public string? ProjectUri { get; set; }
@@ -127,15 +116,13 @@ namespace RunTests
             string artifactsDirectory,
             string configuration,
             string testResultsDirectory,
-            string logFilesDirectory,
-            string architecture)
+            string logFilesDirectory)
         {
             DotnetFilePath = dotnetFilePath;
             ArtifactsDirectory = artifactsDirectory;
             Configuration = configuration;
             TestResultsDirectory = testResultsDirectory;
             LogFilesDirectory = logFilesDirectory;
-            Architecture = architecture;
         }
 
         internal static Options? Parse(string[] args)
@@ -143,10 +130,7 @@ namespace RunTests
             string? dotnetFilePath = null;
             var architecture = Microsoft.CodeAnalysis.Test.Utilities.IlasmUtilities.Architecture;
             var includeHtml = false;
-            var testRuntime = TestRuntime.Both;
             var configuration = "Debug";
-            var includeFilter = new List<string>();
-            var excludeFilter = new List<string>();
             var sequential = false;
             var helix = false;
             var helixQueueName = "Windows.10.Amd64.Open";
@@ -164,14 +148,12 @@ namespace RunTests
             string? pipelineDefinitionId = null;
             string? phaseName = null;
             string? targetBranchName = null;
+            string? testConfig = null;
             var optionSet = new OptionSet()
             {
                 { "dotnet=", "Path to dotnet", (string s) => dotnetFilePath = s },
                 { "configuration=", "Configuration to test: Debug or Release", (string s) => configuration = s },
-                { "runtime=", "The runtime to test: both, core or framework", (TestRuntime t) => testRuntime = t},
-                { "include=", "Expression for including unit test dlls: default *.UnitTests.dll", (string s) => includeFilter.Add(s) },
-                { "exclude=", "Expression for excluding unit test dlls: default is empty", (string s) => excludeFilter.Add(s) },
-                { "arch=", "Architecture to test on: x86, x64 or arm64", (string s) => architecture = s },
+                { "testconfig=", "Test configuration in form of <group>:<arch>:<config>", (string s ) => testConfig = s },
                 { "html", "Include HTML file output", o => includeHtml = o is object },
                 { "sequential", "Run tests sequentially", o => sequential = o is object },
                 { "helix", "Run tests on Helix", o => helix = o is object },
@@ -204,11 +186,6 @@ namespace RunTests
                 return null;
             }
 
-            if (includeFilter.Count == 0)
-            {
-                includeFilter.Add(".*UnitTests.*");
-            }
-
             artifactsPath ??= TryGetArtifactsPath();
             if (artifactsPath is null || !Directory.Exists(artifactsPath))
             {
@@ -234,17 +211,18 @@ namespace RunTests
                 ConsoleUtil.WriteLine($"procdumppath was specified without collectdumps hence it will not be used");
             }
 
+            var (testGroup, testArch, testEnvironment) = TestAssemblyUtil.ParseTestConfig(testConfig);
+
             return new Options(
                 dotnetFilePath: dotnetFilePath,
                 artifactsDirectory: artifactsPath,
                 configuration: configuration,
                 testResultsDirectory: resultFileDirectory,
-                logFilesDirectory: logFileDirectory,
-                architecture: architecture)
+                logFilesDirectory: logFileDirectory)
             {
-                TestRuntime = testRuntime,
-                IncludeFilter = includeFilter,
-                ExcludeFilter = excludeFilter,
+                TestAssemblyGroup = testGroup,
+                TestAssemblyArch = testArch,
+                TestEnvironment = testEnvironment,
                 Display = display,
                 ProcDumpFilePath = procDumpFilePath,
                 CollectDumps = collectDumps,

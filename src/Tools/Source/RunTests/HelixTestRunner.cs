@@ -5,20 +5,15 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.TeamFoundation.TestManagement.WebApi;
-using Microsoft.VisualStudio.Services.Profile;
 using Newtonsoft.Json;
 
 namespace RunTests;
@@ -45,7 +40,7 @@ internal sealed class HelixTestRunner
         Mac,
     }
 
-    internal static async Task<int> RunAsync(Options options, ImmutableArray<AssemblyInfo> assemblies, CancellationToken cancellationToken)
+    internal static async Task<int> RunAsync(Options options, IEnumerable<string> assemblyFilePaths, CancellationToken cancellationToken)
     {
         Verify(options.UseHelix);
         Verify(!options.IncludeHtml);
@@ -61,7 +56,7 @@ internal sealed class HelixTestRunner
             : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? TestOS.Mac
             : TestOS.Linux;
 
-        var platform = !string.IsNullOrEmpty(options.Architecture) ? options.Architecture : "x64";
+        var platform = TestAssemblyUtil.AsPlatformString(options.TestAssemblyArch);
         var dotnetSdkVersion = GetDotNetSdkVersion(options.ArtifactsDirectory);
 
         // This is the directory where all of the work item payloads are stored.
@@ -70,10 +65,10 @@ internal sealed class HelixTestRunner
 
         // Retrieve test runtimes from azure devops historical data.
         var testHistory = await TestHistoryManager.GetTestHistoryAsync(options, cancellationToken);
-        var workItems = AssemblyScheduler.Schedule(assemblies, testHistory);
+        var workItems = AssemblyScheduler.Schedule(assemblyFilePaths, testHistory);
         var helixWorkItems = workItems.Index().Select((tuple) => new HelixWorkItem(
             tuple.Index,
-            tuple.Item.Filters.Keys.Select(x => x.AssemblyPath).ToImmutableArray(),
+            tuple.Item.Filters.Keys.ToImmutableArray(),
             tuple.Item.Filters.Values.SelectMany(x => x).Select(x => x.FullyQualifiedName).ToImmutableArray()));
 
         var helixProjectFileContent = GetHelixProjectFileContent(
@@ -242,6 +237,7 @@ internal sealed class HelixTestRunner
         static (string FileName, string Content) GetHelixCommandContent(
             IEnumerable<string> assemblyRelativeFilePaths,
             string vstestRspFileName,
+            TestEnvironment testEnv,
             TestOS testOS)
         {
             var isUnix = testOS != TestOS.Windows;
@@ -249,24 +245,18 @@ internal sealed class HelixTestRunner
             var setEnvironmentVariable = isUnix ? "export" : "set";
 
             var command = new StringBuilder();
+
+            command.AppendLine($"{setEnvironmentVariable} ROSLYN_TEST_CI=true");
+
+            if (TestAssemblyUtil.AsEnvironmentVariableName(testEnv) is { } envVarName)
+            {
+                command.AppendLine($"{setEnvironmentVariable} {envVarName}=true");
+            }
+
             command.AppendLine($"{setEnvironmentVariable} DOTNET_ROLL_FORWARD=LatestMajor");
             command.AppendLine($"{setEnvironmentVariable} DOTNET_ROLL_FORWARD_TO_PRERELEASE=1");
             command.AppendLine(isUnix ? $"ls -l" : $"dir");
             command.AppendLine("dotnet --info");
-
-            string[] knownEnvironmentVariables =
-            [
-                "ROSLYN_TEST_IOPERATION",
-                "ROSLYN_TEST_USEDASSEMBLIES"
-            ];
-
-            foreach (var knownEnvironmentVariable in knownEnvironmentVariables)
-            {
-                if (Environment.GetEnvironmentVariable(knownEnvironmentVariable) is string { Length: > 0 } value)
-                {
-                    command.AppendLine($"{setEnvironmentVariable} {knownEnvironmentVariable}=\"{value}\"");
-                }
-            }
 
             // OSX produces extremely large dump files that commonly exceed the limits of Helix 
             // uploads. These settings limit the dump file size + produce a .json detailing crash 

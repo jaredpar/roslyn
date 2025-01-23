@@ -16,13 +16,13 @@ using Microsoft.CodeAnalysis.Test.Utilities;
 
 namespace RunTests
 {
-    internal record struct WorkItemInfo(ImmutableSortedDictionary<AssemblyInfo, ImmutableArray<TestMethodInfo>> Filters, int PartitionIndex)
+    internal record struct WorkItemInfo(ImmutableSortedDictionary<string, ImmutableArray<TestMethodInfo>> Filters, int PartitionIndex)
     {
         internal readonly string DisplayName
         {
             get
             {
-                var assembliesString = string.Join("_", Filters.Keys.Select(a => Path.GetFileNameWithoutExtension(a.AssemblyName)));
+                var assembliesString = string.Join("_", Filters.Keys.Select(a => Path.GetFileNameWithoutExtension(a)));
 
                 // Currently some helix APIs don't work when the work item friendly name is more than 200 characters.
                 // Until that is fixed we manually truncate the name ourselves to a reasonable limit.
@@ -51,12 +51,11 @@ namespace RunTests
         private static readonly int s_maxMethodCount = 500;
 
         public static ImmutableArray<WorkItemInfo> Schedule(
-            ImmutableArray<AssemblyInfo> assemblies,
+            IEnumerable<string> assemblies,
             ImmutableDictionary<string, TimeSpan> testHistory)
         {
-            Logger.Log($"Scheduling {assemblies.Length} assemblies");
-
             var orderedTypeInfos = assemblies.ToImmutableSortedDictionary(assembly => assembly, GetTypeInfoList);
+            Logger.Log($"Scheduling {orderedTypeInfos.Count} assemblies");
             ConsoleUtil.WriteLine($"Found {orderedTypeInfos.Values.SelectMany(t => t).SelectMany(t => t.Tests).Count()} tests to run in {orderedTypeInfos.Keys.Count()} assemblies");
 
             if (testHistory.IsEmpty)
@@ -87,8 +86,8 @@ namespace RunTests
             return workItems;
         }
 
-        private static ImmutableSortedDictionary<AssemblyInfo, ImmutableArray<TypeInfo>> UpdateTestsWithExecutionTimes(
-            ImmutableSortedDictionary<AssemblyInfo, ImmutableArray<TypeInfo>> assemblyTypes,
+        private static ImmutableSortedDictionary<string, ImmutableArray<TypeInfo>> UpdateTestsWithExecutionTimes(
+            ImmutableSortedDictionary<string, ImmutableArray<TypeInfo>> assemblyTypes,
             ImmutableDictionary<string, TimeSpan> testHistory)
         {
             // Determine the average execution time so that we can use it for tests that do not have any history.
@@ -151,7 +150,7 @@ namespace RunTests
         }
 
         private static ImmutableArray<WorkItemInfo> BuildWorkItems<TWeight>(
-            ImmutableSortedDictionary<AssemblyInfo, ImmutableArray<TypeInfo>> typeInfos,
+            ImmutableSortedDictionary<string, ImmutableArray<TypeInfo>> typeInfos,
             Func<TWeight, bool> isOverLimitFunc,
             Func<TestMethodInfo, TWeight, TWeight> addFunc) where TWeight : struct
         {
@@ -164,15 +163,15 @@ namespace RunTests
             var accumulatedValue = default(TWeight);
 
             // Keep track of the types we're planning to add to the current work item.
-            var currentFilters = new SortedDictionary<AssemblyInfo, List<TestMethodInfo>>();
+            var currentFilters = new SortedDictionary<string, List<TestMethodInfo>>();
 
             // First find any assemblies we need to run in single assembly work items (due to state sharing concerns).
-            var singlePartitionAssemblies = typeInfos.Where(kvp => ShouldPartitionInSingleWorkItem(kvp.Key.AssemblyPath));
+            var singlePartitionAssemblies = typeInfos.Where(kvp => ShouldPartitionInSingleWorkItem(kvp.Key));
             typeInfos = typeInfos.RemoveRange(singlePartitionAssemblies.Select(kvp => kvp.Key));
-            foreach (var (assembly, types) in singlePartitionAssemblies)
+            foreach (var (assemblyFilePath, types) in singlePartitionAssemblies)
             {
-                Logger.Log($"Building single assembly work item {workItemIndex} for {assembly.AssemblyPath}");
-                types.SelectMany(t => t.Tests).ToList().ForEach(test => AddFilter(assembly, test));
+                Logger.Log($"Building single assembly work item {workItemIndex} for {assemblyFilePath}");
+                types.SelectMany(t => t.Tests).ToList().ForEach(test => AddFilter(assemblyFilePath, test));
 
                 // End the work item so we don't include anything after this assembly.
                 AddCurrentWorkItem();
@@ -220,9 +219,9 @@ namespace RunTests
                 accumulatedValue = default;
             }
 
-            void AddFilter(AssemblyInfo assembly, TestMethodInfo test)
+            void AddFilter(string assemblyFilePath, TestMethodInfo test)
             {
-                if (currentFilters.TryGetValue(assembly, out var assemblyFilters))
+                if (currentFilters.TryGetValue(assemblyFilePath, out var assemblyFilters))
                 {
                     assemblyFilters.Add(test);
                 }
@@ -232,7 +231,7 @@ namespace RunTests
                     {
                         test
                     };
-                    currentFilters.Add(assembly, filterList);
+                    currentFilters.Add(assemblyFilePath, filterList);
                 }
 
                 accumulatedValue = addFunc(test, accumulatedValue);
@@ -265,7 +264,7 @@ namespace RunTests
                 foreach (var assembly in workItem.Filters)
                 {
                     var assemblyRuntime = TimeSpan.FromMilliseconds(assembly.Value.Sum(f => f.ExecutionTime.TotalMilliseconds));
-                    logger($"    - {assembly.Key.AssemblyName} with execution time {assemblyRuntime}");
+                    logger($"    - {Path.GetFileName(assembly.Key)} with execution time {assemblyRuntime}");
                     var testFilters = assembly.Value;
                     if (testFilters.Length > 0)
                     {
@@ -275,9 +274,9 @@ namespace RunTests
             }
         }
 
-        private static ImmutableArray<TypeInfo> GetTypeInfoList(AssemblyInfo assemblyInfo)
+        private static ImmutableArray<TypeInfo> GetTypeInfoList(string assemblyFilePath)
         {
-            var assemblyDirectory = Path.GetDirectoryName(assemblyInfo.AssemblyPath);
+            var assemblyDirectory = Path.GetDirectoryName(assemblyFilePath);
             var testListPath = Path.Combine(assemblyDirectory!, "testlist.json");
             if (!File.Exists(testListPath))
             {
