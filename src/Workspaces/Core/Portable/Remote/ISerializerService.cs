@@ -3,12 +3,18 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Host;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Serialization;
 
-internal interface ISerializerService : IWorkspaceService
+internal interface ISerializerServiceFactory : IWorkspaceService
+{
+    Task<ISerializerService> GetSerializerServiceAsync();
+}
+
+internal interface ISerializerService
 {
     void Serialize(object value, ObjectWriter writer, CancellationToken cancellationToken);
     object Deserialize(WellKnownSynchronizationKind kind, ObjectReader reader, CancellationToken cancellationToken);

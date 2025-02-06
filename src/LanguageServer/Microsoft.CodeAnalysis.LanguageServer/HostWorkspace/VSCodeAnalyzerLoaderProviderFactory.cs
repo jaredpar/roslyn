@@ -4,6 +4,7 @@
 
 using System.Composition;
 using System.Reflection;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.LanguageServer.Services;
@@ -11,17 +12,33 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.CodeAnalysis.LanguageServer.HostWorkspace;
 
-[ExportWorkspaceService(typeof(IAnalyzerAssemblyLoaderProvider), [WorkspaceKind.Host]), Shared]
+[ExportWorkspaceService(typeof(IAnalyzerAssemblyLoaderProviderFactory), [WorkspaceKind.Host]), Shared]
 [method: ImportingConstructor]
 [method: Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
 internal sealed class VSCodeAnalyzerLoaderProviderFactory(
     ExtensionAssemblyManager extensionAssemblyManager,
     ILoggerFactory loggerFactory,
-    [ImportMany] IEnumerable<IAnalyzerAssemblyResolver> externalResolvers)
-    : AbstractAnalyzerAssemblyLoaderProvider(externalResolvers)
+    string? razorGeneratorFilePath,
+    [ImportMany] IEnumerable<IAnalyzerResolverProvider> providers) : IAnalyzerAssemblyLoaderProviderFactory
 {
-    protected override IAnalyzerAssemblyLoaderInternal WrapLoader(IAnalyzerAssemblyLoaderInternal baseLoader)
-        => new VSCodeExtensionAssemblyAnalyzerLoader(baseLoader, extensionAssemblyManager, loggerFactory.CreateLogger<VSCodeExtensionAssemblyAnalyzerLoader>());
+    private readonly VSCodeAnalyzerAssemblyLoaderProvider _analyzerAssemblyLoaderProvider = new(
+        extensionAssemblyManager,
+        loggerFactory,
+        new() { RazorGeneratorFilePath = razorGeneratorFilePath },
+        providers);
+
+    public Task<IAnalyzerAssemblyLoaderProvider> GetAnalyzerAssemblyLoaderProviderAsync()
+        => Task.FromResult<IAnalyzerAssemblyLoaderProvider>(_analyzerAssemblyLoaderProvider);
+
+    private sealed class VSCodeAnalyzerAssemblyLoaderProvider(
+        ExtensionAssemblyManager extensionAssemblyManager,
+        ILoggerFactory loggerFactory,
+        AnalyzerResolverOptions options,
+        IEnumerable<IAnalyzerResolverProvider> providers) : AbstractAnalyzerAssemblyLoaderProvider(options, providers)
+    {
+        protected override IAnalyzerAssemblyLoaderInternal WrapLoader(IAnalyzerAssemblyLoaderInternal baseLoader)
+            => new VSCodeExtensionAssemblyAnalyzerLoader(baseLoader, extensionAssemblyManager, loggerFactory.CreateLogger<VSCodeExtensionAssemblyAnalyzerLoader>());
+    }
 
     /// <summary>
     /// Analyzer loader that will re-use already loaded assemblies from the extension load context.

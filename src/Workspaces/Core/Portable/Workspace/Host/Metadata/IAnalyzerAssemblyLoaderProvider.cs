@@ -8,17 +8,33 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.IO;
 using Microsoft.CodeAnalysis.Host.Mef;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System.Threading.Tasks;
 
 #if NET
-using Microsoft.CodeAnalysis.Diagnostics;
 using System.Runtime.Loader;
 #endif
 
 namespace Microsoft.CodeAnalysis.Host;
 
-internal interface IAnalyzerAssemblyLoaderProvider : IWorkspaceService
+internal sealed class AnalyzerResolverOptions
 {
-    IAnalyzerAssemblyLoaderInternal SharedShadowCopyLoader { get; }
+    public string? RazorGeneratorFilePath { get; init; }
+}
+
+internal interface IAnalyzerResolverOptionsProvider : IWorkspaceService
+{
+    Task<AnalyzerResolverOptions> GetAnalyzerResolverOptionsAsync();
+}
+
+internal interface IAnalyzerAssemblyLoaderProviderFactory : IWorkspaceService
+{
+    IAnalyzerAssemblyLoaderProvider GetOrCreate(AnalyzerResolverOptions options);
+}
+
+internal interface IAnalyzerAssemblyLoaderProvider
+{
+    IAnalyzerAssemblyLoaderInternal CreateSharedShadowCopyLoader();
 
 #if NET
     /// <summary>
@@ -29,66 +45,94 @@ internal interface IAnalyzerAssemblyLoaderProvider : IWorkspaceService
 #endif
 }
 
+internal interface IAnalyzerResolverProvider
+{
+    IAnalyzerPathResolver? GetPathResolver(AnalyzerResolverOptions options);
+
+#if NET
+    IAnalyzerAssemblyResolver? GetAnalyzerResolver(AnalyzerResolverOptions options);
+#endif
+}
+
 /// <summary>
 /// Abstract implementation of an analyzer assembly loader that can be used by VS/VSCode to provide a <see
 /// cref="IAnalyzerAssemblyLoader"/> with an appropriate path.
 /// </summary>
 internal abstract class AbstractAnalyzerAssemblyLoaderProvider : IAnalyzerAssemblyLoaderProvider
 {
+    private readonly Lazy<IAnalyzerAssemblyLoaderInternal> _shadowCopyLoader;
+    private readonly ImmutableArray<IAnalyzerPathResolver> _pathResolvers;
 #if NET
-    private readonly Lazy<IAnalyzerAssemblyLoaderInternal> _shadowCopyLoader;
     private readonly ImmutableArray<IAnalyzerAssemblyResolver> _assemblyResolvers;
-
-    public AbstractAnalyzerAssemblyLoaderProvider(IEnumerable<IAnalyzerAssemblyResolver> assemblyResolvers)
-    {
-        _assemblyResolvers = [.. assemblyResolvers];
-        _shadowCopyLoader = new(CreateNewShadowCopyLoader);
-    }
-
-    public IAnalyzerAssemblyLoaderInternal SharedShadowCopyLoader
-        => _shadowCopyLoader.Value;
-
-    public IAnalyzerAssemblyLoaderInternal CreateNewShadowCopyLoader()
-        => this.WrapLoader(AnalyzerAssemblyLoader.CreateNonLockingLoader(
-                Path.Combine(Path.GetTempPath(), nameof(Roslyn), "AnalyzerAssemblyLoader"),
-                pathResolvers: default,
-                _assemblyResolvers));
-#else
-    private readonly Lazy<IAnalyzerAssemblyLoaderInternal> _shadowCopyLoader;
-
-    public AbstractAnalyzerAssemblyLoaderProvider()
-    {
-        _shadowCopyLoader = new(CreateNewShadowCopyLoader);
-    }
-
-    public IAnalyzerAssemblyLoaderInternal SharedShadowCopyLoader
-        => _shadowCopyLoader.Value;
-
-    public IAnalyzerAssemblyLoaderInternal CreateNewShadowCopyLoader()
-        => this.WrapLoader(AnalyzerAssemblyLoader.CreateNonLockingLoader(
-                Path.Combine(Path.GetTempPath(), nameof(Roslyn), "AnalyzerAssemblyLoader"),
-                pathResolvers: default));
 #endif
 
-    protected virtual IAnalyzerAssemblyLoaderInternal WrapLoader(IAnalyzerAssemblyLoaderInternal loader)
+    public IAnalyzerAssemblyLoaderInternal SharedShadowCopyLoader => _shadowCopyLoader.Value;
+
+    protected AbstractAnalyzerAssemblyLoaderProvider(
+        AnalyzerResolverOptions options,
+        IEnumerable<IAnalyzerResolverProvider> providers)
+    {
+        var pathResolvers = new List<IAnalyzerPathResolver>();
+        foreach (var provider in providers)
+        {
+            if (provider.GetPathResolver(options) is { } p)
+            {
+                pathResolvers.Add(p);
+            }
+        }
+
+        _pathResolvers = [.. pathResolvers];
+
+#if NET
+
+        var assemblyResolvers = new List<IAnalyzerAssemblyResolver>();
+        foreach (var provider in providers)
+        {
+            if (provider.GetAnalyzerResolver(options) is { } a)
+            {
+                assemblyResolvers.Add(a);
+            }
+        }
+
+        _assemblyResolvers = [.. assemblyResolvers];
+
+#endif
+
+        _shadowCopyLoader = new(CreateNewShadowCopyLoader);
+    }
+
+    public IAnalyzerAssemblyLoaderInternal CreateNewShadowCopyLoader()
+    {
+        return WrapLoader(Create());
+
+        IAnalyzerAssemblyLoaderInternal Create()
+        {
+            var shadowPath = Path.Combine(Path.GetTempPath(), nameof(Roslyn), "AnalyzerAssemblyLoader");
+#if NET
+            return AnalyzerAssemblyLoader.CreateNonLockingLoader(shadowPath, _pathResolvers, _assemblyResolvers);
+#else
+            return AnalyzerAssemblyLoader.CreateNonLockingLoader(shadowPath, _pathResolvers);
+#endif
+        }
+    }
+
+    protected abstract IAnalyzerAssemblyLoaderInternal WrapLoader(IAnalyzerAssemblyLoaderInternal loader);
+}
+
+internal sealed class DefaultAnalyzerAssemblyLoaderProvider(IEnumerable<IAnalyzerResolverProvider> providers) 
+    : AbstractAnalyzerAssemblyLoaderProvider(new(), providers)
+{
+    protected override IAnalyzerAssemblyLoaderInternal WrapLoader(IAnalyzerAssemblyLoaderInternal loader)
         => loader;
 }
 
-[ExportWorkspaceService(typeof(IAnalyzerAssemblyLoaderProvider)), Shared]
-internal sealed class DefaultAnalyzerAssemblyLoaderProvider : AbstractAnalyzerAssemblyLoaderProvider
+[ExportWorkspaceService(typeof(IAnalyzerAssemblyLoaderProviderFactory)), Shared]
+[method: ImportingConstructor]
+[method: Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
+internal sealed class DefaultAnalyzerAssemblyLoaderProviderFactory([ImportMany] IEnumerable<IAnalyzerResolverProvider> providers) : IAnalyzerAssemblyLoaderProviderFactory
 {
-#if NET
-    [ImportingConstructor]
-    [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-    public DefaultAnalyzerAssemblyLoaderProvider([ImportMany] IEnumerable<IAnalyzerAssemblyResolver> assemblyResolvers)
-        : base(assemblyResolvers)
-    {
-    }
-#else
-    [ImportingConstructor]
-    [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
-    public DefaultAnalyzerAssemblyLoaderProvider()
-    {
-    }
-#endif
+    private readonly DefaultAnalyzerAssemblyLoaderProvider _loaderProvider = new(providers);
+
+    public Task<IAnalyzerAssemblyLoaderProvider> GetOrcrea()
+        => Task.FromResult<IAnalyzerAssemblyLoaderProvider>(_loaderProvider);
 }

@@ -9,6 +9,7 @@ using System.Composition;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
@@ -20,17 +21,28 @@ namespace Microsoft.CodeAnalysis.Serialization;
 #if NET
 [SupportedOSPlatform("windows")]
 #endif
-[method: Obsolete(MefConstruction.FactoryMethodMessage, error: true)]
-internal partial class SerializerService(SolutionServices workspaceServices) : ISerializerService
+internal partial class SerializerService(SolutionServices workspaceServices, IAnalyzerAssemblyLoader analyzerAssemblyLoader) : ISerializerService
 {
-    [ExportWorkspaceServiceFactory(typeof(ISerializerService), layer: ServiceLayer.Default), Shared]
+    private sealed class SerializerServiceFactory(Solution) : ISerializerServiceFactory
+    {
+        public SerializerServiceFactory(SolutionServices )
+        {
+        }
+
+        public Task<ISerializerService> GetSerializerServiceAsync()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [ExportWorkspaceServiceFactory(typeof(ISerializerServiceFactory), layer: ServiceLayer.Default), Shared]
     [method: ImportingConstructor]
     [method: Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]
     internal sealed class Factory() : IWorkspaceServiceFactory
     {
         [Obsolete(MefConstruction.FactoryMethodMessage, error: true)]
         public IWorkspaceService CreateService(HostWorkspaceServices workspaceServices)
-            => new SerializerService(workspaceServices.SolutionServices);
+            => new SerializerServiceFactory(workspaceServices.SolutionServices);
     }
 
     private static readonly Func<WellKnownSynchronizationKind, string> s_logKind = k => k.ToString();
@@ -43,7 +55,7 @@ internal partial class SerializerService(SolutionServices workspaceServices) : I
     private readonly Lazy<TemporaryStorageService> _storageService = new(() => (TemporaryStorageService)workspaceServices.GetRequiredService<ITemporaryStorageServiceInternal>());
     private readonly ITextFactoryService _textService = workspaceServices.GetRequiredService<ITextFactoryService>();
     private readonly IDocumentationProviderService? _documentationService = workspaceServices.GetService<IDocumentationProviderService>();
-    private readonly IAnalyzerAssemblyLoaderProvider _analyzerLoaderProvider = workspaceServices.GetRequiredService<IAnalyzerAssemblyLoaderProvider>();
+    private readonly IAnalyzerAssemblyLoader _analyzerAssemblyLoader = analyzerAssemblyLoader;
 
     private readonly ConcurrentDictionary<string, IOptionsSerializationService> _lazyLanguageSerializationService = new(concurrencyLevel: 2, capacity: workspaceServices.SupportedLanguages.Count());
 

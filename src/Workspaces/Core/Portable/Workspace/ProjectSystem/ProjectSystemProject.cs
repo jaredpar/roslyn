@@ -574,6 +574,13 @@ internal sealed partial class ProjectSystemProject
 
             var hasAnalyzerChanges = _analyzersAddedInBatch.Count > 0 || _analyzersRemovedInBatch.Count > 0;
 
+            // NOTE: Create the initial AnalyzerFileReferences for the analyzers we're adding with a shared shadow copy
+            // loader.  This is fine as we're just creating these to pass into CreateIsolatedAnalyzerReferencesAsync which
+            // will properly give them an isolated ALC to use instead.
+            var assemblyLoaderProviderFactory = _projectSystemProjectFactory.SolutionServices.GetRequiredService<IAnalyzerAssemblyLoaderProviderFactory>();
+            var assemblyLoaderProvider = await assemblyLoaderProviderFactory.GetAnalyzerAssemblyLoaderProviderAsync().ConfigureAwait(false);
+            var sharedShadowCopyLoader = assemblyLoaderProvider.SharedShadowCopyLoader;
+
             await _projectSystemProjectFactory.ApplyBatchChangeToWorkspaceMaybeAsync(useAsync, (solutionChanges, projectUpdateState) =>
             {
                 // Changes made inside this transformation must be idempotent in case it is attempted multiple times.
@@ -613,7 +620,7 @@ internal sealed partial class ProjectSystemProject
                     Id, solutionChanges, _projectReferencesRemovedInBatch, _projectReferencesAddedInBatch);
 
                 projectUpdateState = UpdateAnalyzerReferences(
-                    Id, solutionChanges, projectUpdateState, _analyzersRemovedInBatch, _analyzersAddedInBatch);
+                    Id, solutionChanges, projectUpdateState, _analyzersRemovedInBatch, _analyzersAddedInBatch, sharedShadowCopyLoader);
 
                 // Other property modifications...
                 foreach (var propertyModification in _projectPropertyModificationsInBatch)
@@ -747,14 +754,15 @@ internal sealed partial class ProjectSystemProject
             SolutionChangeAccumulator solutionChanges,
             ProjectUpdateState projectUpdateState,
             List<string> analyzersRemovedInBatch,
-            List<string> analyzersAddedInBatch)
+            List<string> analyzersAddedInBatch,
+            IAnalyzerAssemblyLoader sharedShadowCopyLoader)
         {
             if (analyzersRemovedInBatch.Count == 0 && analyzersAddedInBatch.Count == 0)
                 return projectUpdateState;
 
             // Use shared helper to figure out the new forked state.
             var (newSolution, newProjectUpdateState) = UpdateProjectAnalyzerReferences(
-                solutionChanges.Solution, projectId, projectUpdateState, analyzersRemovedInBatch, analyzersAddedInBatch);
+                solutionChanges.Solution, projectId, projectUpdateState, analyzersRemovedInBatch, analyzersAddedInBatch, sharedShadowCopyLoader);
 
             solutionChanges.UpdateSolutionForProjectAction(projectId, newSolution);
 
@@ -767,15 +775,10 @@ internal sealed partial class ProjectSystemProject
         ProjectId projectId,
         ProjectUpdateState projectUpdateState,
         List<string> analyzersRemoved,
-        List<string> analyzersAdded)
+        List<string> analyzersAdded,
+        IAnalyzerAssemblyLoader sharedShadowCopyLoader)
     {
         Contract.ThrowIfTrue(analyzersRemoved.Count == 0 && analyzersAdded.Count == 0, "Should only be called when there is work to do");
-
-        // NOTE: Create the initial AnalyzerFileReferences for the analyzers we're adding with a shared shadow copy
-        // loader.  This is fine as we're just creating these to pass into CreateIsolatedAnalyzerReferencesAsync which
-        // will properly give them an isolated ALC to use instead.
-        var assemblyLoaderProvider = solution.Services.GetRequiredService<IAnalyzerAssemblyLoaderProvider>();
-        var sharedShadowCopyLoader = assemblyLoaderProvider.SharedShadowCopyLoader;
 
         var project = solution.GetRequiredProject(projectId);
 

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -93,6 +95,7 @@ internal sealed class VisualStudioProjectFactory : IVsTypeScriptVisualStudioProj
         _visualStudioWorkspaceImpl.ProjectSystemProjectFactory.SolutionPath = solutionFilePath;
         _visualStudioWorkspaceImpl.ProjectSystemProjectFactory.SolutionTelemetryId = GetSolutionSessionId();
 
+        var analyzerAssemblyLoaderProviderFactory = _visualStudioWorkspaceImpl.Services.GetRequiredService<IAnalyzerAssemblyLoaderProviderFactory>();
         var hostInfo = new ProjectSystemHostInfo(_dynamicFileInfoProviders, vsixAnalyzerProvider);
         var project = await _visualStudioWorkspaceImpl.ProjectSystemProjectFactory.CreateAndAddToWorkspaceAsync(projectSystemName, language, creationInfo, hostInfo);
 
@@ -115,6 +118,20 @@ internal sealed class VisualStudioProjectFactory : IVsTypeScriptVisualStudioProj
                 : "";
             _ = Guid.TryParse(sessionIdProperty, out var solutionSessionId);
             return solutionSessionId;
+        }
+
+        static AnalyzerResolverOptions GetAnalyzerResolverOptionsAsync(VisualStudioDiagnosticAnalyzerProvider provider)
+        {
+            const string RazorVsixExtensionId = "Microsoft.VisualStudio.RazorExtension";
+            const string RazorGeneratorFileName = "Microsoft.CodeAnalysis.Razor.Compiler.dll";
+            var analyzer = provider
+                .GetAnalyzerReferencesInExtensions()
+                .Where(x => x.extensionId == RazorVsixExtensionId && string.Equals(Path.GetFileName(x.reference.FullPath), RazorGeneratorFileName, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();
+            return new AnalyzerResolverOptions()
+            {
+                RazorGeneratorFilePath = analyzer.reference.FullPath
+            };
         }
     }
 

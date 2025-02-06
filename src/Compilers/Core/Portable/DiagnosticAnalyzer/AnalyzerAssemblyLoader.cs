@@ -396,17 +396,17 @@ namespace Microsoft.CodeAnalysis
         /// will be the base directory where shadow copy assemblies are stored. </param>
         internal static IAnalyzerAssemblyLoaderInternal CreateNonLockingLoader(
             string windowsShadowPath,
-            ImmutableArray<IAnalyzerPathResolver> pathResolvers = default,
-            ImmutableArray<IAnalyzerAssemblyResolver> assemblyResolvers = default,
+            IEnumerable<IAnalyzerPathResolver>? pathResolvers = null,
+            IEnumerable<IAnalyzerAssemblyResolver>? assemblyResolvers = null,
             System.Runtime.Loader.AssemblyLoadContext? compilerLoadContext = null)
         {
-            pathResolvers = pathResolvers.NullToEmpty();
-            assemblyResolvers = assemblyResolvers.NullToEmpty();
+            pathResolvers ??= [];
+            assemblyResolvers ??= [];
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 return new AnalyzerAssemblyLoader(
-                    pathResolvers,
+                    [.. pathResolvers],
                     [.. assemblyResolvers, StreamResolver.Instance],
                     compilerLoadContext);
             }
@@ -435,9 +435,9 @@ namespace Microsoft.CodeAnalysis
         /// will be the base directory where shadow copy assemblies are stored. </param>
         internal static IAnalyzerAssemblyLoaderInternal CreateNonLockingLoader(
             string windowsShadowPath,
-            ImmutableArray<IAnalyzerPathResolver> pathResolvers = default)
+            IEnumerable<IAnalyzerPathResolver>? pathResolvers = null)
         {
-            pathResolvers = pathResolvers.NullToEmpty();
+            pathResolvers ??= null;
 
             // The shadow copy analyzer should only be created on Windows. To create on Linux we cannot use 
             // GetTempPath as it's not per-user. Generally there is no need as LoadFromStream achieves the same

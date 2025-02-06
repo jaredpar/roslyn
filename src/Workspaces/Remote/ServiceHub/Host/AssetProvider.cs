@@ -300,7 +300,8 @@ internal sealed partial class AssetProvider(
                     Contract.ThrowIfTrue(missingChecksumsMemory.Span.IndexOf(Checksum.Null) >= 0);
 #endif
 
-                    var serializerService = _solutionServices.GetRequiredService<ISerializerService>();
+                    var serializerServiceFactory = _solutionServices.GetRequiredService<ISerializerServiceFactory>();
+                    var serializerService = await serializerServiceFactory.GetSerializerServiceAsync().ConfigureAwait(false);
                     await _assetSource.GetAssetsAsync(
                         _solutionChecksum, assetPath, missingChecksumsMemory, serializerService,
                         static (
