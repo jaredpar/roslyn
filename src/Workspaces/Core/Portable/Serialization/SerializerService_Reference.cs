@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Reflection;
 using System.Reflection.Metadata;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Host;
@@ -168,7 +169,7 @@ internal partial class SerializerService
                 // Rehydrate the analyzer file reference with the simple shared shadow copy loader.  Note: we won't
                 // actually use this instance we create.  Instead, the caller will use create an IsolatedAssemblyReferenceSet
                 // from these to ensure that all the types can be safely loaded into their own ALC.
-                return new AnalyzerFileReference(reader.ReadRequiredString(), _analyzerLoaderProvider.SharedShadowCopyLoader);
+                return new AnalyzerFileReference(reader.ReadRequiredString(), DoNotLoadLoader.Instance);
 
             case nameof(AnalyzerImageReference):
                 var guid = reader.ReadGuid();
@@ -559,6 +560,20 @@ internal partial class SerializerService
         public interface IAnalyzerReferenceWithGuid
         {
             Guid Guid { get; }
+        }
+    }
+
+    private sealed class DoNotLoadLoader : IAnalyzerAssemblyLoader
+    {
+        public static readonly DoNotLoadLoader Instance = new();
+
+        public void AddDependencyLocation(string fullPath)
+        {
+        }
+
+        public Assembly LoadFromPath(string fullPath)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
