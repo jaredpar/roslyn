@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Shared.Extensions;
@@ -124,6 +125,12 @@ public class NewlyCreatedProjectsFromDotNetNew : MSBuildWorkspaceTestBase
             var templateShortName = columns[1].Split(',').First();
 
             if (ExcludeMauiTemplates && templateShortName.StartsWith("maui"))
+                continue;
+
+            // WPF and WinForms templates require the Windows desktop SDK and are not
+            // available on non-Windows platforms.
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) &&
+                (templateShortName.StartsWith("wpf") || templateShortName.StartsWith("winforms")))
                 continue;
 
             templateNames.Add(templateShortName);
