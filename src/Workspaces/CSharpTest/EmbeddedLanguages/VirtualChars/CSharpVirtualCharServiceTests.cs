@@ -45,6 +45,8 @@ public sealed class CSharpVirtualCharServiceTests
 
     private static void Test(string stringText, string expected, ParseOptions? options = null)
     {
+        stringText = stringText.ReplaceLineEndings("\r\n");
+
         var tokens = GetStringTokens(stringText, allowFailure: false, options);
         Contract.ThrowIfNull(tokens);
         foreach (var token in tokens)
@@ -66,6 +68,8 @@ public sealed class CSharpVirtualCharServiceTests
 
     private static void TestFailure(string stringText)
     {
+        stringText = stringText.ReplaceLineEndings("\r\n");
+
         var tokens = GetStringTokens(stringText, allowFailure: true);
         if (tokens == null)
             return;
