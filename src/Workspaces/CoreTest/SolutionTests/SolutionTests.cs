@@ -3554,7 +3554,7 @@ public sealed class SolutionTests : TestBase
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    [Fact]
+    [ConditionalFact(typeof(WindowsOnly), Reason = "Reference lifetime assertions are flaky on Unix. https://github.com/dotnet/roslyn/issues/13433")]
     public void TestGetRecoveredTextAsync()
     {
         var pid = ProjectId.CreateNewId();
@@ -4103,14 +4103,16 @@ public sealed class SolutionTests : TestBase
     {
         var workspace = new AdhocWorkspace();
         var solution = workspace.CurrentSolution;
+        var missingFilePath = TestPathUtil.GetRootedPath("doesnotexist.cs");
+        var documentFilePath = TestPathUtil.GetRootedPath("document-path.cs");
 
         var pid = ProjectId.CreateNewId();
         var did = DocumentId.CreateNewId(pid);
 
         solution = solution
             .AddProject(pid, "goo", "goo", LanguageNames.CSharp)
-            .AddDocument(did, "x", new WorkspaceFileTextLoader(solution.Services, @"C:\doesnotexist.cs", Encoding.UTF8))
-            .WithDocumentFilePath(did, "document path");
+            .AddDocument(did, "x", new WorkspaceFileTextLoader(solution.Services, missingFilePath, Encoding.UTF8))
+            .WithDocumentFilePath(did, documentFilePath);
 
         var doc = solution.GetDocument(did);
         var text = await doc.GetTextAsync().ConfigureAwait(false);
@@ -4866,11 +4868,13 @@ public sealed class SolutionTests : TestBase
         using var workspace = CreateWorkspace();
         var solution = workspace.CurrentSolution;
         var extension = languageName == LanguageNames.CSharp ? ".cs" : ".vb";
+        var sourceFilePath = TestPathUtil.GetRootedPath("Test" + extension);
+        var editorConfigFilePath = TestPathUtil.GetRootedPath(".editorconfig");
         var projectId = ProjectId.CreateNewId();
         var sourceDocumentId = DocumentId.CreateNewId(projectId);
 
         solution = solution.AddProject(projectId, "Test", "Test.dll", languageName);
-        solution = solution.AddDocument(sourceDocumentId, "Test" + extension, "", filePath: @"Z:\Test" + extension);
+        solution = solution.AddDocument(sourceDocumentId, "Test" + extension, "", filePath: sourceFilePath);
 
         var originalSyntaxTree = await solution.GetDocument(sourceDocumentId).GetSyntaxTreeAsync();
         var originalCompilation = await solution.GetProject(projectId).GetCompilationAsync();
@@ -4880,7 +4884,7 @@ public sealed class SolutionTests : TestBase
             DocumentInfo.Create(
                 editorConfigDocumentId,
                 ".editorconfig",
-                filePath: @"Z:\.editorconfig",
+                filePath: editorConfigFilePath,
                 loader: TextLoader.From(TextAndVersion.Create(SourceText.From("[*.*]\r\n\r\ndotnet_diagnostic.CA1234.severity = error"), VersionStamp.Default)))));
 
         var newSyntaxTree = await solution.GetDocument(sourceDocumentId).GetSyntaxTreeAsync();
@@ -4902,18 +4906,20 @@ public sealed class SolutionTests : TestBase
         using var workspace = CreateWorkspace();
         var solution = workspace.CurrentSolution;
         var extension = languageName == LanguageNames.CSharp ? ".cs" : ".vb";
+        var sourceFilePath = TestPathUtil.GetRootedPath("Test" + extension);
+        var editorConfigFilePath = TestPathUtil.GetRootedPath(".editorconfig");
         var projectId = ProjectId.CreateNewId();
         var sourceDocumentId = DocumentId.CreateNewId(projectId);
 
         solution = solution.AddProject(projectId, "Test", "Test.dll", languageName);
-        solution = solution.AddDocument(sourceDocumentId, "Test" + extension, "", filePath: @"Z:\Test" + extension);
+        solution = solution.AddDocument(sourceDocumentId, "Test" + extension, "", filePath: sourceFilePath);
 
         var editorConfigDocumentId = DocumentId.CreateNewId(projectId);
         solution = solution.AddAnalyzerConfigDocuments(ImmutableArray.Create(
             DocumentInfo.Create(
                 editorConfigDocumentId,
                 ".editorconfig",
-                filePath: @"Z:\.editorconfig",
+                filePath: editorConfigFilePath,
                 loader: TextLoader.From(TextAndVersion.Create(SourceText.From("[*.*]\r\n\r\ndotnet_diagnostic.CA1234.severity = error"), VersionStamp.Default)))));
 
         var syntaxTreeAfterAddingEditorConfig = await solution.GetDocument(sourceDocumentId).GetSyntaxTreeAsync();
@@ -4943,18 +4949,20 @@ public sealed class SolutionTests : TestBase
         using var workspace = CreateWorkspace();
         var solution = workspace.CurrentSolution;
         var extension = languageName == LanguageNames.CSharp ? ".cs" : ".vb";
+        var sourceFilePath = TestPathUtil.GetRootedPath("Test" + extension);
+        var editorConfigFilePath = TestPathUtil.GetRootedPath(".editorconfig");
         var projectId = ProjectId.CreateNewId();
         var sourceDocumentId = DocumentId.CreateNewId(projectId);
 
         solution = solution.AddProject(projectId, "Test", "Test.dll", languageName);
-        solution = solution.AddDocument(sourceDocumentId, "Test" + extension, "", filePath: @"Z:\Test" + extension);
+        solution = solution.AddDocument(sourceDocumentId, "Test" + extension, "", filePath: sourceFilePath);
 
         var editorConfigDocumentId = DocumentId.CreateNewId(projectId);
         solution = solution.AddAnalyzerConfigDocuments(ImmutableArray.Create(
             DocumentInfo.Create(
                 editorConfigDocumentId,
                 ".editorconfig",
-                filePath: @"Z:\.editorconfig",
+                filePath: editorConfigFilePath,
                 loader: TextLoader.From(TextAndVersion.Create(SourceText.From("[*.*]\r\n\r\ndotnet_diagnostic.CA1234.severity = error"), VersionStamp.Default)))));
 
         var syntaxTreeBeforeEditorConfigChange = await solution.GetDocument(sourceDocumentId).GetSyntaxTreeAsync();
@@ -4988,11 +4996,13 @@ public sealed class SolutionTests : TestBase
     {
         using var workspace = CreateWorkspace();
         var solution = workspace.CurrentSolution;
+        var sourceFilePath = TestPathUtil.GetRootedPath("Test.cs");
+        var globalConfigFilePath = TestPathUtil.GetRootedPath(".globalconfig");
         var projectId = ProjectId.CreateNewId();
         var sourceDocumentId = DocumentId.CreateNewId(projectId);
 
         solution = solution.AddProject(projectId, "Test", "Test.dll", LanguageNames.CSharp);
-        solution = solution.AddDocument(sourceDocumentId, "Test.cs", "", filePath: @"Z:\Test.cs");
+        solution = solution.AddDocument(sourceDocumentId, "Test.cs", "", filePath: sourceFilePath);
 
         var originalProvider = solution.GetProject(projectId).CompilationOptions.SyntaxTreeOptionsProvider;
         Assert.False(originalProvider.TryGetGlobalDiagnosticValue("CA1234", default, out _));
@@ -5002,7 +5012,7 @@ public sealed class SolutionTests : TestBase
             DocumentInfo.Create(
                 editorConfigDocumentId,
                 ".globalconfig",
-                filePath: @"Z:\.globalconfig",
+                filePath: globalConfigFilePath,
                 loader: TextLoader.From(TextAndVersion.Create(SourceText.From("is_global = true\r\n\r\ndotnet_diagnostic.CA1234.severity = error"), VersionStamp.Default)))));
 
         var newProvider = solution.GetProject(projectId).CompilationOptions.SyntaxTreeOptionsProvider;
@@ -5019,6 +5029,8 @@ public sealed class SolutionTests : TestBase
     {
         using var workspace = CreateWorkspace();
         var solution = workspace.CurrentSolution;
+        var sourceFilePath = TestPathUtil.GetRootedPath("Test.cs");
+        var editorConfigFilePath = TestPathUtil.GetRootedPath(".editorconfig");
         var projectId = ProjectId.CreateNewId();
         var sourceDocumentId = DocumentId.CreateNewId(projectId);
 
@@ -5033,7 +5045,7 @@ public sealed class SolutionTests : TestBase
                     _ = c.ToString();   // warning CS8602: Dereference of a possibly null reference.
                 }
             }
-            """, filePath: @"Z:\Test.cs");
+            """, filePath: sourceFilePath);
 
         var originalSyntaxTree = await solution.GetDocument(sourceDocumentId).GetSyntaxTreeAsync();
         var originalCompilation = await solution.GetProject(projectId).GetCompilationAsync();
@@ -5048,7 +5060,7 @@ public sealed class SolutionTests : TestBase
             DocumentInfo.Create(
                 editorConfigDocumentId,
                 ".editorconfig",
-                filePath: @"Z:\.editorconfig",
+                filePath: editorConfigFilePath,
                 loader: TextLoader.From(TextAndVersion.Create(SourceText.From("[*.*]\r\n\r\ngenerated_code = true"), VersionStamp.Default)))));
 
         var newSyntaxTree = await solution.GetDocument(sourceDocumentId).GetSyntaxTreeAsync();
