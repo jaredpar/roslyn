@@ -32,6 +32,9 @@ public sealed class DefinitionItemFactoryTests
     private static string Inspect(AssemblyLocation location)
         => $"{location.Name} {location.Version} '{location.FilePath}'";
 
+    private static TestWorkspace CreateCSharpWorkspace(string source)
+        => TestWorkspace.CreateCSharp(source.NormalizeLineEndings());
+
     private static string InspectFlags<TEnum>(TEnum e) where TEnum : Enum
         => string.Join(" | ", e.ToString().Split(',').Select(s => $"{typeof(TEnum).Name}.{s.Trim()}"));
 
@@ -127,7 +130,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Assembly_Source()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C;");
+        using var workspace = CreateCSharpWorkspace("class C;");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -163,7 +166,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Assembly_Metadata()
     {
-        using var workspace = TestWorkspace.CreateCSharp("");
+        using var workspace = CreateCSharpWorkspace("");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -205,7 +208,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Module_Source()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C;");
+        using var workspace = CreateCSharpWorkspace("class C;");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -241,7 +244,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Module_Metadata()
     {
-        using var workspace = TestWorkspace.CreateCSharp("");
+        using var workspace = CreateCSharpWorkspace("");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -283,7 +286,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Namespace_Source()
     {
-        using var workspace = TestWorkspace.CreateCSharp("namespace N;");
+        using var workspace = CreateCSharpWorkspace("namespace N;");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -325,7 +328,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Namespace_Metadata()
     {
-        using var workspace = TestWorkspace.CreateCSharp("");
+        using var workspace = CreateCSharpWorkspace("");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -375,7 +378,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Namespace_MetadataAndSource()
     {
-        using var workspace = TestWorkspace.CreateCSharp("""
+        using var workspace = CreateCSharpWorkspace("""
             namespace System { class C {} }
             namespace System { class D {} }
             """);
@@ -432,7 +435,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Namespace_Global_Source()
     {
-        using var workspace = TestWorkspace.CreateCSharp("namespace N {}");
+        using var workspace = CreateCSharpWorkspace("namespace N {}");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -472,7 +475,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Namespace_Global_SourceAndMetadata()
     {
-        using var workspace = TestWorkspace.CreateCSharp("namespace N {}");
+        using var workspace = CreateCSharpWorkspace("namespace N {}");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -512,7 +515,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Class()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C;");
+        using var workspace = CreateCSharpWorkspace("class C;");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -554,7 +557,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Class_Metadata()
     {
-        using var workspace = TestWorkspace.CreateCSharp("");
+        using var workspace = CreateCSharpWorkspace("");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -658,7 +661,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Dynamic()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { dynamic F; }");
+        using var workspace = CreateCSharpWorkspace("class C { dynamic F; }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -695,7 +698,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_TupleSyntax()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { (int a, int b) F; }");
+        using var workspace = CreateCSharpWorkspace("class C { (int a, int b) F; }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -757,7 +760,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_ValueTuple()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { System.ValueTuple<int, int> F; }");
+        using var workspace = CreateCSharpWorkspace("class C { System.ValueTuple<int, int> F; }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -813,7 +816,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_GenericInstatiation_Source()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C<T1, T2> { C<int, string> F; }");
+        using var workspace = CreateCSharpWorkspace("class C<T1, T2> { C<int, string> F; }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -864,7 +867,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_GenericInstatiation_Metadata()
     {
-        using var workspace = TestWorkspace.CreateCSharp("""
+        using var workspace = CreateCSharpWorkspace("""
             using System.Collections.Generic;
             class C { Dictionary<int, string> F; }
             """);
@@ -922,7 +925,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_TypeTypeParameter()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C<T>;");
+        using var workspace = CreateCSharpWorkspace("class C<T>;");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -972,7 +975,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Method()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { void M(int x) { } }");
+        using var workspace = CreateCSharpWorkspace("class C { void M(int x) { } }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -1027,7 +1030,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Field()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { int M; }");
+        using var workspace = CreateCSharpWorkspace("class C { int M; }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -1079,7 +1082,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Property()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { int P { get; set; } }");
+        using var workspace = CreateCSharpWorkspace("class C { int P { get; set; } }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -1141,7 +1144,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Property_Getter()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { int P { get; set; } }");
+        using var workspace = CreateCSharpWorkspace("class C { int P { get; set; } }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -1198,7 +1201,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Property_Setter()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { int P { get; set; } }");
+        using var workspace = CreateCSharpWorkspace("class C { int P { get; set; } }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -1255,7 +1258,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Indexer()
     {
-        using var workspace = TestWorkspace.CreateCSharp("abstract class C { abstract int this[int x] { get; set; } }");
+        using var workspace = CreateCSharpWorkspace("abstract class C { abstract int this[int x] { get; set; } }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -1322,7 +1325,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_Parameter()
     {
-        using var workspace = TestWorkspace.CreateCSharp("""
+        using var workspace = CreateCSharpWorkspace("""
             class C
             {
                 void M(int p) { }
@@ -1382,7 +1385,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_MethodTypeParameter()
     {
-        using var workspace = TestWorkspace.CreateCSharp("""
+        using var workspace = CreateCSharpWorkspace("""
             class C
             {
                 void M<T>() { }
@@ -1439,7 +1442,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_LocalFunction()
     {
-        using var workspace = TestWorkspace.CreateCSharp("class C { void M(int x) { void F() {} } }");
+        using var workspace = CreateCSharpWorkspace("class C { void M(int x) { void F() {} } }");
 
         var solution = workspace.CurrentSolution;
         var project = solution.Projects.Single();
@@ -1497,7 +1500,7 @@ public sealed class DefinitionItemFactoryTests
     [Fact]
     public async Task ToClassifiedDefinitionItemAsync_LocalVariable()
     {
-        using var workspace = TestWorkspace.CreateCSharp("""
+        using var workspace = CreateCSharpWorkspace("""
             class C
             {
                 void M() { int x; }
