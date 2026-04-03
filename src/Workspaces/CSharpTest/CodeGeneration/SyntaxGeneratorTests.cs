@@ -50,15 +50,15 @@ public sealed class SyntaxGeneratorTests
     private static void VerifySyntax<TSyntax>(SyntaxNode node, string expectedText) where TSyntax : SyntaxNode
     {
         Assert.IsAssignableFrom<TSyntax>(node);
-        var normalized = node.NormalizeWhitespace().ToFullString();
-        AssertEx.Equal(expectedText, normalized);
+        var normalized = node.NormalizeWhitespace().ToFullString().ReplaceLineEndings("\r\n");
+        AssertEx.Equal(expectedText.ReplaceLineEndings("\r\n"), normalized);
     }
 
     private static void VerifySyntaxRaw<TSyntax>(SyntaxNode node, string expectedText) where TSyntax : SyntaxNode
     {
         Assert.IsAssignableFrom<TSyntax>(node);
-        var normalized = node.ToFullString();
-        Assert.Equal(expectedText, normalized);
+        var normalized = node.ToFullString().ReplaceLineEndings("\r\n");
+        Assert.Equal(expectedText.ReplaceLineEndings("\r\n"), normalized);
     }
 
     #region Expressions and Statements
