@@ -31,6 +31,17 @@ public class NewlyCreatedProjectsFromDotNetNew : MSBuildWorkspaceTestBase
     // admin permissions. Additionally, a restart may be required after workload
     // installation.
     private const bool ExcludeMauiTemplates = true;
+    private static readonly ImmutableHashSet<string> s_nonWindowsUnsupportedTemplates =
+    new[]
+    {
+        "winforms",
+        "winformslib",
+        "winformscontrollib",
+        "wpf",
+        "wpflib",
+        "wpfcustomcontrollib",
+        "wpfusercontrollib",
+    }.ToImmutableHashSet(StringComparer.Ordinal);
 
     static NewlyCreatedProjectsFromDotNetNew()
     {
@@ -132,7 +143,7 @@ public class NewlyCreatedProjectsFromDotNetNew : MSBuildWorkspaceTestBase
             // will suffice to take the first short name.
             var templateShortName = columns[1].Split(',').First();
 
-            if (ExcludeMauiTemplates && templateShortName.StartsWith("maui"))
+            if (ShouldSkipTemplate(templateShortName))
                 continue;
 
             templateNames.Add(templateShortName);
@@ -141,6 +152,17 @@ public class NewlyCreatedProjectsFromDotNetNew : MSBuildWorkspaceTestBase
         Assert.True(foundDivider);
 
         return templateNames;
+
+        static bool ShouldSkipTemplate(string templateShortName)
+        {
+            if (ExcludeMauiTemplates && templateShortName.StartsWith("maui", StringComparison.Ordinal))
+                return true;
+
+            if (!ExecutionConditionUtil.IsWindows && s_nonWindowsUnsupportedTemplates.Contains(templateShortName))
+                return true;
+
+            return false;
+        }
     }
 
     private async Task AssertTemplateProjectLoadsCleanlyAsync(string templateName, string languageName, string[]? ignoredDiagnostics = null)
