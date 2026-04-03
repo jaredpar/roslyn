@@ -33,12 +33,15 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
     [Theory, CombinatorialData, WorkItem("https://devdiv.visualstudio.com/DevDiv/_workitems/edit/2531252")]
     public async Task TestDocumentDiagnosticsReportsAdditionalFileDiagnostic(bool useVSDiagnostics, bool mutatingLspWorkspace)
     {
+        var projectPath = TestPathUtil.GetRootedPath("CSProj1.csproj");
+        var documentPath = TestPathUtil.GetRootedPath("C.cs");
+        var additionalFilePath = TestPathUtil.GetRootedPath("Test.xaml");
         var workspaceXml =
             $"""
             <Workspace>
-                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="C:\CSProj1.csproj">
-                    <Document FilePath="C:\C.cs"></Document>
-                    <AdditionalDocument FilePath="C:\Test.xaml"></AdditionalDocument>
+                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="{projectPath}">
+                    <Document FilePath="{documentPath}"></Document>
+                    <AdditionalDocument FilePath="{additionalFilePath}"></AdditionalDocument>
                 </Project>
             </Workspace>
             """;
@@ -52,19 +55,22 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
         Assert.NotEmpty(results);
         AssertEx.Equal(
         [
-            @$"C:\Test.xaml: [{MockAdditionalFileDiagnosticAnalyzer.Id}]",
+            $"{additionalFilePath}: [{MockAdditionalFileDiagnosticAnalyzer.Id}]",
         ], results.Select(r => $"{r.Uri.GetRequiredParsedUri().LocalPath}: [{string.Join(", ", r.Diagnostics!.Select(d => d.Code?.Value?.ToString()))}]"));
     }
 
     [Theory, CombinatorialData]
     public async Task TestWorkspaceDiagnosticsReportsAdditionalFileDiagnostic(bool useVSDiagnostics, bool mutatingLspWorkspace)
     {
+        var projectPath = TestPathUtil.GetRootedPath("CSProj1.csproj");
+        var documentPath = TestPathUtil.GetRootedPath("C.cs");
+        var additionalFilePath = TestPathUtil.GetRootedPath("Test.txt");
         var workspaceXml =
             $"""
             <Workspace>
-                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="C:\CSProj1.csproj">
-                    <Document FilePath="C:\C.cs"></Document>
-                    <AdditionalDocument FilePath="C:\Test.txt"></AdditionalDocument>
+                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="{projectPath}">
+                    <Document FilePath="{documentPath}"></Document>
+                    <AdditionalDocument FilePath="{additionalFilePath}"></AdditionalDocument>
                 </Project>
             </Workspace>
             """;
@@ -74,9 +80,9 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
         var results = await RunGetWorkspacePullDiagnosticsAsync(testLspServer, useVSDiagnostics);
         AssertEx.Equal(
         [
-            @"C:\C.cs: []",
-            @$"C:\Test.txt: [{MockAdditionalFileDiagnosticAnalyzer.Id}]",
-            @"C:\CSProj1.csproj: []"
+            $"{documentPath}: []",
+            $"{additionalFilePath}: [{MockAdditionalFileDiagnosticAnalyzer.Id}]",
+            $"{projectPath}: []"
         ], results.Select(r => $"{r.Uri.GetRequiredParsedUri().LocalPath}: [{string.Join(", ", r.Diagnostics!.Select(d => d.Code?.Value?.ToString()))}]"));
 
         // Asking again should give us back an unchanged diagnostic.
@@ -87,12 +93,15 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
     [Theory, CombinatorialData]
     public async Task TestWorkspaceDiagnosticsWithRemovedAdditionalFile(bool useVSDiagnostics, bool mutatingLspWorkspace)
     {
+        var projectPath = TestPathUtil.GetRootedPath("CSProj1.csproj");
+        var documentPath = TestPathUtil.GetRootedPath("C.cs");
+        var additionalFilePath = TestPathUtil.GetRootedPath("Test.txt");
         var workspaceXml =
             $"""
             <Workspace>
-                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="C:\CSProj1.csproj">
-                    <Document FilePath="C:\C.cs"></Document>
-                    <AdditionalDocument FilePath="C:\Test.txt"></AdditionalDocument>
+                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="{projectPath}">
+                    <Document FilePath="{documentPath}"></Document>
+                    <AdditionalDocument FilePath="{additionalFilePath}"></AdditionalDocument>
                 </Project>
             </Workspace>
             """;
@@ -104,7 +113,7 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
 
         AssertEx.Empty(results[0].Diagnostics);
         Assert.Equal(MockAdditionalFileDiagnosticAnalyzer.Id, results[1].Diagnostics!.Single().Code);
-        Assert.Equal(@"C:\Test.txt", results[1].Uri.GetRequiredParsedUri().LocalPath);
+        Assert.Equal(additionalFilePath, results[1].Uri.GetRequiredParsedUri().LocalPath);
         AssertEx.Empty(results[2].Diagnostics);
 
         var initialSolution = testLspServer.GetCurrentSolution();
@@ -122,16 +131,21 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
     [Theory, CombinatorialData]
     public async Task TestWorkspaceDiagnosticsWithAdditionalFileInMultipleProjects(bool mutatingLspWorkspace)
     {
+        var project1Path = TestPathUtil.GetRootedPath("CSProj1.csproj");
+        var project2Path = TestPathUtil.GetRootedPath("CSProj2.csproj");
+        var document1Path = TestPathUtil.GetRootedPath("A.cs");
+        var document2Path = TestPathUtil.GetRootedPath("B.cs");
+        var additionalFilePath = TestPathUtil.GetRootedPath("Test.txt");
         var workspaceXml =
             $"""
             <Workspace>
-                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="C:\CSProj1.csproj">
-                    <Document FilePath="C:\A.cs"></Document>
-                    <AdditionalDocument FilePath="C:\Test.txt"></AdditionalDocument>
+                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="{project1Path}">
+                    <Document FilePath="{document1Path}"></Document>
+                    <AdditionalDocument FilePath="{additionalFilePath}"></AdditionalDocument>
                 </Project>
-                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj2" FilePath="C:\CSProj1.csproj">
-                    <Document FilePath="C:\B.cs"></Document>
-                    <AdditionalDocument FilePath="C:\Test.txt"></AdditionalDocument>
+                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj2" FilePath="{project2Path}">
+                    <Document FilePath="{document2Path}"></Document>
+                    <AdditionalDocument FilePath="{additionalFilePath}"></AdditionalDocument>
                 </Project>
             </Workspace>
             """;
@@ -142,10 +156,10 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
         Assert.Equal(6, results.Length);
 
         Assert.Equal(MockAdditionalFileDiagnosticAnalyzer.Id, results[1].Diagnostics!.Single().Code);
-        Assert.Equal(@"C:\Test.txt", results[1].Uri.GetRequiredParsedUri().LocalPath);
+        Assert.Equal(additionalFilePath, results[1].Uri.GetRequiredParsedUri().LocalPath);
         Assert.Equal("CSProj1", ((LSP.VSDiagnostic)results[1].Diagnostics!.Single()).Projects!.First().ProjectName);
         Assert.Equal(MockAdditionalFileDiagnosticAnalyzer.Id, results[4].Diagnostics!.Single().Code);
-        Assert.Equal(@"C:\Test.txt", results[4].Uri.GetRequiredParsedUri().LocalPath);
+        Assert.Equal(additionalFilePath, results[4].Uri.GetRequiredParsedUri().LocalPath);
         Assert.Equal("CSProj2", ((LSP.VSDiagnostic)results[4].Diagnostics!.Single()).Projects!.First().ProjectName);
 
         // Asking again should give us back an unchanged diagnostic.
@@ -156,12 +170,14 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
     [Theory, CombinatorialData]
     public async Task TestWorkspaceDiagnosticsReportsSourceGeneratorDiagnosticInAdditionalFile(bool useVSDiagnostics, bool mutatingLspWorkspace)
     {
-        var additionaFilePath = @"C:\File.razor";
+        var projectPath = TestPathUtil.GetRootedPath("CSProj1.csproj");
+        var documentPath = TestPathUtil.GetRootedPath("C.cs");
+        var additionaFilePath = TestPathUtil.GetRootedPath("File.razor");
         var workspaceXml =
             $"""
             <Workspace>
-                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="C:\CSProj1.csproj">
-                    <Document FilePath="C:\C.cs"></Document>
+                <Project Language="C#" CommonReferences="true" AssemblyName="CSProj1" FilePath="{projectPath}">
+                    <Document FilePath="{documentPath}"></Document>
                     <AdditionalDocument FilePath="{additionaFilePath}">Hello</AdditionalDocument>
                 </Project>
             </Workspace>
@@ -183,9 +199,9 @@ public sealed class AdditionalFileDiagnosticsTests : AbstractPullDiagnosticTests
         var results = await RunGetWorkspacePullDiagnosticsAsync(testLspServer, useVSDiagnostics);
         AssertEx.Equal(
         [
-            @"C:\C.cs: []",
-            @$"C:\File.razor: [{DiagnosticProducingGenerator.Descriptor.Id}, {MockAdditionalFileDiagnosticAnalyzer.Id}]",
-            @"C:\CSProj1.csproj: []"
+            $"{documentPath}: []",
+            $"{additionaFilePath}: [{DiagnosticProducingGenerator.Descriptor.Id}, {MockAdditionalFileDiagnosticAnalyzer.Id}]",
+            $"{projectPath}: []"
         ], results.Select(r => $"{r.Uri.GetRequiredParsedUri().LocalPath}: [{string.Join(", ", r.Diagnostics!.Select(d => d.Code?.Value?.ToString()))}]"));
     }
 
