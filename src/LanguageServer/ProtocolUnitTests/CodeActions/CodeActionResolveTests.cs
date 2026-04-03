@@ -206,6 +206,7 @@ public sealed class CodeActionResolveTests : AbstractLanguageServerProtocolTests
     [Theory, CombinatorialData]
     public async Task TestLinkedDocuments(bool mutatingLspWorkspace)
     {
+        var documentFilePath = TestPathUtil.GetRootedPath("C.cs");
         var originalMarkup = """
             class C
             {
@@ -215,10 +216,10 @@ public sealed class CodeActionResolveTests : AbstractLanguageServerProtocolTests
         var xmlWorkspace = $"""
             <Workspace>
                 <Project Language='C#' CommonReferences='true' AssemblyName='LinkedProj' Name='CSProj.1'>
-                    <Document FilePath='C:\C.cs'>{originalMarkup}</Document>
+                    <Document FilePath='{documentFilePath}'>{originalMarkup}</Document>
                 </Project>
                 <Project Language='C#' CommonReferences='true' AssemblyName='LinkedProj' Name='CSProj.2'>
-                    <Document IsLinkFile='true' LinkProjectName='CSProj.1' LinkFilePath='C:\C.cs'/>
+                    <Document IsLinkFile='true' LinkProjectName='CSProj.1' LinkFilePath='{documentFilePath}'/>
                 </Project>
             </Workspace>
             """;
@@ -251,7 +252,7 @@ public sealed class CodeActionResolveTests : AbstractLanguageServerProtocolTests
 
                 public static int Value => value;
             }
-            """, updatedText);
+            """.ReplaceLineEndings(), updatedText.ReplaceLineEndings());
 
     }
 
