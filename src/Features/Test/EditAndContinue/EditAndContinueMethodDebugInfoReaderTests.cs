@@ -42,10 +42,16 @@ public sealed class EditAndContinueMethodDebugInfoReaderTests
     }
 
     [Theory]
-    [InlineData(DebugInformationFormat.PortablePdb, true)]
-    [InlineData(DebugInformationFormat.PortablePdb, false)]
-    [InlineData(DebugInformationFormat.Pdb, true)]
-    public void DebugInfo(DebugInformationFormat format, bool useSymReader)
+    [InlineData(true)]
+    [InlineData(false)]
+    public void DebugInfo_PortablePdb(bool useSymReader)
+        => TestDebugInfo(DebugInformationFormat.PortablePdb, useSymReader);
+
+    [ConditionalFact(typeof(WindowsOnly), Reason = "Native PDB emission requires the Windows symwriter.")]
+    public void DebugInfo_NativePdb()
+        => TestDebugInfo(DebugInformationFormat.Pdb, useSymReader: true);
+
+    private static void TestDebugInfo(DebugInformationFormat format, bool useSymReader)
     {
         var source = """
 
@@ -62,7 +68,7 @@ public sealed class EditAndContinueMethodDebugInfoReaderTests
             }
 
             """;
-        var tree = CSharpTestSource.Parse(source, path: "/a/c.cs", options: TestOptions.Regular.WithNoRefSafetyRulesAttribute(), checksumAlgorithm: SourceHashAlgorithm.Sha1);
+        var tree = CSharpTestSource.Parse(source.NormalizeLineEndings(), path: "/a/c.cs", options: TestOptions.Regular.WithNoRefSafetyRulesAttribute(), checksumAlgorithm: SourceHashAlgorithm.Sha1);
         var compilation = CSharpTestBase.CreateCompilationWithMscorlib40AndSystemCore(tree, options: TestOptions.DebugDll);
 
         var pdbStream = new MemoryStream();
