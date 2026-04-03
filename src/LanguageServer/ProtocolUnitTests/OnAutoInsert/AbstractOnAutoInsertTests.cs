@@ -29,6 +29,9 @@ public abstract class AbstractOnAutoInsertTests(ITestOutputHelper testOutputHelp
         WellKnownLspServerKinds serverKind = WellKnownLspServerKinds.AlwaysActiveVSLspServer,
         bool useVSCapabilities = true)
     {
+        markup = markup.ReplaceLineEndings("\r\n");
+        expected = expected.ReplaceLineEndings("\r\n");
+
         var capbilities = GetCapabilities(useVSCapabilities);
         Task<TestLspServer> testLspServerTask;
         if (languageName == LanguageNames.CSharp)
@@ -55,7 +58,7 @@ public abstract class AbstractOnAutoInsertTests(ITestOutputHelper testOutputHelp
         AssertEx.NotNull(result);
         Assert.Equal(InsertTextFormat.Snippet, result.TextEditFormat);
         var actualText = ApplyTextEdits([result.TextEdit], documentText);
-        Assert.Equal(expected, actualText);
+        Assert.Equal(expected, actualText.ReplaceLineEndings("\r\n"));
     }
 
     private protected async Task VerifyNoResult(
@@ -67,6 +70,8 @@ public abstract class AbstractOnAutoInsertTests(ITestOutputHelper testOutputHelp
         WellKnownLspServerKinds serverKind = WellKnownLspServerKinds.AlwaysActiveVSLspServer,
         bool useVSCapabilities = true)
     {
+        markup = markup.ReplaceLineEndings("\r\n");
+
         var initilizationOptions = new InitializationOptions
         {
             ClientCapabilities = GetCapabilities(useVSCapabilities),
