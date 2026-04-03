@@ -33,7 +33,7 @@ public sealed class UriTests : AbstractLanguageServerProtocolTests
     [WorkItem("https://github.com/dotnet/runtime/issues/89538")]
     public async Task TestMiscDocument_WithFileScheme(bool mutatingLspWorkspace)
     {
-        var filePath = "C:\\\ud86d\udeac\ue25b.txt";
+        var filePath = TestPathUtil.GetRootedPath("\ud86d\udeac\ue25b.txt");
 
         // Create a server that supports LSP misc files and verify no misc files present.
         await using var testLspServer = await CreateTestLspServerAsync(string.Empty, mutatingLspWorkspace, new InitializationOptions { ServerKind = WellKnownLspServerKinds.CSharpVisualBasicLspServer });
@@ -54,7 +54,7 @@ public sealed class UriTests : AbstractLanguageServerProtocolTests
         Assert.NotNull(document);
         Assert.True(await testLspServer.GetManager().GetTestAccessor().IsMiscellaneousFilesDocumentAsync(document));
         Assert.Equal(looseFileUri, document.GetURI());
-        Assert.Equal(filePath, document.FilePath);
+        Assert.Equal(ProtocolConversions.GetDocumentFilePathFromUri(looseFileUri.GetRequiredParsedUri()), document.FilePath);
     }
 
     [Theory, CombinatorialData]
@@ -86,11 +86,12 @@ public sealed class UriTests : AbstractLanguageServerProtocolTests
     [Theory, CombinatorialData]
     public async Task TestWorkspaceDocument_WithFileScheme(bool mutatingLspWorkspace)
     {
-        var documentFilePath = @"C:\A.cs";
+        var projectFilePath = TestPathUtil.GetRootedPath("CSProj1.csproj");
+        var documentFilePath = TestPathUtil.GetRootedPath("A.cs");
         var markup =
             $$"""
             <Workspace>
-                <Project Language="C#" Name="CSProj1" CommonReferences="true" FilePath="C:\CSProj1.csproj">
+                <Project Language="C#" Name="CSProj1" CommonReferences="true" FilePath="{{projectFilePath}}">
                     <Document FilePath="{{documentFilePath}}">
                         public class A
                         {
