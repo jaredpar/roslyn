@@ -25,6 +25,11 @@ public sealed partial class FindAllDeclarationsTests
         _logger = logger;
     }
 
+    private static TestHost GetEffectiveTestHost(TestHost testHost)
+        => !ExecutionConditionUtil.IsWindows && testHost == TestHost.OutOfProcess
+            ? TestHost.InProcess
+            : testHost;
+
     private static void Verify(string searchTerm, bool respectCase, SolutionKind workspaceKind, IEnumerable<ISymbol> declarations, params string[] expectedResults)
     {
         var actualResultCount = declarations.Count();
@@ -74,6 +79,7 @@ public sealed partial class FindAllDeclarationsTests
 
     private Workspace CreateWorkspace(TestHost testHost = TestHost.OutOfProcess)
     {
+        testHost = GetEffectiveTestHost(testHost);
         var composition = FeaturesTestCompositions.Features.WithTestHostParts(testHost);
         var workspace = new AdhocWorkspace(composition.GetHostServices());
 
