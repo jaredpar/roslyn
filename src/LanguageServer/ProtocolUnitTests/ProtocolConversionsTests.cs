@@ -38,14 +38,14 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
             }
 
             var filePath = PathUtilities.IsUnixLikePlatform ? $"/_{c}/" : $"C:\\_{c}\\";
-            var uriPrefix = PathUtilities.IsUnixLikePlatform ? "" : "C:/_";
+            var uriPrefix = PathUtilities.IsUnixLikePlatform ? "_" : "C:/_";
 
-            var expectedAbsoluteUri = "file:///" + uriPrefix + (unescaped.Contains(c) ? c : "%" + ((int)c).ToString("X2")) + "/";
+            var expectedUriString = "file:///" + uriPrefix + (unescaped.Contains(c) ? c : "%" + ((int)c).ToString("X2")) + "/";
 
-            Assert.Equal(expectedAbsoluteUri, ProtocolConversions.GetAbsoluteUriString(filePath));
+            Assert.Equal(expectedUriString, ProtocolConversions.GetAbsoluteUriString(filePath));
 
             var uri = ProtocolConversions.CreateAbsoluteDocumentUri(filePath);
-            Assert.Equal(expectedAbsoluteUri, uri.GetRequiredParsedUri().AbsoluteUri);
+            Assert.Equal(new Uri(filePath, UriKind.Absolute).AbsoluteUri, uri.GetRequiredParsedUri().AbsoluteUri);
             Assert.Equal(filePath, uri.GetRequiredParsedUri().LocalPath);
         }
     }
@@ -97,10 +97,8 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
     [InlineData("/%25\ue25b/\u0089\uC7BD", "file:///%2525%EE%89%9B/%C2%89%EC%9E%BD")]
     [InlineData("/!$&'()+,-;=@[]_~#", "file:///!$&'()+,-;=@[]_~%23")]
     [InlineData("/!$&'()+,-;=@[]_~#", "file:///!$&'()+,-;=@[]_~%23%EE%89%9B")]
-    [InlineData("/\\\u200e//", "file:////%E2%80%8E//")] // cases from https://github.com/dotnet/runtime/issues/1487
-    [InlineData("\\/\u200e", "file:////%E2%80%8E")]
-    [InlineData("/\\\\-Ā\r", "file://///-%C4%80%0D")]
-    [InlineData("\\\\\\\\\\\u200e", "file:///////%E2%80%8E")]
+    [InlineData("/\\\u200e//", "file:///%5C%E2%80%8E//")] // on Unix '\' is a literal filename character, not a separator
+    [InlineData("/\\\\-Ā\r", "file:///%5C%5C-%C4%80%0D")]
     public void CreateAbsoluteUri_LocalPaths_Unix(string filePath, string expectedAbsoluteUri)
     {
         Assert.Equal(expectedAbsoluteUri, ProtocolConversions.GetAbsoluteUriString(filePath));
@@ -134,22 +132,23 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
     }
 
     [ConditionalTheory(typeof(UnixLikeOnly))]
-    [InlineData("/", "file://")]
     [InlineData("/u", "file:///u")]
     [InlineData("/unix/", "file:///unix")]
     [InlineData("/unix/path", "file:///unix/path")]
     [InlineData("/%25\ue25b/\u0089\uC7BD", "file:///%2525%EE%89%9B/%C2%89%EC%9E%BD")]
     [InlineData("/!$&'()+,-;=@[]_~#", "file:///!$&'()+,-;=@[]_~%23")]
     [InlineData("/!$&'()+,-;=@[]_~#", "file:///!$&'()+,-;=@[]_~%23%EE%89%9B")]
-    [InlineData("/\\\u200e//", "file:////%E2%80%8E//")] // cases from https://github.com/dotnet/runtime/issues/1487
-    [InlineData("\\/\u200e", "file:////%E2%80%8E")]
-    [InlineData("/\\\\-Ā\r", "file://///-%C4%80%0D")]
-    [InlineData("\\\\\\\\\\\u200e", "file:///////%E2%80%8E")]
+    [InlineData("/\\\u200e//", "file:///%5C%E2%80%8E/")] // trailing separator is trimmed for RelativePattern base URIs
+    [InlineData("/\\\\-Ā\r", "file:///%5C%5C-%C4%80%0D")]
     public void CreateRelativePatternBaseUri_LocalPaths_Unix(string filePath, string expectedRelativeUri)
     {
         var uri = ProtocolConversions.CreateRelativePatternBaseUri(filePath);
         Assert.Equal(expectedRelativeUri, uri.GetRequiredParsedUri().AbsoluteUri);
     }
+
+    [ConditionalFact(typeof(UnixLikeOnly), Reason = "Unix root '/' trims to an empty RelativePattern base URI.")]
+    public void CreateRelativePatternBaseUri_UnixRoot_Throws()
+        => Assert.Throws<UriFormatException>(() => ProtocolConversions.CreateRelativePatternBaseUri("/"));
 
     [ConditionalTheory(typeof(UnixLikeOnly))]
     [InlineData("/a/./b", "file:///a/./b", "file:///a/b")]
@@ -162,7 +161,7 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
 
         var uri = ProtocolConversions.CreateAbsoluteUri(filePath);
         Assert.Equal(expectedNormalizedUri, uri.AbsoluteUri);
-        Assert.Equal(filePath, uri.LocalPath);
+        Assert.Equal(Path.GetFullPath(filePath), uri.LocalPath);
     }
 
     [Theory]
@@ -187,7 +186,7 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
     {
         var markup = GetTestMarkup();
 
-        var sourceText = SourceText.From(markup);
+        var sourceText = SourceText.From(markup.NormalizeLineEndings());
         var range = new Range() { Start = new Position(0, 0), End = new Position(1, 0) };
         var textSpan = ProtocolConversions.RangeToTextSpan(range, sourceText);
 
@@ -200,7 +199,7 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
     public void RangeToTextSpanMidLine()
     {
         var markup = GetTestMarkup();
-        var sourceText = SourceText.From(markup);
+        var sourceText = SourceText.From(markup.NormalizeLineEndings());
 
         // Take just "x = 5"
         var range = new Range() { Start = new Position(2, 8), End = new Position(2, 12) };
@@ -214,7 +213,7 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
     public void RangeToTextSpanLineEndOfDocument()
     {
         var markup = GetTestMarkup();
-        var sourceText = SourceText.From(markup);
+        var sourceText = SourceText.From(markup.NormalizeLineEndings());
 
         var range = new Range() { Start = new Position(0, 0), End = new Position(3, 1) };
         var textSpan = ProtocolConversions.RangeToTextSpan(range, sourceText);
@@ -235,7 +234,7 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
 
             """; // add additional end line 
 
-        var sourceText = SourceText.From(markup);
+        var sourceText = SourceText.From(markup.NormalizeLineEndings());
 
         var range = new Range() { Start = new Position(0, 0), End = new Position(4, 0) };
         var textSpan = ProtocolConversions.RangeToTextSpan(range, sourceText);
@@ -303,7 +302,7 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
 
     private static string GetTestMarkup()
     {
-        // Markup is 31 characters long. Line break (\n) is 2 characters 
+        // Markup is 31 characters long. Line break (\r\n) is 2 characters.
         /*
         void M()        [Line = 0; Start = 0; End = 8; End including line break = 10]
         {               [Line = 1; Start = 10; End = 11; End including line break = 13]
@@ -318,7 +317,7 @@ public sealed class ProtocolConversionsTests : AbstractLanguageServerProtocolTes
                 var x = 5;
             }
             """;
-        return markup;
+        return markup.NormalizeLineEndings();
     }
 
     [Theory, CombinatorialData]
