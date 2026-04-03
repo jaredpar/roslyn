@@ -8,6 +8,7 @@ using System.Threading;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Test.Utilities;
 using Microsoft.CodeAnalysis.Text;
+using Roslyn.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.UnitTests;
@@ -51,18 +52,19 @@ public sealed class GeneratedCodeRecognitionTests
     private static void TestFileNames(bool assertGenerated, params string[] fileNames)
     {
         var project = CreateProject();
+        var editorConfigPath = TestPathUtil.GetRootedPath(".editorconfig");
 
         var projectWithUserConfiguredGeneratedCodeTrue = project.AddAnalyzerConfigDocument(".editorconfig",
             SourceText.From("""
                 [*.{cs,vb}]
                 generated_code = true
-                """), filePath: @"z:\.editorconfig").Project;
+                """), filePath: editorConfigPath).Project;
 
         var projectWithUserConfiguredGeneratedCodeFalse = project.AddAnalyzerConfigDocument(".editorconfig",
             SourceText.From("""
                 [*.{cs,vb}]
                 generated_code = false
-                """), filePath: @"z:\.editorconfig").Project;
+                """), filePath: editorConfigPath).Project;
 
         foreach (var fileName in fileNames)
         {
@@ -78,7 +80,7 @@ public sealed class GeneratedCodeRecognitionTests
 
         static void TestCore(string fileName, Project project, bool assertGenerated)
         {
-            var document = project.AddDocument(fileName, "", filePath: $"z:\\{fileName}");
+            var document = project.AddDocument(fileName, "", filePath: TestPathUtil.GetRootedPath(fileName));
             if (assertGenerated)
             {
                 Assert.True(document.IsGeneratedCode(CancellationToken.None), string.Format("Expected file '{0}' to be interpreted as generated code", fileName));
