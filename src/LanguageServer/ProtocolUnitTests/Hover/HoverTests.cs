@@ -169,14 +169,15 @@ class Program
         Console.WriteLine(WithConstant.{|caret:Target|});
     }
 }";
+        var documentFilePath = TestPathUtil.GetRootedPath("C.cs");
 
         var workspaceXml =
 $@"<Workspace>
     <Project Language=""C#"" CommonReferences=""true"" AssemblyName=""Net472"" PreprocessorSymbols=""NET472"">
-        <Document FilePath=""C:\C.cs""><![CDATA[${source}]]></Document>
+        <Document FilePath=""{documentFilePath}""><![CDATA[${source}]]></Document>
     </Project>
     <Project Language=""C#"" CommonReferences=""true"" AssemblyName=""NetCoreApp3"" PreprocessorSymbols=""NETCOREAPP3.1"">
-        <Document IsLinkFile=""true"" LinkFilePath=""C:\C.cs"" LinkAssemblyName=""Net472""></Document>
+        <Document IsLinkFile=""true"" LinkFilePath=""{documentFilePath}"" LinkAssemblyName=""Net472""></Document>
     </Project>
 </Workspace>";
 
@@ -324,7 +325,7 @@ Remarks are cool too.
 
 {WorkspacesResources.Exceptions_colon}
   System.NullReferenceException
-", results.Contents.Fourth.Value);
+ ".ReplaceLineEndings().TrimEnd(), results.Contents.Fourth.Value.ReplaceLineEndings().TrimEnd());
     }
 
     [Theory, CombinatorialData]
@@ -448,7 +449,7 @@ if (true) {
     Console.WriteLine(""hello"");
 }
 ```  
-", results.Contents.Fourth.Value);
+ ".ReplaceLineEndings().TrimEnd(), results.Contents.Fourth.Value.ReplaceLineEndings().TrimEnd());
     }
 
     [Theory, CombinatorialData, WorkItem("https://github.com/microsoft/vscode-dotnettools/issues/1499")]
@@ -525,15 +526,16 @@ class C
                 }
             }
             """;
+        var documentFilePath = TestPathUtil.GetRootedPath("C.cs");
 
         var workspaceXml =
             $"""
             <Workspace>
                 <Project Language="C#" CommonReferences="true" AssemblyName="Net472" PreprocessorSymbols="NET472">
-                    <Document FilePath="C:\C.cs"><![CDATA[${source}]]></Document>
+                    <Document FilePath="{documentFilePath}"><![CDATA[${source}]]></Document>
                 </Project>
                 <Project Language="C#" CommonReferences="true" AssemblyName="NetCoreApp3" PreprocessorSymbols="NETCOREAPP3.1">
-                    <Document IsLinkFile="true" LinkFilePath="C:\C.cs" LinkAssemblyName="Net472"></Document>
+                    <Document IsLinkFile="true" LinkFilePath="{documentFilePath}" LinkAssemblyName="Net472"></Document>
                 </Project>
             </Workspace>
             """;
