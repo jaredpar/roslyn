@@ -68,7 +68,7 @@ public sealed class EmitSolutionUpdateResultsTests
 
         var sourcePath = Path.Combine(TempRoot.Root, "x", "a.cs");
         var razorPath1 = Path.Combine(TempRoot.Root, "x", "a.razor");
-        var razorPath2 = Path.Combine(TempRoot.Root, "a.razor");
+        var razorPath2 = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(sourcePath)!, @"..\a.razor"));
 
         var document = workspace.CurrentSolution.
             AddProject("proj", "proj", LanguageNames.CSharp).
