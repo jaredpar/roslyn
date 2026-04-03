@@ -32,7 +32,7 @@ public class WorkspaceTestBase : TestBase
     /// </summary>
     public string GetSolutionFileName(string relativeFileName)
     {
-        return Path.Combine(this.SolutionDirectory.Path, relativeFileName);
+        return Path.Combine(this.SolutionDirectory.Path, NormalizeTestPath(relativeFileName));
     }
 
     protected void CreateFiles(IEnumerable<(string filePath, object fileContent)> fileNamesAndContent)
@@ -41,8 +41,9 @@ public class WorkspaceTestBase : TestBase
         {
             Debug.Assert(fileContent is string or byte[]);
 
-            var subdirectory = Path.GetDirectoryName(filePath);
-            var fileName = Path.GetFileName(filePath);
+            var normalizedFilePath = NormalizeTestPath(filePath);
+            var subdirectory = Path.GetDirectoryName(normalizedFilePath);
+            var fileName = Path.GetFileName(normalizedFilePath);
 
             var dir = SolutionDirectory;
 
@@ -64,6 +65,9 @@ public class WorkspaceTestBase : TestBase
             }
         }
     }
+
+    private static string NormalizeTestPath(string path)
+        => path.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
 
     protected void CreateCSharpFilesWith(string propertyName, string value)
     {
