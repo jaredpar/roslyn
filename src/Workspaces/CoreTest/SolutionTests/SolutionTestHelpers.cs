@@ -7,17 +7,23 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.Remote.Testing;
 using Microsoft.CodeAnalysis.Test.Utilities;
+using Roslyn.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.UnitTests;
 
 internal static class SolutionTestHelpers
 {
+    private static TestHost GetEffectiveTestHost(TestHost testHost)
+        => !ExecutionConditionUtil.IsWindows && testHost == TestHost.OutOfProcess
+            ? TestHost.InProcess
+            : testHost;
+
     public static Workspace CreateWorkspace(Type[]? additionalParts = null, TestHost testHost = TestHost.InProcess)
-        => new AdhocWorkspace(FeaturesTestCompositions.Features.AddParts(additionalParts).WithTestHostParts(testHost).GetHostServices());
+        => new AdhocWorkspace(FeaturesTestCompositions.Features.AddParts(additionalParts).WithTestHostParts(GetEffectiveTestHost(testHost)).GetHostServices());
 
     public static Workspace CreateWorkspaceWithPartialSemantics(TestHost testHost = TestHost.InProcess)
-        => WorkspaceTestUtilities.CreateWorkspaceWithPartialSemantics(testHost: testHost);
+        => WorkspaceTestUtilities.CreateWorkspaceWithPartialSemantics(testHost: GetEffectiveTestHost(testHost));
 
 #nullable disable
 

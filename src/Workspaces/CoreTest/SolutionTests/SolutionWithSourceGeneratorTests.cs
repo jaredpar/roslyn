@@ -1439,7 +1439,8 @@ public sealed class SolutionWithSourceGeneratorTests : TestBase
     }
 
     [SupportedOSPlatform("windows")]
-    [Theory, CombinatorialData]
+    [ConditionalTheory(typeof(WindowsOnly), Reason = "Uses InProcRemoteHostClient with TestHost.OutOfProcess.")]
+    [CombinatorialData]
     internal async Task UpdatingAnalyzerReferenceReloadsGenerators(
         SourceGeneratorExecutionPreference executionPreference)
     {
