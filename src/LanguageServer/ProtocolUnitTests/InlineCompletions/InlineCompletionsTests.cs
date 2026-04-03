@@ -237,6 +237,9 @@ public sealed class InlineCompletionsTests : AbstractLanguageServerProtocolTests
 
     private async Task VerifyMarkupAndExpected(string markup, string expected, bool mutatingLspWorkspace, LSP.FormattingOptions? options = null)
     {
+        markup = markup.ReplaceLineEndings("\r\n");
+        expected = expected.ReplaceLineEndings("\r\n");
+
         await using var testLspServer = await CreateTestLspServerAsync(markup, mutatingLspWorkspace);
         var locationTyped = testLspServer.GetLocations("tab").Single();
 
@@ -250,7 +253,7 @@ public sealed class InlineCompletionsTests : AbstractLanguageServerProtocolTests
         var item = result.Items.Single();
         AssertEx.NotNull(item.Range);
         Assert.Equal(LSP.InsertTextFormat.Snippet, item.TextFormat);
-        Assert.Equal(expected, item.Text);
+        Assert.Equal(expected, item.Text.ReplaceLineEndings("\r\n"));
     }
 
     private static async Task<LSP.VSInternalInlineCompletionList> GetInlineCompletionsAsync(
