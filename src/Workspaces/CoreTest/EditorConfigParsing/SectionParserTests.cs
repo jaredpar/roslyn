@@ -2,15 +2,28 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.IO;
 using Microsoft.CodeAnalysis.EditorConfig;
 using Microsoft.CodeAnalysis.EditorConfig.Parsing;
 using Microsoft.CodeAnalysis.Text;
+using Roslyn.Test.Utilities;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.UnitTests.EditorConfigParsing;
 
 public sealed class SectionParserTests
 {
+    private static string GetTestPath(string path)
+    {
+        if (Path.DirectorySeparatorChar == '\\' || !path.StartsWith(@"C:\", StringComparison.Ordinal))
+        {
+            return path;
+        }
+
+        return TestPathUtil.GetRootedPath(path[3..].Split('\\'));
+    }
+
     [Theory]
     [InlineData((Language.CSharp | Language.VisualBasic), "*.{cs,vb}")]
     [InlineData(Language.CSharp, "*.cs")]
@@ -184,8 +197,8 @@ public sealed class SectionParserTests
     [InlineData("sources/**/*.vb", @"/dev/.editorconfig", @"/dev/sources/VisualBasic/Program.vb")]
     internal void TestSupportsFilePathSimpleCase(string headerText, string editorconfigFilePath, string codefilePath)
     {
-        var section = new Section(editorconfigFilePath, false, default(TextSpan), headerText, $"[{headerText}]");
-        Assert.True(section.SupportsFilePath(codefilePath, matchKind: SectionMatch.FilePatternMatch));
+        var section = new Section(GetTestPath(editorconfigFilePath), false, default(TextSpan), headerText, $"[{headerText}]");
+        Assert.True(section.SupportsFilePath(GetTestPath(codefilePath), matchKind: SectionMatch.FilePatternMatch));
     }
 
     [Theory]
@@ -207,8 +220,8 @@ public sealed class SectionParserTests
     [InlineData("Sources/**/*.cs", @"/dev/.editorconfig", @"/dev/sources/CSharp/Program.cs")]
     internal void TestDoesNotSupportFilePathSimpleCase(string headerText, string editorconfigFilePath, string codefilePath)
     {
-        var section = new Section(editorconfigFilePath, false, default(TextSpan), headerText, $"[{headerText}]");
-        Assert.False(section.SupportsFilePath(codefilePath, matchKind: SectionMatch.FilePatternMatch));
+        var section = new Section(GetTestPath(editorconfigFilePath), false, default(TextSpan), headerText, $"[{headerText}]");
+        Assert.False(section.SupportsFilePath(GetTestPath(codefilePath), matchKind: SectionMatch.FilePatternMatch));
     }
 
     [Theory]
@@ -216,8 +229,8 @@ public sealed class SectionParserTests
     [InlineData("*b", @"C:\dev\.editorconfig", @"C:\dev\sources\VisualBasic\Program.vb")]
     internal void TestSupportsFilePathMatchAny(string headerText, string editorconfigFilePath, string codefilePath)
     {
-        var section = new Section(editorconfigFilePath, false, default(TextSpan), headerText, $"[{headerText}]");
-        Assert.True(section.SupportsFilePath(codefilePath, matchKind: SectionMatch.FilePatternMatch));
+        var section = new Section(GetTestPath(editorconfigFilePath), false, default(TextSpan), headerText, $"[{headerText}]");
+        Assert.True(section.SupportsFilePath(GetTestPath(codefilePath), matchKind: SectionMatch.FilePatternMatch));
     }
 
     [Theory]
@@ -227,7 +240,7 @@ public sealed class SectionParserTests
     [InlineData("*", @"C:\dev\.editorconfig", @"C:\dev\sources\CSharp\Program.cs")]
     internal void TestSupportsSplat(string headerText, string editorconfigFilePath, string codefilePath)
     {
-        var section = new Section(editorconfigFilePath, false, default(TextSpan), headerText, $"[{headerText}]");
-        Assert.True(section.SupportsFilePath(codefilePath, matchKind: SectionMatch.SplatMatch));
+        var section = new Section(GetTestPath(editorconfigFilePath), false, default(TextSpan), headerText, $"[{headerText}]");
+        Assert.True(section.SupportsFilePath(GetTestPath(codefilePath), matchKind: SectionMatch.SplatMatch));
     }
 }
