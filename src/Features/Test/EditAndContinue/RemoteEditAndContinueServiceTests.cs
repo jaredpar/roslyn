@@ -37,8 +37,15 @@ public sealed class RemoteEditAndContinueServiceTests
     private static IEnumerable<string> Inspect(ImmutableDictionary<ProjectId, ImmutableArray<ProjectId>> projects)
         => projects.Select(kvp => $"{kvp.Key}: [{string.Join(", ", kvp.Value.Select(p => p.ToString()))}]");
 
-    [Theory, CombinatorialData]
-    public async Task Proxy(TestHost testHost)
+    [Fact]
+    public Task Proxy_InProcess()
+        => ProxyAsync(TestHost.InProcess);
+
+    [ConditionalFact(typeof(WindowsOnly), Reason = "TestHost.OutOfProcess hits the known TemporaryStorageService remote-host failure on Unix.")]
+    public Task Proxy_OutOfProcess()
+        => ProxyAsync(TestHost.OutOfProcess);
+
+    private async Task ProxyAsync(TestHost testHost)
     {
         var localComposition = FeaturesTestCompositions.Features.WithTestHostParts(testHost)
             .AddParts(typeof(NoCompilationLanguageService));
