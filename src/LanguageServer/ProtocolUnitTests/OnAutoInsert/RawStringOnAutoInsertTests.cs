@@ -211,6 +211,9 @@ public sealed class RawStringOnAutoInsertTests(ITestOutputHelper testOutputHelpe
         [StringSyntax(PredefinedEmbeddedLanguageNames.CSharpTest)] string expected,
         bool mutatingLspWorkspace)
     {
+        markup = markup.NormalizeLineEndings();
+        expected = expected.NormalizeLineEndings();
+
         await using var testLspServer = await CreateTestLspServerAsync(markup, mutatingLspWorkspace);
         var locationTyped = testLspServer.GetLocations("type").Single();
 
@@ -234,6 +237,6 @@ public sealed class RawStringOnAutoInsertTests(ITestOutputHelper testOutputHelpe
 
         MarkupTestFile.GetPositionAndSpans(expected, out var massaged, out int? caretPosition, out var spans);
 
-        Assert.Equal(massaged, actualText);
+        Assert.Equal(massaged, actualText.NormalizeLineEndings());
     }
 }
