@@ -13,10 +13,13 @@ namespace Microsoft.CodeAnalysis.EditorConfigParsing.NamingStyles.UnitTests;
 
 public sealed class NamingStyleParserTests
 {
+    private static SourceText CreateEditorConfigSourceText(string editorConfigText)
+        => SourceText.From(editorConfigText.ReplaceLineEndings("\r\n"));
+
     [Fact]
     public void TestParseDefaultditorConfig()
     {
-        var editorconfig = SourceText.From(DefaultDotNet6EditorConfigText);
+        var editorconfig = CreateEditorConfigSourceText(DefaultDotNet6EditorConfigText);
         var namingStyles = Parse(editorconfig, null);
 
         var namingStyleSection = Assert.Single(namingStyles.Sections);
@@ -45,7 +48,7 @@ public sealed class NamingStyleParserTests
     [Fact]
     public void TestParseRoslynEditorConfig()
     {
-        var editorconfig = SourceText.From(RoslynEditorConfigText);
+        var editorconfig = CreateEditorConfigSourceText(RoslynEditorConfigText);
         var namingStyles = Parse(editorconfig, null);
 
         var namingStyleSection = Assert.Single(namingStyles.Sections);
