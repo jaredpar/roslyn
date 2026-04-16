@@ -1677,7 +1677,7 @@ Delta.2: Test D2
             });
         }
 
-        [Theory]
+        [ConditionalTheory(typeof(DesktopOnly), Reason = "https://github.com/dotnet/roslyn/issues/79352")]
         [CombinatorialData]
         public void AssemblyLoading_DoesNotUseCollectibleALCs(AnalyzerTestKind kind)
         {
