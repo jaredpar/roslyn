@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Immutable;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis.LanguageServer.HostWorkspace;
 using Microsoft.CodeAnalysis.LanguageServer.UnitTests.Miscellaneous;
 using Microsoft.CodeAnalysis.Options;
@@ -441,8 +442,14 @@ public sealed class FileBasedProgramsWorkspaceTests : AbstractLspMiscellaneousFi
         // Write updated content to disk so the project system can pick up the change.
         sourceFile.WriteAllText($"{textToInsert}{initialText}");
         await testLspServer.InsertTextAsync(looseFileUriOne, (Line: 0, Column: 0, Text: textToInsert));
-        await Task.Delay(100);
-        await WaitForProjectLoad(looseFileUriOne, testLspServer);
+        // Wait for the FileSystemWatcher + AsyncBatchingWorkQueue to propagate the change.
+        // Fixed delays are unreliable on Linux due to inotify event delivery latency, so poll instead.
+        await WaitForConditionAsync(async () =>
+        {
+            await WaitForProjectLoad(looseFileUriOne, testLspServer);
+            var (ws, doc) = await GetRequiredLspWorkspaceAndDocumentAsync(looseFileUriOne, testLspServer).ConfigureAwait(false);
+            return ws.Kind == WorkspaceKind.MiscellaneousFiles && doc.Project.State.HasAllInformation;
+        }, timeout: TimeSpan.FromSeconds(30), pollInterval: TimeSpan.FromMilliseconds(100));
         var (workspace, canonicalDocumentTwo) = await GetRequiredLspWorkspaceAndDocumentAsync(looseFileUriOne, testLspServer).ConfigureAwait(false);
         Assert.Equal("""
             Console.WriteLine("Hello World!");
@@ -586,6 +593,27 @@ public sealed class FileBasedProgramsWorkspaceTests : AbstractLspMiscellaneousFi
     {
         _ = await GetRequiredLspWorkspaceAndDocumentAsync(looseFileUri, testLspServer).ConfigureAwait(false);
         await testLspServer.TestWorkspace.GetService<AsynchronousOperationListenerProvider>().GetWaiter(FeatureAttribute.Workspace).ExpeditedWaitAsync();
+    }
+
+    /// <summary>
+    /// Polls <paramref name="condition"/> until it returns true or <paramref name="timeout"/> elapses.
+    /// Used in place of fixed <c>Task.Delay</c> calls to avoid races on slower file-watcher pipelines
+    /// (e.g. Linux inotify event delivery latency layered on top of AsyncBatchingWorkQueue delays).
+    /// </summary>
+    private static async Task WaitForConditionAsync(
+        Func<Task<bool>> condition,
+        TimeSpan timeout,
+        TimeSpan pollInterval)
+    {
+        var sw = Stopwatch.StartNew();
+        while (sw.Elapsed < timeout)
+        {
+            if (await condition().ConfigureAwait(false))
+                return;
+            await Task.Delay(pollInterval).ConfigureAwait(false);
+        }
+
+        Assert.True(await condition().ConfigureAwait(false), $"Condition not met within {timeout.TotalSeconds}s");
     }
 
     [Theory, CombinatorialData]
@@ -813,9 +841,14 @@ public sealed class FileBasedProgramsWorkspaceTests : AbstractLspMiscellaneousFi
 
         // Flush the document change to disk to trigger a reload of the FBA project.
         appCsFile.WriteAllText(newAppCsText);
-        // Wait for the batching queue timeout.
-        await Task.Delay(100);
-        await WaitForProjectLoad(appCsUri, testLspServer);
+        // Wait for the FileSystemWatcher + AsyncBatchingWorkQueue to propagate the change.
+        // Fixed delays are unreliable on Linux due to inotify event delivery latency, so poll instead.
+        await WaitForConditionAsync(async () =>
+        {
+            await WaitForProjectLoad(appCsUri, testLspServer);
+            var (ws, _) = await GetRequiredLspWorkspaceAndDocumentAsync(appCsUri, testLspServer).ConfigureAwait(false);
+            return ws.Kind == WorkspaceKind.MiscellaneousFiles;
+        }, timeout: TimeSpan.FromSeconds(30), pollInterval: TimeSpan.FromMilliseconds(100));
 
         // Now the document is a miscellaneous file
         (workspace, document) = await GetRequiredLspWorkspaceAndDocumentAsync(appCsUri, testLspServer).ConfigureAwait(false);
