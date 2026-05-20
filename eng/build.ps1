@@ -412,7 +412,12 @@ function TestUsingRunTests() {
     $env:DOTNET_RuntimeAsync = 1
   }
 
-  $runTests = GetProjectOutputBinary "RunTests.dll" -tfm "net10.0"
+  if ($helix) {
+    $runTests = GetProjectOutputBinary "RunHelix.dll" -tfm "net10.0"
+  }
+  else {
+    $runTests = GetProjectOutputBinary "RunTests.dll" -tfm "net10.0"
+  }
 
   if (!(Test-Path $runTests)) {
     Write-Host "Test runner not found: '$runTests'. Run Build.cmd first." -ForegroundColor Red
@@ -478,10 +483,6 @@ function TestUsingRunTests() {
 
   if ($sequential) {
     $args += " --sequential"
-  }
-
-  if ($helix) {
-    $args += " --helix"
   }
 
   if ($helixQueueName) {

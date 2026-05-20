@@ -400,6 +400,12 @@ if [[ "$test_core_clr" == true ]]; then
     runtests_args="$runtests_args $(GetCompilerTestAssembliesIncludePaths)"
   fi
 
+  if [[ "$helix" == true ]]; then
+    runtests_binary="RunHelix"
+  else
+    runtests_binary="RunTests"
+  fi
+
   if [[ -n "$helix_queue_name" ]]; then
     runtests_args="$runtests_args --helixQueueName $helix_queue_name"
   fi
@@ -408,13 +414,9 @@ if [[ "$test_core_clr" == true ]]; then
     runtests_args="$runtests_args --helixApiAccessToken $helix_api_access_token"
   fi
 
-  if [[ "$helix" == true ]]; then
-    runtests_args="$runtests_args --helix"
-  fi
-
   if [[ "$ci" != true ]]; then
     runtests_args="$runtests_args --html"
   fi
-  dotnet exec "$scriptroot/../artifacts/bin/RunTests/${configuration}/net10.0/RunTests.dll" --runtime core --configuration ${configuration} --logs ${log_dir} --dotnet ${_InitializeDotNetCli}/dotnet $runtests_args
+  dotnet exec "$scriptroot/../artifacts/bin/${runtests_binary}/${configuration}/net10.0/${runtests_binary}.dll" --runtime core --configuration ${configuration} --logs ${log_dir} --dotnet ${_InitializeDotNetCli}/dotnet $runtests_args
 fi
 ExitWithExitCode 0

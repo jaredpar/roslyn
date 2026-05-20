@@ -37,9 +37,9 @@ jobs:
         path: '$(Build.SourcesDirectory)'
 
     - task: BatchScript@1
-      displayName: Rehydrate RunTests
+      displayName: Rehydrate RunHelix
       inputs:
-        filename: ./artifacts/bin/RunTests/${{ parameters.configuration }}/net10.0/rehydrate.cmd
+        filename: ./artifacts/bin/RunHelix/${{ parameters.configuration }}/net10.0/rehydrate.cmd
       env:
         HELIX_CORRELATION_PAYLOAD: '$(Build.SourcesDirectory)\.duplicate'
 

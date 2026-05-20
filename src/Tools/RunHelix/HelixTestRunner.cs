@@ -48,9 +48,6 @@ internal sealed partial class HelixTestRunner
 
     internal static async Task<int> RunAsync(Options options, ImmutableArray<AssemblyInfo> assemblies, CancellationToken cancellationToken)
     {
-        Verify(options.UseHelix);
-        Verify(!options.IncludeHtml);
-        Verify(string.IsNullOrEmpty(options.TestFilter));
         Verify(!string.IsNullOrEmpty(options.ArtifactsDirectory));
         Verify(!string.IsNullOrEmpty(options.HelixQueueName));
         Verify(!string.IsNullOrEmpty(options.Configuration));
