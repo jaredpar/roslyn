@@ -113,6 +113,7 @@ internal static class PoolTracker
 internal sealed class PoolTrackingContext
 {
     private readonly ConcurrentDictionary<object, AllocationInfo> _outstanding = new ConcurrentDictionary<object, AllocationInfo>(ReferenceEqualityComparer.Instance);
+    private readonly ConcurrentBag<(AllocationInfo OldInfo, AllocationInfo NewInfo)> _conflicts = new ConcurrentBag<(AllocationInfo OldInfo, AllocationInfo NewInfo)>();
     private readonly bool _traceLeaks;
 
     internal PoolTrackingContext(bool traceLeaks)
@@ -122,7 +123,12 @@ internal sealed class PoolTrackingContext
 
     internal void OnAllocate(object obj, string? poolName, string? filePath, int lineNumber)
     {
-        _outstanding.TryAdd(obj, new AllocationInfo(obj.GetType(), poolName, filePath, lineNumber, _traceLeaks ? Environment.StackTrace : null));
+        var allocation = new AllocationInfo(obj.GetType(), poolName, filePath, lineNumber, _traceLeaks ? Environment.StackTrace : null);
+        var added = _outstanding.GetOrAdd(obj, allocation);
+        if (!added.Equals(allocation))
+        {
+            _conflicts.Add((added, allocation));
+        }
     }
 
     internal void OnFree(object obj)
@@ -133,7 +139,7 @@ internal sealed class PoolTrackingContext
     /// <summary>
     /// Returns true if there are pooled objects that were allocated but never freed.
     /// </summary>
-    internal bool HasLeaks => !_outstanding.IsEmpty;
+    internal bool HasLeaks => !_outstanding.IsEmpty || !_conflicts.IsEmpty;
 
     /// <summary>
     /// Clears all outstanding allocations, forgiving any current leaks.
@@ -141,6 +147,7 @@ internal sealed class PoolTrackingContext
     internal void ForgiveLeaks()
     {
         _outstanding.Clear();
+        while (_conflicts.TryTake(out _)) { }
     }
 
     /// <summary>
@@ -172,16 +179,19 @@ internal sealed class PoolTrackingContext
             }
         }
 
+        if (!_conflicts.IsEmpty)
+        {
+            sb.AppendLine("Conflicting allocations detected:");
+            foreach (var (oldInfo, newInfo) in _conflicts)
+            {
+                sb.AppendLine($"Old: {oldInfo.Type} {oldInfo.PoolName} in {oldInfo.FilePath}:{oldInfo.LineNumber}");
+                sb.AppendLine($"New: {newInfo.Type} {newInfo.PoolName} in {newInfo.FilePath}:{newInfo.LineNumber}");
+            }
+        }
+
         return sb.ToString();
     }
 
-    private readonly struct AllocationInfo(Type type, string? poolName, string? filePath, int lineNumber, string? stackTrace)
-    {
-        public readonly Type Type = type;
-        public readonly string? PoolName = poolName;
-        public readonly string? FilePath = filePath;
-        public readonly int LineNumber = lineNumber;
-        public readonly string? StackTrace = stackTrace;
-    }
+    private readonly record struct AllocationInfo(Type Type, string? PoolName, string? FilePath, int LineNumber, string? StackTrace);
 }
 #endif
