@@ -28,64 +28,8 @@ namespace Microsoft.CodeAnalysis.Host;
 #endif
 internal sealed partial class TemporaryStorageService : ITemporaryStorageServiceInternal
 {
-    /// <summary>
-    /// The maximum size in bytes of a single storage unit in a memory mapped file which is shared with other storage
-    /// units.
-    /// </summary>
-    /// <remarks>
-    /// <para>The value of 256k reduced the number of files dumped to separate memory mapped files by 60% compared to
-    /// the next lower power-of-2 size for Roslyn.slnx itself.</para>
-    /// </remarks>
-    /// <seealso cref="_fileReference"/>
-    private const long SingleFileThreshold = 256 * 1024;
-
-    /// <summary>
-    /// The size in bytes of a memory mapped file created to store multiple temporary objects.
-    /// </summary>
-    /// <remarks>
-    /// <para>This value (8mb) creates roughly 35 memory mapped files (around 300MB) to store the contents of all of
-    /// Roslyn.slnx a snapshot. This keeps the data safe, so that we can drop it from memory when not needed, but
-    /// reconstitute the contents we originally had in the snapshot in case the original files change on disk.</para>
-    /// </remarks>
-    /// <seealso cref="_fileReference"/>
-    private const long MultiFileBlockSize = SingleFileThreshold * 32;
-
     private readonly IWorkspaceThreadingService? _workspaceThreadingService;
     private readonly ITextFactoryService _textFactory;
-
-    /// <summary>
-    /// The synchronization object for accessing the memory mapped file related fields (indicated in the remarks
-    /// of each field).
-    /// </summary>
-    /// <remarks>
-    /// <para>PERF DEV NOTE: A concurrent (but complex) implementation of this type with identical semantics is
-    /// available in source control history. The use of exclusive locks was not causing any measurable
-    /// performance overhead even on 28-thread machines at the time this was written.</para>
-    /// </remarks>
-    private readonly object _gate = new();
-
-    /// <summary>
-    /// The most recent memory mapped file for creating multiple storage units. It will be used via bump-pointer
-    /// allocation until space is no longer available in it.  Access should be synchronized on <see cref="_gate"/>
-    /// </summary>
-    private MemoryMappedFile? _fileReference;
-
-    /// <summary>The name of the current memory mapped file for multiple storage units. Access should be synchronized on
-    /// <see cref="_gate"/></summary>
-    /// <seealso cref="_fileReference"/>
-    private string? _name;
-
-    /// <summary>The total size of the current memory mapped file for multiple storage units. Access should be
-    /// synchronized on <see cref="_gate"/></summary>
-    /// <seealso cref="_fileReference"/>
-    private long _fileSize;
-
-    /// <summary>
-    /// The offset into the current memory mapped file where the next storage unit can be held. Access should be
-    /// synchronized on <see cref="_gate"/>.
-    /// </summary>
-    /// <seealso cref="_fileReference"/>
-    private long _offset;
 
     [Obsolete(MefConstruction.FactoryMethodMessage, error: true)]
     private TemporaryStorageService(IWorkspaceThreadingService? workspaceThreadingService, ITextFactoryService textFactory)
@@ -192,44 +136,25 @@ internal sealed partial class TemporaryStorageService : ITemporaryStorageService
     }
 
     /// <summary>
-    /// Allocate shared storage of a specified size.
+    /// Allocate storage of a specified size in a new memory mapped file.
     /// </summary>
     /// <remarks>
-    /// <para>"Small" requests are fulfilled from oversized memory mapped files which support several individual
-    /// storage units. Larger requests are allocated in their own memory mapped files.</para>
+    /// <para>Each allocation gets its own dedicated memory mapped file. This ensures that when a handle to the
+    /// storage is released (and the <see cref="MemoryMappedFile"/> is finalized), the memory is freed immediately
+    /// without being blocked by unrelated handles sharing the same file. A prior implementation used a bump-pointer
+    /// allocator that packed small items into shared 8 MB blocks. While this reduced the number of memory mapped
+    /// files, it caused a fragmentation problem: a single surviving handle into a shared block would keep the
+    /// entire block alive. In long-running test hosts (especially x86), hundreds of blocks accumulated and
+    /// exhausted virtual address space.</para>
     /// </remarks>
-    /// <param name="size">The size of the shared storage block to allocate.</param>
+    /// <param name="size">The size of the storage block to allocate.</param>
     /// <returns>A <see cref="MemoryMappedInfo"/> describing the allocated block.</returns>
     private MemoryMappedInfo CreateTemporaryStorage(long size)
     {
-        // Larger blocks are allocated separately
-        if (size >= SingleFileThreshold)
-            return MemoryMappedInfo.CreateNew(CreateUniqueName(size), size: size);
-
-        lock (_gate)
-        {
-            // Obtain a reference to the memory mapped file, creating one if necessary. If a reference counted
-            // handle to a memory mapped file is obtained in this section, it must either be disposed before
-            // returning or returned to the caller who will own it through the MemoryMappedInfo.
-            var reference = _fileReference;
-            if (reference == null || _offset + size > _fileSize)
-            {
-                var mapName = CreateUniqueName(MultiFileBlockSize);
-
-                reference = MemoryMappedFile.CreateNew(mapName, MultiFileBlockSize);
-                _fileReference = reference;
-                _name = mapName;
-                _fileSize = MultiFileBlockSize;
-                _offset = size;
-                return new MemoryMappedInfo(reference, _name, offset: 0, size: size);
-            }
-            else
-            {
-                // Reserve additional space in the existing storage location
-                _offset += size;
-                return new MemoryMappedInfo(reference, _name, _offset - size, size);
-            }
-        }
+        var name = CreateUniqueName(size);
+        // MemoryMappedFile requires a capacity of at least 1 byte.
+        var memoryMappedFile = MemoryMappedFile.CreateNew(name, Math.Max(size, 1));
+        return new MemoryMappedInfo(memoryMappedFile, name, offset: 0, size: size);
     }
 
     public static string? CreateUniqueName(long size)
